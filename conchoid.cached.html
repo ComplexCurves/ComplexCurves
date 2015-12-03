@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>Singularity Explorer</title>
+<script type="text/javascript" src="SingularityExplorer.js"></script>
+<script type="text/javascript">
+document.addEventListener ("DOMContentLoaded", function () {
+    SingularityExplorer.fromFile ('geomlabCanvas',
+        'http://complexcurves.org/models/Conchoid.bin');
+}, false);
+</script>
+</head>
+<body>
+<canvas id="geomlabCanvas" width="400" height="400"></canvas>
+</body>
+</html>
