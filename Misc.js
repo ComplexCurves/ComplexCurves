@@ -1,10 +1,10 @@
 var Misc = {};
 
-Misc.lerp = function (x, y, mu) {
+Misc.lerp = function(x, y, mu) {
     return x + mu * (y - x);
-}
+};
 
-Misc.loadTextFiles = function (files, onload) {
+Misc.loadTextFiles = function(files, onload) {
     var sources = [],
         count = 0;
     files.forEach(function(file, i, files) {
@@ -18,4 +18,4 @@ Misc.loadTextFiles = function (files, onload) {
         };
         req.send();
     });
-}
+};
