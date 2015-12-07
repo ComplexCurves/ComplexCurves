@@ -1,7 +1,8 @@
 /** @param {HTMLCanvasElement} canvas
  *  @param {boolean} fxaa
+ *  @param {function(StateGL)} onload
  *  @constructor */
-function StateGL(canvas, fxaa) {
+function StateGL(canvas, fxaa, onload) {
     var gl = /** @type WebGLRenderingContext */ (canvas.getContext('webgl', {
         preserveDrawingBuffer: true
     }));
@@ -13,7 +14,13 @@ function StateGL(canvas, fxaa) {
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.enable(gl.DEPTH_TEST);
     this.gl = gl;
-    this.fxaa = fxaa;
+    if (fxaa === true) {
+        this.mkRenderToTextureObjects();
+        var stategl = this;
+        stategl.mkFXAAProgram(function() {
+            onload(stategl);
+        });
+    }
 }
 
 /** @type {boolean} */
@@ -38,6 +45,22 @@ StateGL.getShaderSources = function(shaderId, onload) {
 /** @type {WebGLRenderingContext} */
 StateGL.prototype.gl = null;
 
+/** @param {string} file
+ *  @param {function()} onload */
+StateGL.prototype.loadModel = function(file, onload) {
+    var stategl = this;
+    var req = new XMLHttpRequest();
+    req.open("GET", file, true);
+    req.responseType = "arraybuffer";
+    req.onload = function() {
+        var positions = /** @type {ArrayBuffer|null} */ (req.response);
+        stategl.mkBuffer(positions);
+        stategl.size = positions.byteLength / 16;
+        stategl.mkCachedSurfaceProgram(onload);
+    };
+    req.send();
+};
+
 /** @param {ArrayBuffer} positions */
 StateGL.prototype.mkBuffer = function(positions) {
     var gl = this.gl;
@@ -49,18 +72,23 @@ StateGL.prototype.mkBuffer = function(positions) {
     gl.vertexAttribPointer(0, 4, gl.FLOAT, false, 0, 0);
 };
 
-StateGL.prototype.mkCachedSurfaceProgram = function() {
+/** @param {function()} onload */
+StateGL.prototype.mkCachedSurfaceProgram = function(onload) {
     var gl = this;
     StateGL.getShaderSources("cached-surface", function(sources) {
         gl.cachedSurfaceProgram = gl.mkProgram(sources);
         gl.cached = true;
+        onload();
     });
 };
 
-StateGL.prototype.mkFXAAProgram = function() {
+/** @param {function()} onload */
+StateGL.prototype.mkFXAAProgram = function(onload) {
     var gl = this;
     StateGL.getShaderSources("fxaa", function(sources) {
+        gl.fxaa = true;
         gl.fxaaProgram = gl.mkProgram(sources);
+        onload();
     });
 };
 
