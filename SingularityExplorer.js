@@ -6,7 +6,7 @@ SingularityExplorer.fromFile = function(canvasId, file) {
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.enable(gl.DEPTH_TEST);
     var state3d = State3D.topView(false);
-    StateGL.getShaderSources("surface", function(sources) {
+    StateGL.getShaderSources("cached-surface", function(sources) {
         StateGL.mkProgram(gl, sources);
         SingularityExplorer.loadModel(file, function(positions) {
             StateGL.mkBuffer(gl, positions);

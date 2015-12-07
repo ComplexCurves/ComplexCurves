@@ -9,7 +9,7 @@ function StateGL(canvas) {
 StateGL.prototype.size = 0;
 
 StateGL.getShaderSources = function(shaderId, onload) {
-    var files = ['cached-surface-vs.glsl', 'cached-surface-fs.glsl'];
+    var files = [shaderId + '-vs.glsl', shaderId + '-fs.glsl'];
     Misc.loadTextFiles(files, onload);
 };
 
