@@ -1,18 +1,32 @@
-/** @constructor */
-function StateGL(canvas) {
-    var gl = canvas.getContext('webgl', {
+/** @param {HTMLCanvasElement} canvas
+ *  @param {boolean} fxaa
+ *  @constructor */
+function StateGL(canvas, fxaa) {
+    var gl = /** @type WebGLRenderingContext */ (canvas.getContext('webgl', {
         preserveDrawingBuffer: true
-    });
+    }));
+    var oes_texture_float = gl.getExtension('OES_texture_float');
+    if (!oes_texture_float) {
+        alert('OES_texture_float not supported on your device');
+        return;
+    }
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.enable(gl.DEPTH_TEST);
     this.gl = gl;
+    this.fxaa = fxaa;
 }
 
 /** @type {boolean} */
-StateGL.prototype.cached;
+StateGL.prototype.cached = false;
 
 /** @type {WebGLProgram} */
-StateGL.prototype.cachedSurfaceProgram;
+StateGL.prototype.cachedSurfaceProgram = null;
+
+/** @type {boolean} */
+StateGL.prototype.fxaa = false;
+
+/** @type {WebGLProgram} */
+StateGL.prototype.fxaaProgram = null;
 
 /** @param {string} shaderId
  *  @param {function(Array<string>)} onload */
@@ -22,16 +36,32 @@ StateGL.getShaderSources = function(shaderId, onload) {
 };
 
 /** @type {WebGLRenderingContext} */
-StateGL.prototype.gl;
+StateGL.prototype.gl = null;
 
 /** @param {ArrayBuffer} positions */
 StateGL.prototype.mkBuffer = function(positions) {
     var gl = this.gl;
     gl.enableVertexAttribArray(0);
-    var positionsBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, positionsBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+    this.positionsBuffer = /** @type {WebGLBuffer} */ (gl.createBuffer());
+    this.positions = positions;
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.positionsBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.positions), gl.STATIC_DRAW);
     gl.vertexAttribPointer(0, 4, gl.FLOAT, false, 0, 0);
+};
+
+StateGL.prototype.mkCachedSurfaceProgram = function() {
+    var gl = this;
+    StateGL.getShaderSources("cached-surface", function(sources) {
+        gl.cachedSurfaceProgram = gl.mkProgram(sources);
+        gl.cached = true;
+    });
+};
+
+StateGL.prototype.mkFXAAProgram = function() {
+    var gl = this;
+    StateGL.getShaderSources("fxaa", function(sources) {
+        gl.fxaaProgram = gl.mkProgram(sources);
+    });
 };
 
 /** @param {Array<string>} sources
@@ -60,13 +90,63 @@ StateGL.prototype.mkProgram = function(sources) {
     return shaderProgram;
 };
 
+StateGL.prototype.mkRenderToTextureObjects = function() {
+    var gl = this.gl;
+
+    this.rttArrayBuffer = /** @type {WebGLBuffer} */ (gl.createBuffer());
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.rttArrayBuffer);
+    var vertices = [-1, -1, 3, -1, -1, 3];
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+    gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(0);
+
+    this.rttFramebuffer = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, this.rttFramebuffer);
+
+    this.rttRenderbuffer = gl.createRenderbuffer();
+    gl.bindRenderbuffer(gl.RENDERBUFFER, this.rttRenderbuffer);
+    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, 2048, 2048);
+    gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER, this.rttRenderbuffer);
+
+    this.rttTexture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, this.rttTexture);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 2048, 2048, 0, gl.RGBA, gl.FLOAT, null);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.rttTexture, 0);
+
+    gl.bindTexture(gl.TEXTURE_2D, null);
+    gl.bindRenderbuffer(gl.RENDERBUFFER, null);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.bindBuffer(gl.ARRAY_BUFFER, null);
+};
+
 /** @param {State3D} st */
 StateGL.prototype.renderSurface = function(st) {
     var gl = this.gl;
-    this.updateModelViewProjectionMatrices(st);
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    gl.drawArrays(gl.TRIANGLES, 0, this.size);
+    var stategl = this;
+    this.withOptionalFXAA(function() {
+        gl.useProgram(stategl.cachedSurfaceProgram);
+        stategl.updateModelViewProjectionMatrices(st);
+        gl.bindBuffer(gl.ARRAY_BUFFER, stategl.positionsBuffer);
+        //gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(stategl.positions), gl.STATIC_DRAW);
+        gl.vertexAttribPointer(0, 4, gl.FLOAT, false, 0, 0);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        gl.drawArrays(gl.TRIANGLES, 0, stategl.size);
+    });
 };
+
+/** @type {WebGLBuffer} */
+StateGL.prototype.rttArrayBuffer = null;
+
+/** @type {WebGLFramebuffer} */
+StateGL.prototype.rttFramebuffer = null;
+
+/** @type {WebGLRenderbuffer} */
+StateGL.prototype.rttRenderbuffer = null;
+
+/** @type {WebGLTexture} */
+StateGL.prototype.rttTexture = null;
 
 /** @type {number} */
 StateGL.prototype.size = 0;
@@ -104,4 +184,33 @@ StateGL.prototype.updateUniformMatrix = function(i, ms) {
 /** @param {State3D} st */
 StateGL.prototype.updateViewMatrix = function(st) {
     this.updateUniformMatrix("v", st.viewMatrix());
+};
+
+/** @param {function()} action */
+StateGL.prototype.withFXAA = function(action) {
+    this.withRenderToTexture(action);
+    var gl = this.gl;
+    gl.useProgram(this.fxaaProgram);
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.rttArrayBuffer);
+    gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, this.rttTexture);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+};
+
+/** @param {function()} action */
+StateGL.prototype.withOptionalFXAA = function(action) {
+    if (this.fxaa)
+        this.withFXAA(action);
+    else
+        action();
+};
+
+/** @param {function()} action */
+StateGL.prototype.withRenderToTexture = function(action) {
+    var gl = this.gl;
+    gl.bindFramebuffer(gl.FRAMEBUFFER, this.rttFramebuffer);
+    action();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 };

@@ -1,20 +1,19 @@
 var SingularityExplorer = {};
 
-/** @param {string} canvasId
+/** @param {HTMLCanvasElement} canvas
  *  @param {string} file */
-SingularityExplorer.fromFile = function(canvasId, file) {
-    var canvas = document.getElementById(canvasId);
-    var gl = new StateGL(canvas);
+SingularityExplorer.fromFile = function(canvas, file) {
+    var gl = new StateGL(canvas, true);
     var state3d = State3D.topView(false);
-    StateGL.getShaderSources("cached-surface", function(sources) {
-        gl.mkProgram(sources);
-        SingularityExplorer.loadModel(file, function(positions) {
-            gl.mkBuffer(positions);
-            gl.size = positions.byteLength / 16;
-            SingularityExplorer.renderSurface(state3d, gl);
-        });
-        SingularityExplorer.registerEventHandlers(canvas, state3d, gl);
+    gl.mkCachedSurfaceProgram(); // TODO rendering must wait for shader creation
+    gl.mkFXAAProgram(); // TODO rendering must wait for shader creation
+    gl.mkRenderToTextureObjects();
+    SingularityExplorer.loadModel(file, function(positions) {
+        gl.mkBuffer(positions);
+        gl.size = positions.byteLength / 16;
+        SingularityExplorer.renderSurface(state3d, gl);
     });
+    SingularityExplorer.registerEventHandlers(canvas, state3d, gl);
 };
 
 /** @param {string} file
@@ -24,12 +23,12 @@ SingularityExplorer.loadModel = function(file, onload) {
     req.open("GET", file, true);
     req.responseType = "arraybuffer";
     req.onload = function() {
-        onload(/** @type {ArrayBuffer|null} */ (req.response));
+        onload( /** @type {ArrayBuffer|null} */ (req.response));
     };
     req.send();
 };
 
-/** @param {HTMLElement} canvas
+/** @param {HTMLCanvasElement} canvas
  *  @param {State3D} state3d
  *  @param {StateGL} gl */
 SingularityExplorer.registerEventHandlers = function(canvas, state3d, gl) {
