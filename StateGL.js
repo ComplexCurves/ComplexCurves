@@ -1,19 +1,32 @@
-/** @constructor
- *  @extends {WebGLRenderingContext} */
+/** @constructor */
 function StateGL(canvas) {
-    return canvas.getContext('webgl', {
+    var gl = canvas.getContext('webgl', {
         preserveDrawingBuffer: true
     });
+    gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    gl.enable(gl.DEPTH_TEST);
+    this.gl = gl;
 }
 
-StateGL.prototype.size = 0;
+/** @type {boolean} */
+StateGL.prototype.cached;
 
+/** @type {WebGLProgram} */
+StateGL.prototype.cachedSurfaceProgram;
+
+/** @param {string} shaderId
+ *  @param {function(Array<string>)} onload */
 StateGL.getShaderSources = function(shaderId, onload) {
     var files = [shaderId + '-vs.glsl', shaderId + '-fs.glsl'];
     Misc.loadTextFiles(files, onload);
 };
 
-StateGL.mkBuffer = function(gl, positions) {
+/** @type {WebGLRenderingContext} */
+StateGL.prototype.gl;
+
+/** @param {ArrayBuffer} positions */
+StateGL.prototype.mkBuffer = function(positions) {
+    var gl = this.gl;
     gl.enableVertexAttribArray(0);
     var positionsBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, positionsBuffer);
@@ -21,7 +34,10 @@ StateGL.mkBuffer = function(gl, positions) {
     gl.vertexAttribPointer(0, 4, gl.FLOAT, false, 0, 0);
 };
 
-StateGL.mkProgram = function(gl, sources) {
+/** @param {Array<string>} sources
+ *  @return {WebGLProgram} */
+StateGL.prototype.mkProgram = function(sources) {
+    var gl = this.gl;
     var vertexShaderSource = sources[0],
         fragmentShaderSource = sources[1];
     var vertexShader = gl.createShader(gl.VERTEX_SHADER);
@@ -44,35 +60,48 @@ StateGL.mkProgram = function(gl, sources) {
     return shaderProgram;
 };
 
-StateGL.renderSurface = function(st, gl) {
-    StateGL.updateModelViewProjectionMatrices(st, gl);
+/** @param {State3D} st */
+StateGL.prototype.renderSurface = function(st) {
+    var gl = this.gl;
+    this.updateModelViewProjectionMatrices(st);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    gl.drawArrays(gl.TRIANGLES, 0, gl.size);
+    gl.drawArrays(gl.TRIANGLES, 0, this.size);
 };
 
-StateGL.updateModelMatrix = function(st, gl) {
-    StateGL.updateUniformMatrix(gl, "m", State3D.modelMatrix(st));
+/** @type {number} */
+StateGL.prototype.size = 0;
+
+/** @param {State3D} st */
+StateGL.prototype.updateModelMatrix = function(st) {
+    this.updateUniformMatrix("m", st.modelMatrix());
 };
 
-StateGL.updateModelViewProjectionMatrices = function(st, gl) {
-    StateGL.updateModelMatrix(st, gl);
-    StateGL.updateViewMatrix(st, gl);
-    StateGL.updateProjectionMatrix(st, gl);
+/** @param {State3D} st */
+StateGL.prototype.updateModelViewProjectionMatrices = function(st) {
+    this.updateModelMatrix(st);
+    this.updateViewMatrix(st);
+    this.updateProjectionMatrix(st);
 };
 
-StateGL.updateProjectionMatrix = function(st, gl) {
-    var vp = gl.getParameter(gl.VIEWPORT),
+/** @param {State3D} st */
+StateGL.prototype.updateProjectionMatrix = function(st) {
+    var gl = this.gl,
+        vp = gl.getParameter(gl.VIEWPORT),
         w = vp[2],
         h = vp[3];
-    StateGL.updateUniformMatrix(gl, "p", State3D.projectionMatrix(st, w, h));
+    this.updateUniformMatrix("p", st.projectionMatrix(w, h));
 };
 
-StateGL.updateUniformMatrix = function(gl, i, ms) {
-    var program = gl.getParameter(gl.CURRENT_PROGRAM);
+/** @param {string} i
+ *  @param {Array<number>} ms */
+StateGL.prototype.updateUniformMatrix = function(i, ms) {
+    var gl = this.gl;
+    var program = /** @type {WebGLProgram|null} */ (gl.getParameter(gl.CURRENT_PROGRAM));
     var loc = gl.getUniformLocation(program, i);
     gl.uniformMatrix4fv(loc, false, ms);
 };
 
-StateGL.updateViewMatrix = function(st, gl) {
-    StateGL.updateUniformMatrix(gl, "v", State3D.viewMatrix(st));
+/** @param {State3D} st */
+StateGL.prototype.updateViewMatrix = function(st) {
+    this.updateUniformMatrix("v", st.viewMatrix());
 };
