@@ -22,6 +22,7 @@ se_closure_args = \
 	--source_map_location_mapping "build/|" \
 	--source_map_location_mapping "|../" \
 	--output_wrapper_file SingularityExplorer.js.wrapper \
+	--summary_detail_level 3 \
 	--js_output_file $@ \
 	$(se_extra_args) \
 	--js $(se_srcs)
