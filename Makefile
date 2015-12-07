@@ -26,7 +26,7 @@ se_closure_args = \
 	--js_output_file $@ \
 	$(se_extra_args) \
 	--js $(se_srcs)
-se_dbg_args = --transpile_only --formatting PRETTY_PRINT
+se_dbg_args = --formatting PRETTY_PRINT
 
 build/SingularityExplorer.js: compiler.jar $(se_srcs)
 	mkdir -p $(@D)
@@ -40,7 +40,7 @@ compiler.jar:
 SingularityExplorer: build/SingularityExplorer.js
 
 SingularityExplorer-dbg:
-	$(RM) SingularityExplorer.js
+	$(RM) build/SingularityExplorer.js
 	$(MAKE) se_extra_args='$(se_dbg_args)' build/SingularityExplorer.js
 
 .PHONY: SingularityExplorer
