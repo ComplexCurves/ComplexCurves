@@ -14,12 +14,15 @@ function StateGL(canvas, fxaa, onload) {
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.enable(gl.DEPTH_TEST);
     this.gl = gl;
+    this.fxaa = fxaa;
+    var stategl = this;
     if (fxaa === true) {
         this.mkRenderToTextureObjects();
-        var stategl = this;
         stategl.mkFXAAProgram(function() {
             onload(stategl);
         });
+    } else {
+        onload(stategl);
     }
 }
 
@@ -86,7 +89,6 @@ StateGL.prototype.mkCachedSurfaceProgram = function(onload) {
 StateGL.prototype.mkFXAAProgram = function(onload) {
     var gl = this;
     StateGL.getShaderSources("fxaa", function(sources) {
-        gl.fxaa = true;
         gl.fxaaProgram = gl.mkProgram(sources);
         onload();
     });
@@ -157,7 +159,6 @@ StateGL.prototype.renderSurface = function(st) {
         gl.useProgram(stategl.cachedSurfaceProgram);
         stategl.updateModelViewProjectionMatrices(st);
         gl.bindBuffer(gl.ARRAY_BUFFER, stategl.positionsBuffer);
-        //gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(stategl.positions), gl.STATIC_DRAW);
         gl.vertexAttribPointer(0, 4, gl.FLOAT, false, 0, 0);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         gl.drawArrays(gl.TRIANGLES, 0, stategl.size);
