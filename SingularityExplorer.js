@@ -26,6 +26,10 @@ SingularityExplorer.registerEventHandlers = function(canvas, state3d, gl) {
     canvas.addEventListener('mouseup', function() {
         state3d.mouseUp();
     });
+    canvas.addEventListener('wheel', function(evt) {
+        state3d.mouseWheel(evt.deltaY);
+        SingularityExplorer.renderSurface(state3d, gl);
+    });
     canvas.addEventListener('touchstart', function(evt) {
         evt.preventDefault();
         var touch = evt.touches[0];

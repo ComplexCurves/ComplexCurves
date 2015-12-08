@@ -113,6 +113,14 @@ State3D.prototype.mouseUp = function() {
     this.rotating = false;
 };
 
+/** @param {number} direction */
+State3D.prototype.mouseWheel = function(direction) {
+    if (direction > 0)
+        this.zoomOut();
+    else
+        this.zoomIn();
+};
+
 /** orthographic projection matrix, in column-major order
  *  @param {number} width
  *  @param {number} height
