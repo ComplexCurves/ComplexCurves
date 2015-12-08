@@ -5,11 +5,6 @@ function StateGL(canvas, onload) {
     var gl = /** @type WebGLRenderingContext */ (canvas.getContext('webgl', {
         preserveDrawingBuffer: true
     }));
-    var oes_texture_float = gl.getExtension('OES_texture_float');
-    if (!oes_texture_float) {
-        alert('OES_texture_float not supported on your device');
-        return;
-    }
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.enable(gl.DEPTH_TEST);
     this.gl = gl;
@@ -136,7 +131,7 @@ StateGL.prototype.mkRenderToTextureObjects = function() {
     gl.bindTexture(gl.TEXTURE_2D, this.rttTexture);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 2048, 2048, 0, gl.RGBA, gl.FLOAT, null);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 2048, 2048, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, this.rttTexture, 0);
 
     gl.bindTexture(gl.TEXTURE_2D, null);
