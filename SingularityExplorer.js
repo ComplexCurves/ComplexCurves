@@ -4,7 +4,7 @@ var SingularityExplorer = {};
  *  @param {string} file */
 SingularityExplorer.fromFile = function(canvas, file) {
     var state3d = State3D.topView(false);
-    new StateGL(canvas, true, function(gl) {
+    new StateGL(canvas, function(gl) {
         gl.loadModel(file, function() {
             SingularityExplorer.renderSurface(state3d, gl);
             SingularityExplorer.registerEventHandlers(canvas, state3d, gl);

@@ -1,8 +1,7 @@
 /** @param {HTMLCanvasElement} canvas
- *  @param {boolean} fxaa
  *  @param {function(StateGL)} onload
  *  @constructor */
-function StateGL(canvas, fxaa, onload) {
+function StateGL(canvas, onload) {
     var gl = /** @type WebGLRenderingContext */ (canvas.getContext('webgl', {
         preserveDrawingBuffer: true
     }));
@@ -14,16 +13,11 @@ function StateGL(canvas, fxaa, onload) {
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.enable(gl.DEPTH_TEST);
     this.gl = gl;
-    this.fxaa = fxaa;
+    this.mkRenderToTextureObjects();
     var stategl = this;
-    if (fxaa === true) {
-        this.mkRenderToTextureObjects();
-        stategl.mkFXAAProgram(function() {
-            onload(stategl);
-        });
-    } else {
+    stategl.mkFXAAProgram(function() {
         onload(stategl);
-    }
+    });
 }
 
 /** @type {boolean} */
@@ -33,7 +27,7 @@ StateGL.prototype.cached = false;
 StateGL.prototype.cachedSurfaceProgram = null;
 
 /** @type {boolean} */
-StateGL.prototype.fxaa = false;
+StateGL.prototype.fxaa = true;
 
 /** @type {WebGLProgram} */
 StateGL.prototype.fxaaProgram = null;
