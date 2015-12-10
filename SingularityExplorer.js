@@ -17,16 +17,20 @@ SingularityExplorer.fromFile = function(canvas, file) {
  *  @param {StateGL} gl */
 SingularityExplorer.registerEventHandlers = function(canvas, state3d, gl) {
     canvas.addEventListener('mousedown', function(evt) {
+        evt.preventDefault();
         state3d.mouseDown([evt.clientX, evt.clientY]);
         SingularityExplorer.renderSurface(state3d, gl);
     });
     canvas.addEventListener('mousemove', function(evt) {
+        evt.preventDefault();
         state3d.mouseMove(evt.clientX, evt.clientY);
     });
-    canvas.addEventListener('mouseup', function() {
+    canvas.addEventListener('mouseup', function(evt) {
+        evt.preventDefault();
         state3d.mouseUp();
     });
     canvas.addEventListener('wheel', function(evt) {
+        evt.preventDefault();
         state3d.mouseWheel(evt.deltaY);
         SingularityExplorer.renderSurface(state3d, gl);
     });
