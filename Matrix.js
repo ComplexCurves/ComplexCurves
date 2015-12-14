@@ -24,20 +24,6 @@ Matrix.prototype.det = function() {
     return d;
 };
 
-/** @param {Array<T>} v
- *  @return {Matrix<T>}
- *  @template T */
-Matrix.diag = function(v) {
-    var as = [];
-    for (var i = 0; i < v.length; i++) {
-        as[i] = [];
-        for (var j = 0; j < v.length; j++)
-            as[i][j] = i === j ? v[i] : 0;
-    }
-    return new Matrix(as);
-};
-
-
 /** @param {Matrix} x
  *  @return {Matrix} */
 Matrix.mu = function(x) {
