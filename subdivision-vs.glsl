@@ -1,4 +1,8 @@
+#ifdef GL_FRAGMENT_PRECISION_HIGH
 precision highp float;
+#else
+precision mediump float;
+#endif
 attribute vec4 indexBarycentric;
 uniform float indexOffsetIn;
 uniform float indexOffsetOut;

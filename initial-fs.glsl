@@ -1,5 +1,9 @@
 #extension GL_EXT_draw_buffers : require
+#ifdef GL_FRAGMENT_PRECISION_HIGH
 precision highp float;
+#else
+precision mediump float;
+#endif
 varying vec2 vPosition;
 void main(void) {
     vec2 position = clamp (vPosition, -5.0, 5.0);

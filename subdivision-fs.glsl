@@ -1,5 +1,9 @@
 #extension GL_EXT_draw_buffers : require
+#ifdef GL_FRAGMENT_PRECISION_HIGH
 precision highp float;
+#else
+precision mediump float;
+#endif
 uniform sampler2D samplers[1 + N/2];
 varying vec3 barycentric;
 varying vec2 texCoord[3];
