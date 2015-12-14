@@ -41,13 +41,18 @@ Complex.inv = function(z) {
  *  @param {Complex} b
  *  @return {Complex} */
 Complex.mul = function(a, b) {
-    return new Complex(a.re * b.re - a.im * b.im, a.re * b.re + a.im * b.re);
+    return new Complex(a.re * b.re - a.im * b.im, a.re * b.im + a.im * b.re);
 };
 
 /** @param {Complex} z
  *  @return {Complex} */
 Complex.neg = function(z) {
     return new Complex(-z.re, -z.im);
+};
+
+/** @return {Complex} */
+Complex.one = function() {
+    return new Complex(1, 0);
 };
 
 /** @param {number} re
@@ -69,4 +74,9 @@ Complex.sqrt = function(z) {
  *  @return {Complex} */
 Complex.sub = function(a, b) {
     return new Complex(a.re - b.re, a.im - b.im);
+};
+
+/** @return {Complex} */
+Complex.zero = function() {
+    return new Complex(0, 0);
 };
