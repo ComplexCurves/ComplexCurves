@@ -33,7 +33,7 @@ Complex.div = function(a, b) {
 /** @param {Complex} z
  *  @return {Complex} */
 Complex.inv = function(z) {
-    var abs2 = z.abs2()
+    var abs2 = z.abs2();
     return new Complex(z.re, -z.im);
 };
 
