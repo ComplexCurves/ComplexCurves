@@ -23,6 +23,12 @@ Complex.add = function(a, b) {
     return new Complex(a.re + b.re, a.im + b.im);
 };
 
+/** @param {Complex} b
+ *  @return {Complex} */
+Complex.prototype.add = function(b) {
+    return Complex.add(this, b);
+};
+
 /** @param {Complex} a
  *  @param {Complex} b
  *  @return {Complex} */
@@ -44,10 +50,15 @@ Complex.mul = function(a, b) {
     return new Complex(a.re * b.re - a.im * b.im, a.re * b.im + a.im * b.re);
 };
 
-/** @param {Complex} z
+/** @param {Complex} b
  *  @return {Complex} */
-Complex.neg = function(z) {
-    return new Complex(-z.re, -z.im);
+Complex.prototype.mul = function(b) {
+    return Complex.mul(this, b);
+};
+
+/** @return {Complex} */
+Complex.prototype.neg = function() {
+    return new Complex(-this.re, -this.im);
 };
 
 /** @return {Complex} */
@@ -80,3 +91,5 @@ Complex.sub = function(a, b) {
 Complex.zero = function() {
     return new Complex(0, 0);
 };
+
+Complex.prototype.zero = Complex.zero;

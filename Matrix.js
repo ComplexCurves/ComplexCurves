@@ -20,7 +20,7 @@ Matrix.prototype.det = function() {
         a = Matrix.mul(Matrix.mu(a), this);
     var d = a.values[0][0];
     if (n % 2 === 0)
-        d = Complex.neg(d);
+        d = d.neg();
     return d;
 };
 
@@ -38,20 +38,21 @@ Matrix.diag = function(v) {
 };
 
 
-/** @param {Matrix} mu
+/** @param {Matrix} x
  *  @return {Matrix} */
 Matrix.mu = function(x) {
     var xs = x.values;
+    var zero = xs[0][0].zero();
     var ms = [];
     for (var i = 0; i < xs.length; i++) {
         ms[i] = [];
         for (var j = 0; j < xs.length; j++) {
             if (j < i) {
-                ms[i][j] = Complex.zero();
+                ms[i][j] = zero;
             } else if (j === i) {
-                var sum = Complex.zero();
+                var sum = zero;
                 for (var k = j + 1; k < xs.length; k++)
-                    sum = Complex.add(sum, Complex.neg(xs[k][k]));
+                    sum = sum.add(xs[k][k].neg());
                 ms[i][j] = sum;
             } else {
                 ms[i][j] = xs[i][j];
@@ -61,9 +62,9 @@ Matrix.mu = function(x) {
     return new Matrix(ms);
 };
 
-/** @param {Matrix<Complex>} a
- *  @param {Matrix<Complex>} b
- *  @return {Matrix<Complex>} */
+/** @param {Matrix} a
+ *  @param {Matrix} b
+ *  @return {Matrix} */
 Matrix.mul = function(a, b) {
     var as = a.values,
         bs = b.values;
@@ -71,13 +72,14 @@ Matrix.mul = function(a, b) {
         console.error('matrix dimensions must match');
     var cs = [];
     var rows = as.length,
-        cols = bs[0].length;
+        cols = bs[0].length,
+        zero = as[0][0].zero();
     for (var i = 0; i < rows; i++) {
         cs[i] = [];
         for (var j = 0; j < cols; j++) {
-            var sum = Complex.zero();
+            var sum = zero;
             for (var k = 0; k < as[0].length; k++)
-                sum = Complex.add(sum, Complex.mul(as[i][k], bs[k][j]));
+                sum = sum.add(as[i][k].mul(bs[k][j]));
             cs[i][j] = sum;
         }
     }
