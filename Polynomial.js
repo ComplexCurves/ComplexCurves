@@ -239,6 +239,53 @@ Polynomial.prototype.isUnivariate = function() {
     return this.variableList.length === 1;
 };
 
+/** approximate one root of a given Polynomial up to given tolerance
+ *  using at most a given number of Laguerre iterations
+ *  Polynomial must be given as coefficient list
+ *  @param {Array<Complex>} cs
+ *  @param {Complex} x
+ *  @param {number} maxiter
+ *  @return {Complex} */
+Polynomial.laguerre = function(cs, x, maxiter) {
+    var n = cs.length - 1;
+    var rand = [1.0, 0.3141, 0.5926, 0.5358, 0.9793, 0.2385, 0.6264, 0.3383, 0.2795, 0.0288];
+    var a, p, q, s, g, g2, h, r, d1, d2;
+    var tol = 1e-14;
+    for (var iter = 1; iter <= maxiter; iter++) {
+        s = Complex.real(0);
+        q = Complex.real(0);
+        p = cs[n];
+
+        for (var i = n - 1; i >= 0; i--) {
+            s = Complex.add(q, Complex.mul(s, x));
+            q = Complex.add(p, Complex.mul(q, x));
+            p = Complex.add(cs[i], Complex.mul(p, x));
+        }
+
+        if (p.abs() < tol)
+            return x;
+
+        g = Complex.div(q, p);
+        g2 = Complex.mul(g, g);
+        h = Complex.sub(g2, Complex.div(Complex.mul(Complex.real(2), s), p));
+        r = Complex.sqrt(Complex.mul(Complex.real(n - 1), Complex.sub(Complex.mul(Complex.real(n), h), g2)));
+        d1 = Complex.add(g, r);
+        d2 = Complex.sub(g, r);
+        if (d1.abs() < d2.abs())
+            d1 = d2;
+        if (tol < d1.abs())
+            a = Complex.div(Complex.real(n), d1);
+        else
+            a = Complex.mul(Complex.real(x.abs() + 1), new Complex(Math.cos(iter), Math.sin(iter)));
+        if (a.abs() < tol)
+            return x;
+        if (iter % 20 === 0)
+            a = Complex.mul(a, Complex.real(rand[iter / 20]));
+        x = Complex.sub(x, a);
+    }
+    return x;
+};
+
 /** leading coefficient of a Polynomial in a given variable
  *  @param {string} v
  *  @return {Polynomial} */
@@ -256,8 +303,21 @@ Polynomial.resultant = function(v, p, q) {
 
 /** @param {Array<Complex>} cs
  *  @return {Array<Complex>} */
-Polynomial.prototype.roots = function(cs) {
-    return []; // TODO
+Polynomial.roots = function(cs) {
+    var roots = [];
+    var cs_orig = cs;
+    var n = cs.length - 1;
+    for (var i = 0; i < n; i++) {
+        roots[i] = Polynomial.laguerre(cs, Complex.zero(), 200);
+        roots[i] = Polynomial.laguerre(cs_orig, roots[i], 1);
+        var fx = [];
+        fx[n - i] = cs[n - i];
+        for (var j = n - i; j > 0; j--)
+            fx[j - 1] = Complex.add(cs[j - 1], Complex.mul(fx[j], roots[i]));
+        fx.shift();
+        cs = fx;
+    }
+    return roots; // TODO sort?
 };
 
 /** @param {string} v
