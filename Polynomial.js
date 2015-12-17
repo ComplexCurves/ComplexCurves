@@ -4,12 +4,13 @@ function Monomial(monomial) {
     this.value = monomial;
 }
 
-/** @param {Monomial} a
+/** @param {Monomial} m
  *  @return {Monomial} */
-Monomial.clone = function(a) {
+Monomial.clone = function(m) {
     var monomial = {};
-    for (var key in a.value)
-        monomial[key] = a[key];
+    var ms = m.value;
+    for (var key in ms)
+        monomial[key] = ms[key];
     return new Monomial(monomial);
 };
 
@@ -76,9 +77,10 @@ Term.reduce = function(terms) {
     function reduce_(ps, qs) {
         if (qs.length === 0)
             return ps;
-        else if (qs.length === 1)
-            return ps.push(qs[0]);
-        else {
+        else if (qs.length === 1) {
+            ps.push(qs[0]);
+            return ps;
+        } else {
             var q = qs.pop();
             var c = q.coefficient;
             var m = q.monomial;
@@ -113,6 +115,12 @@ Polynomial.add = function(p, q) {
 };
 
 /** @param {Polynomial} p
+ *  @return {Polynomial} */
+Polynomial.prototype.add = function (p) {
+    return Polynomial.add(this, p);
+};
+
+/** @param {Polynomial} p
  *  @param {Polynomial} q
  *  @return {Polynomial} */
 Polynomial.mul = function(p, q) {
@@ -123,6 +131,12 @@ Polynomial.mul = function(p, q) {
         for (var j = 0; j < qs.length; j++)
             terms.push(Term.mul(ps[i], qs[j]));
     return new Polynomial(Term.reduce(terms));
+};
+
+/** @param {Polynomial} p
+ *  @return {Polynomial} */
+Polynomial.prototype.mul = function (p) {
+    return Polynomial.mul(this, p);
 };
 
 /** j-th coefficient of a Polynomial in a given variable
@@ -136,7 +150,7 @@ Polynomial.prototype.coefficient = function(v, j) {
         var term = terms[i];
         if (term.monomial.value[v] === j) {
             var m = Monomial.clone(term.monomial);
-            m.value[v] = 0; // FIXME should be undefined?
+            delete m.value[v];
             ps.push(new Term(term.coefficient, m));
         }
     }
@@ -209,9 +223,10 @@ Polynomial.prototype.diff = function(v) {
         var m = terms[i].monomial;
         var e = m.value[v] || 0;
         if (e > 0) {
+            var c = Complex.mul(terms[i].coefficient, Complex.real(e));
             m = Monomial.clone(m);
             m.value[v] = e - 1;
-            ps.push(Complex.mul(terms[i].coefficient, Complex.real(e)), m);
+            ps.push(new Term(c, m));
         }
     }
     return new Polynomial(ps);
@@ -293,6 +308,15 @@ Polynomial.prototype.leading = function(v) {
     return this.coefficient(v, this.degree(v));
 };
 
+/** @return {Polynomial} */
+Polynomial.prototype.neg = function() {
+    var terms = this.terms;
+    var ts = [];
+    for (var i = 0; i < terms.length; i++)
+        ts.push(Term.neg(terms[i]));
+    return new Polynomial(ts);
+};
+
 /** @param {string} v
  *  @param {Polynomial} p
  *  @param {Polynomial} q
@@ -369,3 +393,6 @@ Polynomial.prototype.variableList = function() {
 Polynomial.zero = function() {
     return new Polynomial([]);
 };
+
+/** @return {Polynomial} */
+Polynomial.prototype.zero = Polynomial.zero;

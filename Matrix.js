@@ -5,7 +5,8 @@ function Matrix(m) {
     this.values = m;
 }
 
-/** Richard S. Bird, A simple division-free algorithm for computing determinants
+/** Richard S. Bird
+ *  A simple division-free algorithm for computing determinants
  *  @return {T} */
 Matrix.prototype.det = function() {
     var as = this.values;
@@ -15,7 +16,7 @@ Matrix.prototype.det = function() {
     for (var i = 0; i < n; i++)
         if (as[i].length !== n)
             console.error('matrix must be square');
-    var a = new Matrix(as);
+    var a = this;
     for (var j = 1; j < n; j++)
         a = Matrix.mul(Matrix.mu(a), this);
     var d = a.values[0][0];
