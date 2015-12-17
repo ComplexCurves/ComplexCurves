@@ -33,7 +33,10 @@ Complex.prototype.add = function(b) {
  *  @param {Complex} b
  *  @return {Complex} */
 Complex.div = function(a, b) {
-    return new Complex(a.re * b.re + a.im * b.im, a.im * b.re - a.re * b.im);
+    var abs2 = b.abs2();
+    var re = a.re * b.re + a.im * b.im;
+    var im = a.im * b.re - a.re * b.im;
+    return new Complex(re / abs2, im / abs2);
 };
 
 /** @param {Complex} z

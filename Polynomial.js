@@ -19,10 +19,10 @@ Monomial.clone = function(m) {
  *  @return {boolean} */
 Monomial.is = function(a, b) {
     for (var key in a.value)
-        if (!b.value.hasOwnProperty(key) || a[key] != b[key])
+        if (!b.value.hasOwnProperty(key) || a.value[key] !== b.value[key])
             return false;
     for (key in b.value)
-        if (!a.value.hasOwnProperty(key) || a[key] != b[key])
+        if (!a.value.hasOwnProperty(key) || a.value[key] !== b.value[key])
             return false;
     return true;
 };
@@ -164,8 +164,8 @@ Polynomial.prototype.coefficient = function(v, j) {
 Polynomial.prototype.coefficientList = function(v) {
     var n = this.degree(v);
     var cs = [];
-    for (var i = n; i >= 0; i--)
-        cs[n - i] = this.coefficient(v, i);
+    for (var i = 0; i <= n; i++)
+        cs[i] = this.coefficient(v, n - i);
     return cs;
 };
 
@@ -190,17 +190,23 @@ Polynomial.prototype.constant = function() {
     for (var i = 0; i < terms.length; i++) {
         var term = terms[i];
         var m = term.monomial.value;
-        var constant = true;
-        for (var key in m) {
-            if (m[key] !== 0) {
-                constant = false;
-                break;
-            }
-        }
-        if (constant)
+        if (m === null || Object.keys(m).length === 0)
             c = Complex.add(c, term.coefficient);
     }
     return c;
+};
+
+/** deflate a Polynomial coefficient list by a monomial x - x0
+ *  using Horner's method
+ *  @param {Array<Complex>} cs
+ *  @param {Complex} x0
+ *  @return {Array<Complex>} */
+Polynomial.deflate = function(cs, x0) {
+            // deflate (p:ps) x0 = init $ scanl (\y c -> c + x0 * y) p ps
+    var fx = [cs[0]];
+    for (var i = 1; i < cs.length - 1; i++)
+        fx[i] = Complex.add(cs[i], Complex.mul(fx[i - 1], x0));
+    return fx;
 };
 
 /** determine the degree of a Polynomial in a given variable
@@ -267,11 +273,11 @@ Polynomial.laguerre = function(cs, x, maxiter) {
     var a, p, q, s, g, g2, h, r, d1, d2;
     var tol = 1e-14;
     for (var iter = 1; iter <= maxiter; iter++) {
-        s = Complex.real(0);
-        q = Complex.real(0);
-        p = cs[n];
+        s = Complex.zero();
+        q = Complex.zero();
+        p = cs[0];
 
-        for (var i = n - 1; i >= 0; i--) {
+        for (var i = 1; i <= n; i++) {
             s = Complex.add(q, Complex.mul(s, x));
             q = Complex.add(p, Complex.mul(q, x));
             p = Complex.add(cs[i], Complex.mul(p, x));
@@ -317,6 +323,20 @@ Polynomial.prototype.neg = function() {
     return new Polynomial(ts);
 };
 
+/** @param {Array<Complex>} cs
+ *  @return {Array<Complex>} */
+Polynomial.quadratic_roots = function(cs) {
+    var a = cs[0], b = cs[1], c = cs[2];
+    if (c.re === 0 && c.im === 0)
+        return [Complex.zero(), Complex.div(b, a).neg()];
+    var r = Complex.sqrt(Complex.sub(Complex.mul(b, b),
+        Complex.mul(Complex.real(4), Complex.mul(a, c))));
+    if (b.re >= 0)
+        r = r.neg();
+    return [Complex.div(Complex.sub(r, b), Complex.mul(Complex.real(2), a)),
+        Complex.div(Complex.mul(Complex.real(2), c), Complex.sub(r, b))];
+};
+
 /** @param {string} v
  *  @param {Polynomial} p
  *  @param {Polynomial} q
@@ -331,15 +351,19 @@ Polynomial.roots = function(cs) {
     var roots = [];
     var cs_orig = cs;
     var n = cs.length - 1;
-    for (var i = 0; i < n; i++) {
-        roots[i] = Polynomial.laguerre(cs, Complex.zero(), 200);
-        roots[i] = Polynomial.laguerre(cs_orig, roots[i], 1);
-        var fx = [];
-        fx[n - i] = cs[n - i];
-        for (var j = n - i; j > 0; j--)
-            fx[j - 1] = Complex.add(cs[j - 1], Complex.mul(fx[j], roots[i]));
-        fx.shift();
-        cs = fx;
+    if (n === 1)
+        roots[0] = Complex.div(cs[0], cs[1]).neg();
+    else if (n === 2)
+        roots = Polynomial.quadratic_roots(cs);
+    else if (n > 2) {
+        for (var i = 0; i < n - 2; i++) {
+            roots[i] = Polynomial.laguerre(cs, Complex.zero(), 200);
+            roots[i] = Polynomial.laguerre(cs_orig, roots[i], 1);
+            cs = Polynomial.deflate(cs, roots[i]);
+        }
+        var qroots = Polynomial.quadratic_roots(cs);
+        roots[n-2] = qroots[0];
+        roots[n-1] = qroots[1];
     }
     return roots; // TODO sort?
 };
