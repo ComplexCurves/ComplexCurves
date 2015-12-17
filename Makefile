@@ -1,9 +1,12 @@
 all: SingularityExplorer
 
+beautify:
+	js-beautify -r -f *.js
+
 clean:
 	$(RM) -r build
 
-.PHONY: all clean
+.PHONY: all beautify clean
 
 se_mods = Complex Matrix Misc Polynomial Quaternion State3D StateGL \
 	SingularityExplorer

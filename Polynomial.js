@@ -116,7 +116,7 @@ Polynomial.add = function(p, q) {
 
 /** @param {Polynomial} p
  *  @return {Polynomial} */
-Polynomial.prototype.add = function (p) {
+Polynomial.prototype.add = function(p) {
     return Polynomial.add(this, p);
 };
 
@@ -135,7 +135,7 @@ Polynomial.mul = function(p, q) {
 
 /** @param {Polynomial} p
  *  @return {Polynomial} */
-Polynomial.prototype.mul = function (p) {
+Polynomial.prototype.mul = function(p) {
     return Polynomial.mul(this, p);
 };
 
@@ -202,7 +202,7 @@ Polynomial.prototype.constant = function() {
  *  @param {Complex} x0
  *  @return {Array<Complex>} */
 Polynomial.deflate = function(cs, x0) {
-            // deflate (p:ps) x0 = init $ scanl (\y c -> c + x0 * y) p ps
+    // deflate (p:ps) x0 = init $ scanl (\y c -> c + x0 * y) p ps
     var fx = [cs[0]];
     for (var i = 1; i < cs.length - 1; i++)
         fx[i] = Complex.add(cs[i], Complex.mul(fx[i - 1], x0));
@@ -326,7 +326,9 @@ Polynomial.prototype.neg = function() {
 /** @param {Array<Complex>} cs
  *  @return {Array<Complex>} */
 Polynomial.quadratic_roots = function(cs) {
-    var a = cs[0], b = cs[1], c = cs[2];
+    var a = cs[0],
+        b = cs[1],
+        c = cs[2];
     if (c.re === 0 && c.im === 0)
         return [Complex.zero(), Complex.div(b, a).neg()];
     var r = Complex.sqrt(Complex.sub(Complex.mul(b, b),
@@ -334,7 +336,8 @@ Polynomial.quadratic_roots = function(cs) {
     if (b.re >= 0)
         r = r.neg();
     return [Complex.div(Complex.sub(r, b), Complex.mul(Complex.real(2), a)),
-        Complex.div(Complex.mul(Complex.real(2), c), Complex.sub(r, b))];
+        Complex.div(Complex.mul(Complex.real(2), c), Complex.sub(r, b))
+    ];
 };
 
 /** @param {string} v
@@ -362,8 +365,8 @@ Polynomial.roots = function(cs) {
             cs = Polynomial.deflate(cs, roots[i]);
         }
         var qroots = Polynomial.quadratic_roots(cs);
-        roots[n-2] = qroots[0];
-        roots[n-1] = qroots[1];
+        roots[n - 2] = qroots[0];
+        roots[n - 1] = qroots[1];
     }
     return roots; // TODO sort?
 };
