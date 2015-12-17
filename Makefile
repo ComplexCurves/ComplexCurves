@@ -8,7 +8,7 @@ clean:
 
 .PHONY: all beautify clean
 
-se_mods = Complex Matrix Misc Polynomial Quaternion State3D StateGL \
+se_mods = Complex GLSL Matrix Misc Polynomial Quaternion State3D StateGL \
 	SingularityExplorer
 se_srcs = $(se_mods:%=%.js)
 
