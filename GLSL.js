@@ -3,15 +3,23 @@ var GLSL = {};
 /** @param {Polynomial} p
  *  @return {Array<string>} */
 GLSL.glslCoefficients = function(p) {
-    /*
-    glslCoefficients :: GLSLNumber a => Polynomial a -> [String]
-    glslCoefficients p
-      | isConstant p = [glslComplex (constant p)]
-      | isUnivariate p = map glslComplex (coefficientList' p)
-      | isBivariate p = let [vx,vy] = variableList p in
-          map (glslHorner vx . glslCoefficients) (coefficientList vy p)
-      | otherwise = error "not implemented yet"
-    */
+    var cs = [],
+        cs_, i;
+    if (p.isConstant())
+        return [GLSL.glslComplex(p.constant())];
+    else if (p.isUnivariate()) {
+        cs_ = p.coefficientList_();
+        for (i = 0; i < cs_.length; i++)
+            cs[i] = GLSL.glslComplex(cs_[i]);
+    } else if (p.isBivariate()) {
+        var vars = p.variableList();
+        var vx = vars[0],
+            vy = vars[1];
+        cs_ = p.coefficientList(vy);
+        for (i = 0; i < cs_.length; i++)
+            cs[i] = GLSL.glslHorner(vx, GLSL.glslCoefficients(cs_[i]));
+    }
+    return cs;
 };
 
 /** @param {Complex} z
@@ -25,22 +33,19 @@ GLSL.glslComplex = function(z) {
  *  @param {string} vy
  *  @return {string} */
 GLSL.glslF = function(p, vx, vy) {
-    /*
-    glslF :: GLSLNumber a => Polynomial a -> Char -> Char -> String
-    glslF p vx _ = unlines $
-      [ ""
-      , "void f (in vec2 " ++ vx : ", out vec2 cs[N+1])"
-      , "{"
-      ]
-      ++ 
-      zipWith (\i c -> "cs[" ++ show (i :: Int) ++ "] = " ++ c ++ ";") [0..8] cs'
-      ++
-      [ "}"
-      ]
-      where
-        cs' = pad $ reverse $ glslCoefficients p
-        pad cs = cs ++ replicate (8 - length cs + 1) (glslComplex (0 :: Int))
-    */
+    function pad(cs) {
+        var n = GLSL.N - cs.length + 1;
+        var zero = GLSL.glslComplex(Complex.zero());
+        for (var i = 0; i < n; i++)
+            cs.push(zero);
+        return cs;
+    }
+    var cs = pad(GLSL.glslCoefficients(p).reverse());
+    var lines = ["void f (in vec2 " + vx + ", out vec2 cs[N+1])", "{"];
+    for (var i = 0; i < GLSL.N; i++)
+        lines.push("cs[" + i + "] = " + cs[i] + ";");
+    lines.push("}");
+    return lines.join("\n");
 };
 
 /** @param {Polynomial} p
@@ -48,19 +53,14 @@ GLSL.glslF = function(p, vx, vy) {
  *  @param {string} vy
  *  @return {string} */
 GLSL.glslFx = function(p, vx, vy) {
-    /*
-    glslFx :: GLSLNumber a => Polynomial a -> Char -> Char -> String
-    glslFx p vx vy = unlines
-      [ ""
-      , "vec2 fx (in vec2 " ++ vx : ", in vec2 " ++ vy : ")"
-      , "{"
-      , "    return " ++ glslHorner vy cs ++ ";"
-      , "}"
-      ]
-      where
-        cs = map (glslHorner vx . glslCoefficients) (coefficientList vy dfdx)
-        dfdx = diff vx p
-    */
+    var cs = p.diff(vx).coefficientList(vy);
+    var cs_ = [];
+    for (var i = 0; i < cs.length; i++)
+        cs_[i] = GLSL.glslHorner(vx, GLSL.glslCoefficients(cs[i]));
+    var lines = ["vec2 fx (in vec2 " + vx + ", in vec2 " + vy + ")", "{",
+        "    return " + GLSL.glslHorner(vy, cs_) + ";", "}"
+    ];
+    return lines.join("\n");
 };
 
 /** @param {Polynomial} p
@@ -68,60 +68,43 @@ GLSL.glslFx = function(p, vx, vy) {
  *  @param {string} vy
  *  @return {string} */
 GLSL.glslFy = function(p, vx, vy) {
-    /*
-    glslFy :: GLSLNumber a => Polynomial a -> Char -> Char -> String
-    glslFy p vx vy = unlines
-      [ ""
-      , "vec2 fy (in vec2 " ++ vx : ", in vec2 " ++ vy : ")"
-      , "{"
-      , "    return " ++ glslHorner vx cs ++ ";"
-      , "}"
-      ]
-      where
-        cs = map (glslHorner vy . glslCoefficients) (coefficientList vx dfdy)
-        dfdy = diff vy p
-    */
+    var cs = p.diff(vy).coefficientList(vx);
+    var cs_ = [];
+    for (var i = 0; i < cs.length; i++)
+        cs_[i] = GLSL.glslHorner(vy, GLSL.glslCoefficients(cs[i]));
+    var lines = ["vec2 fy (in vec2 " + vx + ", in vec2 " + vy + ")", "{",
+        "    return " + GLSL.glslHorner(vx, cs_) + ";", "}"
+    ];
+    return lines.join("\n");
 };
 
 /** @param {Polynomial} p
- *  @param {string} vx
  *  @param {string} vy
  *  @return {string} */
 GLSL.glslHeader = function(p, vx, vy) {
-    /*
-    glslHeader :: Polynomial a -> Char -> Char -> String
-    glslHeader p _ vy = unlines 
-    #ifdef __HASTE__
-      [ "precision highp float;"
-    #else
-      [ "#version 330 core"
-    #endif
-      , "const int N = 8;"
-      , "const int sheets = " ++ show (degree vy p) ++ ";"
-      , ""
-      , "/* complex multiplication */
-    /*" // FIXME comment!
-      , "vec2 cm (in vec2 a, in vec2 b)"
-      , "{"
-      , "    return vec2 (a.x * b.x - a.y * b.y, a.x * b.y + a.y * b.x);"
-      , "}"
-      ]
-    */
+    var lines = ["precision highp float;", "const int N = " + GLSL.N + ";",
+        "const int sheets = " + p.degree(vy) + ";", "",
+        "/* complex multiplication */", "vec2 cm (in vec2 a, in vec2 b)", "{",
+        "    return vec2 (a.x * b.x - a.y * b.y, a.x * b.y + a.y * b.x);", "}"
+    ];
+    return lines.join("\n");
 };
 
 /** @param {string} v
- *  @param {Array<string>} cs */
+ *  @param {Array<string>} cs
+ *  @return {string} */
 GLSL.glslHorner = function(v, cs) {
-    /*
-    glslHorner :: Char -> [String] -> String
-    glslHorner v = foldl1 glslHorner' where
-      glslHorner' y c = cm ++ c' where
-        c' = if c == "vec2(0.0,0.0)" then "" else '+' : c
-        cm = case y of
-          "vec2(1.0,0.0)" -> [v]
-          "vec2(-1.0,0.0)" -> '-' : [v]
-          _ -> "cm(" ++ v : ',' : y ++ ")"
-    */
+    var str = cs[0];
+    if (str === "vec2(1.0,0.0)")
+        str = v;
+    else if (str === "vec2(-1.0,0.0)")
+        str = "-" + v;
+    for (var i = 1; i < cs.length; i++) {
+        str = "cm(" + v + "," + str + ")";
+        if (cs[i] !== "vec2(0.0,0.0)")
+            str += "+" + cs[i];
+    }
+    return str;
 };
 
 /** @param {Polynomial} p
@@ -129,39 +112,38 @@ GLSL.glslHorner = function(v, cs) {
  *  @param {string} vy
  *  @return {string} */
 GLSL.glslM = function(p, vx, vy) {
-    /*
-    glslM :: (GLSLNumber a) => Polynomial a -> Char -> Char -> String
-    glslM p vx vy = unlines $
-      [ ""
-      , "float M (in vec2 " ++ vx : ", in float rho)"
-      , "{"
-      , "    float a[" ++ show (length cs) ++ "];"
-      , "    a[0] = length (" ++ glslComplex (constant a0a0) ++ ");"
-      ]
-      ++
-      map (\c -> "    a[0] *= distance (" ++ vx : ", " ++ glslComplex c ++
-        ") - rho;") leadRoots
-      ++
-      [ "    vec2 r = vec2 (length (" ++ vx : ") + rho, 0.0);"
-      ]
-      ++
-      zipWith (\k q -> "    a[" ++ show k ++ "] = length (" ++
-        (glslHorner 'r' . glslCoefficients) q ++ ");") [(1 :: Int)..] (tail cs)
-      ++ -- FIXME: 'r' must not conflict with variables of polynomial p
-      [ "    float m = a[1] / a[0];"
-      , "    for (int j = 2; j < " ++ show (length cs) ++ "; j++) {"
-      , "        m = max (m, pow (a[j] / a[0], 1.0 / float (j)));"
-      , "    }"
-      , "    return 2.0 * m;"
-      , "}"
-      ]
-      where
-        a0a0 = leading vx (head cs)
-        an = leading vy p'
-        cs = map (fmap abs) (coefficientList vy p)
-        leadRoots = roots (coefficientList' an)
-        p' = fmap complexify p
-    */
+    var i, j;
+    var cs = p.coefficientList(vy);
+    for (i = 0; i < cs.length; i++) {
+        var terms = cs[i].terms;
+        for (j = 0; j < terms.length; j++) {
+            var term = terms[j];
+            terms[j] = new Term(Complex.real(term.coefficient.abs()),
+                term.monomial);
+        }
+        cs[i] = new Polynomial(terms);
+    }
+    var a0a0 = cs[0].leading(vx);
+    var an = p.leading(vx);
+    var leadRoots = Polynomial.roots(an.coefficientList_());
+    var lines = ["float M (in vec2 " + vx + ", in float rho)", "{",
+        "    vec2 r = vec2 (length (" + vx + ") + rho, 0.0);",
+        "    float a[" + cs.length + "];",
+        "    a[0] = length (" + GLSL.glslComplex(a0a0.constant()) + ");"
+    ];
+    for (i = 0; i < leadRoots.length; i++)
+        lines.push("    a[0] *= distance (" + vx + ", " +
+            GLSL.glslComplex(leadRoots[i]) + ") - rho;");
+    for (i = 1; i < cs.length; i++)
+    // FIXME: 'r' must not conflict with variables of polynomial p
+        lines.push("    a[" + i + "] = length (" + GLSL.glslHorner('r',
+        GLSL.glslCoefficients(cs[i])) + ");");
+    lines = lines.concat(["    float m = a[1] / a[0];",
+        "    for (int j = 2; j < " + cs.length + "; j++) {",
+        "        m = max (m, pow (a[j] / a[0], 1.0 / float (j)));", "    }",
+        "    return 2.0 * m;", "}"
+    ]);
+    return lines.join("\n");
 };
 
 /** @param {Polynomial} p
@@ -169,41 +151,42 @@ GLSL.glslM = function(p, vx, vy) {
  *  @param {string} vy
  *  @return {string} */
 GLSL.glslRho = function(p, vx, vy) {
-    /*
-    glslRho :: GLSLNumber a => Polynomial a -> Char -> Char -> String
-    glslRho p vx vy = unlines $
-      [ ""
-      , "float rho (in vec2 " ++ vx : ") {"
-      , "    float d = 100.0;"
-      ]
-      ++
-      map (\c -> "    d = min (d, distance (" ++ vx : ", " ++ glslComplex c ++
-        "));") critical
-      ++
-      [ "    return 0.999 * d;"
-      , "}"
-      ]
-      where
-        p' = fmap complexify p
-        an = leading vy p'
-        disc = discriminant vy p'
-        leadRoots = roots (coefficientList' an)
-        critical = filter (not . isInfinite . magnitude)
-          (leadRoots ++ roots (coefficientList' disc))
-    */
+    var an = p.leading(vy),
+        disc = p.discriminant(vy),
+        leadRoots = Polynomial.roots(an.coefficientList_()),
+        discRoots = Polynomial.roots(disc.coefficientList_()),
+        i, critical = [];
+    for (i = 0; i < leadRoots.length; i++)
+        if (isFinite(leadRoots[i].abs()))
+            critical.push(leadRoots[i]);
+    for (i = 0; i < discRoots.length; i++)
+        if (isFinite(discRoots[i].abs()))
+            critical.push(discRoots[i]);
+    var lines = ["float rho (in vec2 " + vx + ") {",
+        "    float d = 100.0;"
+    ];
+    for (i = 0; i < critical.length; i++)
+        lines.push("    d = min (d, distance (" + vx + ", " +
+            GLSL.glslComplex(critical[i]) + "));");
+    lines = lines.concat(["    return 0.999 * d;", "}"]);
+    return lines.join("\n");
 };
+
+GLSL.N = 8;
 
 /** @param {Polynomial} p
  *  @return {string} */
 GLSL.polynomialShaderSource = function(p) {
-    /*
-    polynomialShaderSource :: GLSLNumber a => Polynomial a -> String
-    {-# SPECIALIZE polynomialShaderSource :: Polynomial Int -> String #-}
-    polynomialShaderSource p = sources where
-      sources = concatMap (\f -> f p vx vy) [glslHeader, glslF, glslFx, glslFy,
-        glslRho, glslM]
-      vx = if length vars < 2 then 'x' else head vars
-      vy = if null vars then 'y' else last vars
-      vars = variableList p
-    */
+    var vars = p.variableList();
+    var vx = vars.length < 2 ? "x" : vars[0];
+    var vy = vars.length === 0 ? "y" : vars[vars.length - 1];
+    var sources = [
+        GLSL.glslHeader(p, vx, vy),
+        GLSL.glslF(p, vx, vy),
+        GLSL.glslFx(p, vx, vy),
+        GLSL.glslFy(p, vx, vy),
+        GLSL.glslRho(p, vx, vy),
+        GLSL.glslM(p, vx, vy)
+    ];
+    return sources.join("\n\n");
 };
