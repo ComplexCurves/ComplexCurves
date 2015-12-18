@@ -82,7 +82,9 @@ GLSL.glslFy = function(p, vx, vy) {
  *  @param {string} vy
  *  @return {string} */
 GLSL.glslHeader = function(p, vx, vy) {
-    var lines = ["precision highp float;", "const int N = " + GLSL.N + ";",
+    var lines = ["#ifdef GL_FRAGMENT_PRECISION_HIGH", "precision highp float;",
+        "#else", "precision mediump float;", "#endif",
+        "const int N = " + GLSL.N + ";",
         "const int sheets = " + p.degree(vy) + ";", "",
         "/* complex multiplication */", "vec2 cm (in vec2 a, in vec2 b)", "{",
         "    return vec2 (a.x * b.x - a.y * b.y, a.x * b.y + a.y * b.x);", "}"
