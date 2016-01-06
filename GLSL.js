@@ -25,7 +25,7 @@ GLSL.glslCoefficients = function(p) {
 /** @param {Complex} z
  *  @return {string} */
 GLSL.glslComplex = function(z) {
-    return "vec2 (" + z.re + "," + z.im + ")";
+    return "vec2 (" + z.re.toPrecision(8) + ", " + z.im.toPrecision(8) + ")";
 };
 
 /** @param {Polynomial} p
@@ -42,7 +42,7 @@ GLSL.glslF = function(p, vx, vy) {
     }
     var cs = pad(GLSL.glslCoefficients(p).reverse());
     var lines = ["void f (in vec2 " + vx + ", out vec2 cs[N+1])", "{"];
-    for (var i = 0; i < GLSL.N; i++)
+    for (var i = 0; i <= GLSL.N; i++)
         lines.push("cs[" + i + "] = " + cs[i] + ";");
     lines.push("}");
     return lines.join("\n");
@@ -97,13 +97,14 @@ GLSL.glslHeader = function(p, vx, vy) {
  *  @return {string} */
 GLSL.glslHorner = function(v, cs) {
     var str = cs[0];
-    if (str === "vec2(1.0,0.0)")
-        str = v;
-    else if (str === "vec2(-1.0,0.0)")
-        str = "-" + v;
     for (var i = 1; i < cs.length; i++) {
-        str = "cm(" + v + "," + str + ")";
-        if (cs[i] !== "vec2(0.0,0.0)")
+        if (str === "vec2 (1.0000000, 0.0000000)")
+            str = v;
+        else if (str === "vec2 (-1.0000000, 0.0000000)")
+            str = "-" + v;
+        else
+            str = "cm (" + v + "," + str + ")";
+        if (cs[i] !== "vec2 (0.0000000, 0.0000000)")
             str += "+" + cs[i];
     }
     return str;
@@ -167,9 +168,14 @@ GLSL.glslRho = function(p, vx, vy) {
     var lines = ["float rho (in vec2 " + vx + ") {",
         "    float d = 100.0;"
     ];
+    var lines2 = [];
     for (i = 0; i < critical.length; i++)
-        lines.push("    d = min (d, distance (" + vx + ", " +
+        lines2.push("    d = min (d, distance (" + vx + ", " +
             GLSL.glslComplex(critical[i]) + "));");
+    lines2 = lines2.sort();
+    while (lines2[lines2.length - 1] == lines2[lines2.length - 2])
+        lines2.pop();
+    lines = lines.concat(lines2);
     lines = lines.concat(["    return 0.999 * d;", "}"]);
     return lines.join("\n");
 };

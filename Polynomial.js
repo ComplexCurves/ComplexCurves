@@ -148,7 +148,7 @@ Polynomial.prototype.coefficient = function(v, j) {
     var ps = [];
     for (var i = 0; i < terms.length; i++) {
         var term = terms[i];
-        if (term.monomial.value[v] === j) {
+        if ((term.monomial.value[v] || 0) === j) {
             var m = Monomial.clone(term.monomial);
             delete m.value[v];
             ps.push(new Term(term.coefficient, m));
@@ -170,7 +170,7 @@ Polynomial.prototype.coefficientList = function(v) {
 };
 
 Polynomial.prototype.coefficientList_ = function() {
-    var vars = this.variableList;
+    var vars = this.variableList();
     var l = vars.length;
     if (l > 1)
         console.error("Polynomial is not univariate");
@@ -247,17 +247,17 @@ Polynomial.prototype.discriminant = function(v) {
 
 /** @return {boolean} */
 Polynomial.prototype.isBivariate = function() {
-    return this.variableList.length === 2;
+    return this.variableList().length === 2;
 };
 
 /** @return {boolean} */
 Polynomial.prototype.isConstant = function() {
-    return this.variableList.length === 0 && this.terms.length !== 0;
+    return this.variableList().length === 0 && this.terms.length !== 0;
 };
 
 /** @return {boolean} */
 Polynomial.prototype.isUnivariate = function() {
-    return this.variableList.length === 1;
+    return this.variableList().length === 1;
 };
 
 /** approximate one root of a given Polynomial up to given tolerance
