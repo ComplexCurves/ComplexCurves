@@ -6,7 +6,7 @@ function Task(name, dependencies, action) {
     this.name = name;
     this.dependencies = dependencies;
     this.action = action;
-};
+}
 
 /** @param {Array<Task>} tasks
  *  @constructor */
@@ -18,13 +18,13 @@ Schedule.prototype.completed = {};
 
 /** @param {Task} task
  * @return {boolean} */
-Schedule.prototype.isTaskCompleted = function (task) {
+Schedule.prototype.isTaskCompleted = function(task) {
     return this.completed[task.name] === true ? true : false;
 };
 
 /** @param {Task} task
  * @return {boolean} */
-Schedule.prototype.isTaskRunnable = function (task) {
+Schedule.prototype.isTaskRunnable = function(task) {
     if (this.running[task.name] === true)
         return false;
     var deps = task.dependencies;
@@ -36,7 +36,7 @@ Schedule.prototype.isTaskRunnable = function (task) {
 
 Schedule.prototype.running = {};
 
-Schedule.prototype.run = function () {
+Schedule.prototype.run = function() {
     var tasks = this.tasks;
     for (var i = 0; i < tasks.length; i++) {
         var task = tasks[i];
@@ -46,10 +46,10 @@ Schedule.prototype.run = function () {
 };
 
 /** @param {Task} task */
-Schedule.prototype.runTask = function (task) {
+Schedule.prototype.runTask = function(task) {
     this.running[task.name] = true;
     var schedule = this;
-    task.action (function () {
+    task.action(function() {
         schedule.completed[task.name] = true;
         schedule.running[task.name] = false;
         schedule.run();
