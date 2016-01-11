@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <title>Singularity Explorer</title>
-<script type="text/javascript" src="build/SingularityExplorer.js"></script>
+<script type="text/javascript" src="../build/SingularityExplorer.js"></script>
 <script type="text/javascript">
 document.addEventListener ("DOMContentLoaded", function () {
     var canvas = document.createElement('canvas');
@@ -13,7 +13,7 @@ document.addEventListener ("DOMContentLoaded", function () {
     canvas.style.height = "400px";
     document.body.appendChild(canvas);
     SingularityExplorer.fromFile(canvas,
-        'http://complexcurves.org/models/Cissoid.bin');
+        'http://complexcurves.org/models/PearShapedQuartic.bin');
 }, false);
 </script>
 </head>

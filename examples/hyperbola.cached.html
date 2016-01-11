@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>Singularity Explorer</title>
+<script type="text/javascript" src="../build/SingularityExplorer.js"></script>
+<script type="text/javascript">
+document.addEventListener ("DOMContentLoaded", function () {
+    var canvas = document.createElement('canvas');
+    canvas.width = 800;
+    canvas.height = 800;
+    canvas.style.width = "400px";
+    canvas.style.height = "400px";
+    document.body.appendChild(canvas);
+    SingularityExplorer.fromFile(canvas,
+        'http://complexcurves.org/models/Hyperbola.bin');
+}, false);
+</script>
+</head>
+<body>
+</body>
+</html>
