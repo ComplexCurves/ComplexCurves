@@ -197,7 +197,7 @@ StateGL.prototype.toggleTransparency = function () {
 StateGL.prototype.updateClipping = function () {
     var gl = this.gl;
     var loc = gl.getUniformLocation(this.cachedSurfaceProgram, "clipping");
-    gl.uniform1f(loc, this.clipping);
+    gl.uniform1f(loc, this.clipping ? 1 : 0);
 };
 
 /** @param {State3D} st */
