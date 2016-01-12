@@ -50,40 +50,40 @@ SingularityExplorer.registerEventHandlers = function(canvas, state3d, gl) {
         state3d.mouseUp();
     });
     window.addEventListener('keydown', function (evt) {
-        SingularityExplorer.keyDown(evt.key, state3d, gl);
+        SingularityExplorer.keyDown(evt.keyCode, state3d, gl);
     });
 };
 
-/** @param {string} key
+/** @param {number} keyCode
  *  @param {State3D} state3d
  *  @param {StateGL} gl */
-SingularityExplorer.keyDown = function (key, state3d, gl) {
-    switch (key) {
-        case 'a':
+SingularityExplorer.keyDown = function (keyCode, state3d, gl) {
+    switch (keyCode) {
+        case 65: // 'a'
             gl.toggleAntialiasing();
             break;
-        case 'c':
+        case 67: // 'c'
             gl.toggleClipping();
             break;
-        case 'o':
+        case 79: // 'o'
             state3d.toggleOrtho();
             break;
-        case 't':
+        case 84: // 't'
             gl.toggleTransparency();
             break;
-        case '1':
+        case 49: // '1'
             state3d.target1 = Quaternion.fromLatLong(Math.PI / 2, 0);
             break;
-        case '3':
+        case 51: // '3'
             state3d.target1 = Quaternion.fromLatLong(Math.PI / 2, Math.PI / 2);
             break;
-        case '5':
+        case 53: // '5'
             state3d.toggleOrtho();
             break;
-        case '7':
+        case 55: // '7'
             state3d.target1 = Quaternion.fromLatLong(0, 0);
             break;
-        case '0':
+        case 48: // '0'
             state3d.target1 = Quaternion.fromLatLong(75 / 180 * Math.PI,
                 30 / 180 * Math.PI);
             break;
