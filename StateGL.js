@@ -175,22 +175,22 @@ StateGL.prototype.rttTexture = null;
 /** @type {number} */
 StateGL.prototype.size = 0;
 
-StateGL.prototype.toggleAntialiasing = function () {
+StateGL.prototype.toggleAntialiasing = function() {
     this.fxaa = !this.fxaa;
 };
 
-StateGL.prototype.toggleClipping = function () {
+StateGL.prototype.toggleClipping = function() {
     this.clipping = !this.clipping;
 };
 
-StateGL.prototype.toggleTransparency = function () {
+StateGL.prototype.toggleTransparency = function() {
     this.transparency = !this.transparency;
 };
 
 /** @type {boolean} */
 StateGL.prototype.transparency = false;
 
-StateGL.prototype.updateClipping = function () {
+StateGL.prototype.updateClipping = function() {
     var gl = this.gl;
     var loc = gl.getUniformLocation(this.cachedSurfaceProgram, "clipping");
     gl.uniform1f(loc, this.clipping ? 1 : 0);
@@ -218,7 +218,7 @@ StateGL.prototype.updateProjectionMatrix = function(st) {
 };
 
 /** @param {boolean=} transparency */
-StateGL.prototype.updateTransparency = function (transparency) {
+StateGL.prototype.updateTransparency = function(transparency) {
     var gl = this.gl;
     if (this.transparency && transparency !== false) {
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE);

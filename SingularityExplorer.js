@@ -49,7 +49,7 @@ SingularityExplorer.registerEventHandlers = function(canvas, state3d, gl) {
         evt.preventDefault();
         state3d.mouseUp();
     });
-    window.addEventListener('keydown', function (evt) {
+    window.addEventListener('keydown', function(evt) {
         SingularityExplorer.keyDown(evt.keyCode, state3d, gl);
     });
 };
@@ -57,7 +57,7 @@ SingularityExplorer.registerEventHandlers = function(canvas, state3d, gl) {
 /** @param {number} keyCode
  *  @param {State3D} state3d
  *  @param {StateGL} gl */
-SingularityExplorer.keyDown = function (keyCode, state3d, gl) {
+SingularityExplorer.keyDown = function(keyCode, state3d, gl) {
     switch (keyCode) {
         case 65: // 'a'
             gl.toggleAntialiasing();
