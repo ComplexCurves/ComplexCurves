@@ -151,10 +151,12 @@ StateGL.prototype.renderSurface = function(st) {
         gl.useProgram(stategl.cachedSurfaceProgram);
         stategl.updateClipping();
         stategl.updateModelViewProjectionMatrices(st);
+        stategl.updateTransparency();
         gl.bindBuffer(gl.ARRAY_BUFFER, stategl.positionsBuffer);
         gl.vertexAttribPointer(0, 4, gl.FLOAT, false, 0, 0);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         gl.drawArrays(gl.TRIANGLES, 0, stategl.size);
+        stategl.updateTransparency(false);
     });
 };
 
@@ -182,17 +184,11 @@ StateGL.prototype.toggleClipping = function () {
 };
 
 StateGL.prototype.toggleTransparency = function () {
-    var gl = this.gl;
-    if (gl.getParameter(gl.BLEND)) {
-        gl.disable(gl.BLEND);
-        gl.enable(gl.DEPTH_TEST);
-        gl.depthFunc(gl.LESS);
-    } else {
-        gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
-        gl.enable(gl.BLEND);
-        gl.disable(gl.DEPTH_TEST);
-    }
+    this.transparency = !this.transparency;
 };
+
+/** @type {boolean} */
+StateGL.prototype.transparency = false;
 
 StateGL.prototype.updateClipping = function () {
     var gl = this.gl;
@@ -219,6 +215,20 @@ StateGL.prototype.updateProjectionMatrix = function(st) {
         w = vp[2],
         h = vp[3];
     this.updateUniformMatrix("p", st.projectionMatrix(w, h));
+};
+
+/** @param {boolean=} transparency */
+StateGL.prototype.updateTransparency = function (transparency) {
+    var gl = this.gl;
+    if (this.transparency && transparency !== false) {
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+        gl.enable(gl.BLEND);
+        gl.disable(gl.DEPTH_TEST);
+    } else {
+        gl.disable(gl.BLEND);
+        gl.enable(gl.DEPTH_TEST);
+        gl.depthFunc(gl.LESS);
+    }
 };
 
 /** @param {string} i

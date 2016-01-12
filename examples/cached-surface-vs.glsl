@@ -9,7 +9,7 @@ varying vec4 vPos;
 varying vec2 vValue;
 void main (void)
 {
-    vValue = position.zw;
     vPos = vec4 (position.xyz, 1.0);
+    vValue = position.zw;
     gl_Position = p * v * m * vPos;
 }
