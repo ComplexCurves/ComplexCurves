@@ -3,6 +3,8 @@ precision highp float;
 #else
 precision mediump float;
 #endif
+uniform bool clipping;
+varying vec4 vPos;
 varying vec2 vValue;
 vec3 hue_to_rgb (in float hue)
 {
@@ -28,10 +30,12 @@ float sawfct (float x, float dx, float a, float b)
 }
 void main (void)
 {
+    if (clipping && vPos.y < 0.0)
+        discard;
     float PI = acos (-1.0);
     float angle = atan (vValue.y, vValue.x);
     float blackp = sawfct (angle, PI / 12.0, 0.7, 1.0);
     float blackm = sawfct (log (length (vValue)), PI / 12.0, 0.7, 1.0);
     float black = blackp * blackm;
-    gl_FragColor = vec4 (black * hue_to_rgb (angle), 1.0);
+    gl_FragColor = vec4 (black * hue_to_rgb (angle), 0.3 * gl_FragCoord.z);
 }

@@ -33,5 +33,5 @@ void main (void)
     float blackp = sawfct (angle, PI / 12.0, 0.7, 1.0);
     float blackm = sawfct (log (length (v_value)), PI / 12.0, 0.7, 1.0);
     float black = blackp * blackm;
-    gl_FragColor = vec4 (black * hue_to_rgb (angle), 1.0);
+    gl_FragColor = vec4 (black * hue_to_rgb (angle), 0.3 * gl_FragCoord.z);
 }

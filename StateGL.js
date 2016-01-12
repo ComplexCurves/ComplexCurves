@@ -22,6 +22,9 @@ StateGL.prototype.cached = false;
 StateGL.prototype.cachedSurfaceProgram = null;
 
 /** @type {boolean} */
+StateGL.prototype.clipping = false;
+
+/** @type {boolean} */
 StateGL.prototype.fxaa = true;
 
 /** @type {WebGLProgram} */
@@ -146,6 +149,7 @@ StateGL.prototype.renderSurface = function(st) {
     var stategl = this;
     this.withOptionalFXAA(function() {
         gl.useProgram(stategl.cachedSurfaceProgram);
+        stategl.updateClipping();
         stategl.updateModelViewProjectionMatrices(st);
         gl.bindBuffer(gl.ARRAY_BUFFER, stategl.positionsBuffer);
         gl.vertexAttribPointer(0, 4, gl.FLOAT, false, 0, 0);
@@ -168,6 +172,33 @@ StateGL.prototype.rttTexture = null;
 
 /** @type {number} */
 StateGL.prototype.size = 0;
+
+StateGL.prototype.toggleAntialiasing = function () {
+    this.fxaa = !this.fxaa;
+};
+
+StateGL.prototype.toggleClipping = function () {
+    this.clipping = !this.clipping;
+};
+
+StateGL.prototype.toggleTransparency = function () {
+    var gl = this.gl;
+    if (gl.getParameter(gl.BLEND)) {
+        gl.disable(gl.BLEND);
+        gl.enable(gl.DEPTH_TEST);
+        gl.depthFunc(gl.LESS);
+    } else {
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+        gl.enable(gl.BLEND);
+        gl.disable(gl.DEPTH_TEST);
+    }
+};
+
+StateGL.prototype.updateClipping = function () {
+    var gl = this.gl;
+    var loc = gl.getUniformLocation(this.cachedSurfaceProgram, "clipping");
+    gl.uniform1f(loc, this.clipping);
+};
 
 /** @param {State3D} st */
 StateGL.prototype.updateModelMatrix = function(st) {

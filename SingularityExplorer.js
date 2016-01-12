@@ -49,6 +49,30 @@ SingularityExplorer.registerEventHandlers = function(canvas, state3d, gl) {
         evt.preventDefault();
         state3d.mouseUp();
     });
+    window.addEventListener('keydown', function (evt) {
+        SingularityExplorer.keyDown(evt.key, state3d, gl);
+    });
+};
+
+/** @param {string} key
+ *  @param {State3D} state3d
+ *  @param {StateGL} gl */
+SingularityExplorer.keyDown = function (key, state3d, gl) {
+    switch (key) {
+        case 'a':
+            gl.toggleAntialiasing();
+            break;
+        case 'c':
+            gl.toggleClipping();
+            break;
+        case 'o':
+            state3d.toggleOrtho();
+            break;
+        case 't':
+            gl.toggleTransparency();
+            break;
+    }
+    SingularityExplorer.renderSurface(state3d, gl);
 };
 
 /** @param {State3D} st
