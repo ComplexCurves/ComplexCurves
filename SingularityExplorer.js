@@ -71,6 +71,22 @@ SingularityExplorer.keyDown = function (key, state3d, gl) {
         case 't':
             gl.toggleTransparency();
             break;
+        case '1':
+            state3d.target1 = Quaternion.fromLatLong(Math.PI / 2, 0);
+            break;
+        case '3':
+            state3d.target1 = Quaternion.fromLatLong(Math.PI / 2, Math.PI / 2);
+            break;
+        case '5':
+            state3d.toggleOrtho();
+            break;
+        case '7':
+            state3d.target1 = Quaternion.fromLatLong(0, 0);
+            break;
+        case '0':
+            state3d.target1 = Quaternion.fromLatLong(75 / 180 * Math.PI,
+                30 / 180 * Math.PI);
+            break;
     }
     SingularityExplorer.renderSurface(state3d, gl);
 };

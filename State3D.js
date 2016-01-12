@@ -35,7 +35,7 @@ State3D.identityMatrix = function() {
 
 /** @return {boolean} */
 State3D.prototype.isRotating = function() {
-    return this.rotating || Quaternion.sub(this.rotation, this.target1).abs() > 0.01;
+    return this.rotating || Quaternion.sub(this.rotation, this.target1).abs() > 1e-6;
 };
 
 /** @param {number} theta
