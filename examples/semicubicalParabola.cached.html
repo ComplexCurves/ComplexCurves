@@ -3,14 +3,15 @@
 <head>
 <meta charset="UTF-8" />
 <title>Singularity Explorer</title>
+<link rel="stylesheet" type="text/css" href="SingularityExplorer.css" />
 <script type="text/javascript" src="../build/SingularityExplorer.js"></script>
 <script type="text/javascript">
 document.addEventListener ("DOMContentLoaded", function () {
     var canvas = document.createElement('canvas');
     canvas.width = 800;
     canvas.height = 800;
-    canvas.style.width = "400px";
-    canvas.style.height = "400px";
+    canvas.style.width = "500px";
+    canvas.style.height = "500px";
     document.body.appendChild(canvas);
     SingularityExplorer.fromFile(canvas,
         'http://complexcurves.org/models/SemicubicalParabola.bin');
