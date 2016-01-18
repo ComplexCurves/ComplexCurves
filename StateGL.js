@@ -40,17 +40,6 @@ StateGL.getShaderSources = function(shaderId, onload) {
 /** @type {WebGLRenderingContext} */
 StateGL.prototype.gl = null;
 
-/** @param {ArrayBuffer} positions */
-StateGL.prototype.mkBuffer = function(positions) {
-    var gl = this.gl;
-    gl.enableVertexAttribArray(0);
-    this.positionsBuffer = /** @type {WebGLBuffer} */ (gl.createBuffer());
-    this.positions = positions;
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.positionsBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.positions), gl.STATIC_DRAW);
-    gl.vertexAttribPointer(0, 4, gl.FLOAT, false, 0, 0);
-};
-
 /** @param {function()} onload */
 StateGL.prototype.mkFXAAProgram = function(onload) {
     var gl = this;
@@ -123,9 +112,6 @@ StateGL.prototype.numIndices = 0;
 /** @type {Polynomial} */
 StateGL.prototype.polynomial = null;
 
-/** @type {WebGLBuffer} */
-StateGL.prototype.positionsBuffer = null;
-
 /** @param {State3D} st */
 StateGL.prototype.renderSurface = function(st) {
     var gl = this.gl;
@@ -146,9 +132,6 @@ StateGL.prototype.rttRenderbuffer = null;
 
 /** @type {WebGLTexture} */
 StateGL.prototype.rttTexture = null;
-
-/** @type {number} */
-StateGL.prototype.size = 0;
 
 StateGL.prototype.toggleAntialiasing = function() {
     this.fxaa = !this.fxaa;

@@ -9,10 +9,14 @@ function CachedSurface(stategl, file, onload) {
         new Task("loadModel", [], function(oncomplete) {
             cachedSurface.loadModel(stategl, file, oncomplete);
         }),
+        new Task("mkBuffer", ["loadModel"], function(oncomplete) {
+            cachedSurface.mkBuffer(stategl, cachedSurface.positions);
+            oncomplete();
+        }),
         new Task("mkProgram", [], function(oncomplete) {
             cachedSurface.mkProgram(stategl, oncomplete);
         }),
-        new Task("ready", ["loadModel", "mkProgram"], onload)
+        new Task("ready", ["loadModel", "mkBuffer", "mkProgram"], onload)
     ]);
     schedule.run();
 }
@@ -21,16 +25,26 @@ function CachedSurface(stategl, file, onload) {
  *  @param {string} file
  *  @param {function()} onload */
 CachedSurface.prototype.loadModel = function(stategl, file, onload) {
+    var cachedSurface = this;
     var req = new XMLHttpRequest();
     req.open("GET", file, true);
     req.responseType = "arraybuffer";
     req.onload = function() {
-        var positions = /** @type {ArrayBuffer|null} */ (req.response);
-        stategl.mkBuffer(positions);
-        stategl.size = positions.byteLength / 16;
+        cachedSurface.positions = /** @type {ArrayBuffer|null} */ (req.response);
         onload();
     };
     req.send();
+};
+
+/** @param {StateGL} stategl
+ *  @param {ArrayBuffer} positions */
+CachedSurface.prototype.mkBuffer = function(stategl, positions) {
+    var gl = stategl.gl;
+    this.size = positions.byteLength / 16;
+    gl.enableVertexAttribArray(0);
+    this.positionsBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.positionsBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
 };
 
 /** @param {StateGL} stategl
@@ -44,6 +58,12 @@ CachedSurface.prototype.mkProgram = function(stategl, onload) {
     });
 };
 
+/** @type {ArrayBuffer} */
+CachedSurface.prototype.positions = null;
+
+/** @type {WebGLBuffer} */
+CachedSurface.prototype.positionsBuffer = null;
+
 /** @param {StateGL} stategl
  *  @param {WebGLRenderingContext} gl
  *  @param {State3D} state3d */
@@ -52,9 +72,12 @@ CachedSurface.prototype.render = function(stategl, gl, state3d) {
     stategl.updateClipping();
     stategl.updateModelViewProjectionMatrices(state3d);
     stategl.updateTransparency();
-    gl.bindBuffer(gl.ARRAY_BUFFER, stategl.positionsBuffer);
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.positionsBuffer);
     gl.vertexAttribPointer(0, 4, gl.FLOAT, false, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    gl.drawArrays(gl.TRIANGLES, 0, stategl.size);
+    gl.drawArrays(gl.TRIANGLES, 0, this.size);
     stategl.updateTransparency(false);
 };
+
+/** @type {number} */
+CachedSurface.prototype.size = 0;
