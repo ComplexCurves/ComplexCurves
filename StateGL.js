@@ -18,8 +18,8 @@ function StateGL(canvas, onload) {
 /** @type {boolean} */
 StateGL.prototype.cached = false;
 
-/** @type {WebGLProgram} */
-StateGL.prototype.cachedSurfaceProgram = null;
+/** @type {Stage} */
+StateGL.prototype.cachedSurface = null;
 
 /** @type {boolean} */
 StateGL.prototype.clipping = false;
@@ -51,7 +51,7 @@ StateGL.prototype.loadModel = function(file, onload) {
         var positions = /** @type {ArrayBuffer|null} */ (req.response);
         stategl.mkBuffer(positions);
         stategl.size = positions.byteLength / 16;
-        stategl.mkCachedSurfaceProgram(onload);
+        stategl.cachedSurface = new CachedSurface(stategl, onload);
     };
     req.send();
 };
@@ -65,16 +65,6 @@ StateGL.prototype.mkBuffer = function(positions) {
     gl.bindBuffer(gl.ARRAY_BUFFER, this.positionsBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.positions), gl.STATIC_DRAW);
     gl.vertexAttribPointer(0, 4, gl.FLOAT, false, 0, 0);
-};
-
-/** @param {function()} onload */
-StateGL.prototype.mkCachedSurfaceProgram = function(onload) {
-    var gl = this;
-    StateGL.getShaderSources("cached-surface", function(sources) {
-        gl.cachedSurfaceProgram = gl.mkProgram(sources);
-        gl.cached = true;
-        onload();
-    });
 };
 
 /** @param {function()} onload */
@@ -143,20 +133,21 @@ StateGL.prototype.mkRenderToTextureObjects = function() {
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
 };
 
+/** @type {number} */
+StateGL.prototype.numIndices = 0;
+
+/** @type {Polynomial} */
+StateGL.prototype.polynomial = null;
+
+/** @type {WebGLBuffer} */
+StateGL.prototype.positionsBuffer = null;
+
 /** @param {State3D} st */
 StateGL.prototype.renderSurface = function(st) {
     var gl = this.gl;
     var stategl = this;
     this.withOptionalFXAA(function() {
-        gl.useProgram(stategl.cachedSurfaceProgram);
-        stategl.updateClipping();
-        stategl.updateModelViewProjectionMatrices(st);
-        stategl.updateTransparency();
-        gl.bindBuffer(gl.ARRAY_BUFFER, stategl.positionsBuffer);
-        gl.vertexAttribPointer(0, 4, gl.FLOAT, false, 0, 0);
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-        gl.drawArrays(gl.TRIANGLES, 0, stategl.size);
-        stategl.updateTransparency(false);
+        stategl.cachedSurface.render(stategl, gl, st);
     });
 };
 
@@ -192,7 +183,8 @@ StateGL.prototype.transparency = false;
 
 StateGL.prototype.updateClipping = function() {
     var gl = this.gl;
-    var loc = gl.getUniformLocation(this.cachedSurfaceProgram, "clipping");
+    var program = /** @type {WebGLProgram|null} */ (gl.getParameter(gl.CURRENT_PROGRAM));
+    var loc = gl.getUniformLocation(program, "clipping");
     gl.uniform1f(loc, this.clipping ? 1 : 0);
 };
 

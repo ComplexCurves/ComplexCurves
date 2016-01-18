@@ -4,12 +4,27 @@ var SingularityExplorer = {};
  *  @param {string} file */
 SingularityExplorer.fromFile = function(canvas, file) {
     var state3d = State3D.topView(false);
-    new StateGL(canvas, function(gl) {
-        gl.loadModel(file, function() {
+    var gl;
+    var schedule = new Schedule([
+        new Task("stategl", [], function(oncomplete) {
+            new StateGL(canvas, function(gl_) {
+                gl = gl_;
+                oncomplete();
+            });
+        }),
+        new Task("loadModel", ["stategl"], function(oncomplete) {
+            gl.loadModel(file, oncomplete);
+        }),
+        new Task("renderSurface", ["loadModel"], function(oncomplete) {
             SingularityExplorer.renderSurface(state3d, gl);
+            oncomplete();
+        }),
+        new Task("registerEventHandlers", ["stategl"], function(oncomplete) {
             SingularityExplorer.registerEventHandlers(canvas, state3d, gl);
-        });
-    });
+            oncomplete();
+        })
+    ]);
+    schedule.run();
 };
 
 /** @param {HTMLCanvasElement} canvas
