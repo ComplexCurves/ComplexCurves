@@ -12,10 +12,10 @@ SingularityExplorer.fromFile = function(canvas, file) {
                 oncomplete();
             });
         }),
-        new Task("loadModel", ["stategl"], function(oncomplete) {
-            gl.loadModel(file, oncomplete);
+        new Task("cachedSurface", ["stategl"], function(oncomplete) {
+            gl.cachedSurface = new CachedSurface(gl, file, oncomplete);
         }),
-        new Task("renderSurface", ["loadModel"], function(oncomplete) {
+        new Task("renderSurface", ["cachedSurface"], function(oncomplete) {
             SingularityExplorer.renderSurface(state3d, gl);
             oncomplete();
         }),

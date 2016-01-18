@@ -40,22 +40,6 @@ StateGL.getShaderSources = function(shaderId, onload) {
 /** @type {WebGLRenderingContext} */
 StateGL.prototype.gl = null;
 
-/** @param {string} file
- *  @param {function()} onload */
-StateGL.prototype.loadModel = function(file, onload) {
-    var stategl = this;
-    var req = new XMLHttpRequest();
-    req.open("GET", file, true);
-    req.responseType = "arraybuffer";
-    req.onload = function() {
-        var positions = /** @type {ArrayBuffer|null} */ (req.response);
-        stategl.mkBuffer(positions);
-        stategl.size = positions.byteLength / 16;
-        stategl.cachedSurface = new CachedSurface(stategl, onload);
-    };
-    req.send();
-};
-
 /** @param {ArrayBuffer} positions */
 StateGL.prototype.mkBuffer = function(positions) {
     var gl = this.gl;
