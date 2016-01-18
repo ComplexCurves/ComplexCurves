@@ -8,7 +8,7 @@ clean:
 
 .PHONY: all beautify clean
 
-se_mods = CachedSurface Complex GLSL Matrix Misc Polynomial Quaternion \
+se_mods = CachedSurface Complex GLSL Initial Matrix Misc Polynomial Quaternion \
 	Schedule Stage State3D StateGL SingularityExplorer
 se_srcs = $(se_mods:%=%.js)
 
