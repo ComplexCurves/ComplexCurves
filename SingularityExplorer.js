@@ -13,7 +13,7 @@ SingularityExplorer.fromFile = function(canvas, file) {
             });
         }),
         new Task("cachedSurface", ["stategl"], function(oncomplete) {
-            gl.cachedSurface = new CachedSurface(gl, file, oncomplete);
+            gl.renderer = new CachedSurface(gl, file, oncomplete);
         }),
         new Task("renderSurface", ["cachedSurface"], function(oncomplete) {
             SingularityExplorer.renderSurface(state3d, gl);

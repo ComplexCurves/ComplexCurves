@@ -16,12 +16,6 @@ function StateGL(canvas, onload) {
 }
 
 /** @type {boolean} */
-StateGL.prototype.cached = false;
-
-/** @type {Stage} */
-StateGL.prototype.cachedSurface = null;
-
-/** @type {boolean} */
 StateGL.prototype.clipping = false;
 
 /** @type {boolean} */
@@ -112,12 +106,15 @@ StateGL.prototype.numIndices = 0;
 /** @type {Polynomial} */
 StateGL.prototype.polynomial = null;
 
+/** @type {Stage} */
+StateGL.prototype.renderer = null;
+
 /** @param {State3D} st */
 StateGL.prototype.renderSurface = function(st) {
     var gl = this.gl;
     var stategl = this;
     this.withOptionalFXAA(function() {
-        stategl.cachedSurface.render(stategl, gl, st);
+        stategl.renderer.render(stategl, gl, st);
     });
 };
 
