@@ -100,7 +100,7 @@ Initial.prototype.mkTextures = function(stategl) {
     gl.bindTexture(gl.TEXTURE_2D, null);
     stategl.texturesIn = texturesIn;
     stategl.texturesOut = texturesOut;
-}
+};
 
 /** @type {ArrayBuffer} */
 Initial.prototype.positions = null;
@@ -155,7 +155,7 @@ Initial.prototype.render = function(stategl, gl, state3d) {
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
     gl.disableVertexAttribArray(1);
-}
+};
 
 /** @type {number} */
 Initial.prototype.size = 0;

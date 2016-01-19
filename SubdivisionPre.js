@@ -78,7 +78,7 @@ SubdivisionPre.prototype.render = function(stategl, gl, state3d) {
         null, 0);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
-}
+};
 
 /** @type {number} */
 SubdivisionPre.prototype.size = 0;

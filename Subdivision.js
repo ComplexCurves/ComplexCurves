@@ -162,7 +162,7 @@ Subdivision.prototype.render = function(stategl, gl, state3d) {
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
     gl.deleteBuffer(subdivisionBuffer);
     return primitivesWritten;
-}
+};
 
 /** @type {number} */
 Subdivision.prototype.size = 0;
