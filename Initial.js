@@ -109,9 +109,8 @@ Initial.prototype.positions = null;
 Initial.prototype.positionBuffer = null;
 
 /** @param {StateGL} stategl
- *  @param {WebGLRenderingContext} gl
- *  @param {State3D} state3d */
-Initial.prototype.render = function(stategl, gl, state3d) {
+ *  @param {WebGLRenderingContext} gl */
+Initial.prototype.render = function(stategl, gl) {
     var texturesIn = stategl.texturesIn,
         texturesOut = stategl.texturesOut;
     var numIndices = this.size / 2;

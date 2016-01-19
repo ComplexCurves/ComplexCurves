@@ -44,9 +44,8 @@ Assembly.prototype.mkProgram = function(stategl, onload) {
 };
 
 /** @param {StateGL} stategl
- *  @param {WebGLRenderingContext} gl
- *  @param {State3D} state3d */
-Assembly.prototype.render = function(stategl, gl, state3d) {
+ *  @param {WebGLRenderingContext} gl */
+Assembly.prototype.render = function(stategl, gl) {
     var texturesIn = stategl.texturesIn,
         textureOut = stategl.texturesOut[0];
     var numIndices = this.size / 2;
@@ -62,7 +61,8 @@ Assembly.prototype.render = function(stategl, gl, state3d) {
     gl.vertexAttribPointer(0, 1, gl.FLOAT, false, 0, 0);
     gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
     gl.bindTexture(gl.TEXTURE_2D, textureOut);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, textureOut, 0);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D,
+        textureOut, 0);
     gl.bindTexture(gl.TEXTURE_2D, null);
     var texIs = [];
     for (i = 0; i < texturesIn.length; i++) {
@@ -80,7 +80,8 @@ Assembly.prototype.render = function(stategl, gl, state3d) {
     gl.viewport(0, 0, 2048, 2048);
     gl.drawArrays(gl.POINTS, 0, indices.length);
     gl.flush();
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, null, 0);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D,
+        null, 0);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 };
 

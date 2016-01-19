@@ -32,8 +32,9 @@ SingularityExplorer.fromFile = function(canvas, file) {
 };
 
 /** @param {HTMLCanvasElement} canvas
- *  @param {Polynomial} polynomial */
-SingularityExplorer.fromPolynomial = function(canvas, polynomial) {
+ *  @param {Polynomial} polynomial
+ *  @param {number} depth */
+SingularityExplorer.fromPolynomial = function(canvas, polynomial, depth) {
     var state3d = State3D.topView(false);
     var gl;
     var schedule = new Schedule([
@@ -44,7 +45,7 @@ SingularityExplorer.fromPolynomial = function(canvas, polynomial) {
             });
         }),
         new Task("surface", ["stategl"], function(oncomplete) {
-            gl.renderer = new Surface(gl, polynomial,
+            gl.renderer = new Surface(gl, polynomial, depth,
                 oncomplete);
         }),
         new Task("renderSurface", ["surface"], function(

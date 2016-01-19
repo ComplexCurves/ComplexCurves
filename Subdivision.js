@@ -43,9 +43,8 @@ Subdivision.prototype.mkProgram = function(stategl, onload) {
 };
 
 /** @param {StateGL} stategl
- *  @param {WebGLRenderingContext} gl
- *  @param {State3D} state3d */
-Subdivision.prototype.render = function(stategl, gl, state3d) {
+ *  @param {WebGLRenderingContext} gl */
+Subdivision.prototype.render = function(stategl, gl) {
     var texturesIn = stategl.texturesIn,
         texturesOut = stategl.texturesOut;
     var numTriangles = this.size / 6;
