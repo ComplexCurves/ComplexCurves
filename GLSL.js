@@ -25,7 +25,8 @@ GLSL.glslCoefficients = function(p) {
 /** @param {Complex} z
  *  @return {string} */
 GLSL.glslComplex = function(z) {
-    return "vec2 (" + z.re.toPrecision(8) + ", " + z.im.toPrecision(8) + ")";
+    return "vec2 (" + z.re.toPrecision(8) + ", " + z.im.toPrecision(8) +
+        ")";
 };
 
 /** @param {Polynomial} p
@@ -82,12 +83,15 @@ GLSL.glslFy = function(p, vx, vy) {
  *  @param {string} vy
  *  @return {string} */
 GLSL.glslHeader = function(p, vx, vy) {
-    var lines = ["#ifdef GL_FRAGMENT_PRECISION_HIGH", "precision highp float;",
+    var lines = ["#ifdef GL_FRAGMENT_PRECISION_HIGH",
+        "precision highp float;",
         "#else", "precision mediump float;", "#endif",
         "const int N = " + GLSL.N + ";",
         "const int sheets = " + p.degree(vy) + ";", "",
-        "/* complex multiplication */", "vec2 cm (in vec2 a, in vec2 b)", "{",
-        "    return vec2 (a.x * b.x - a.y * b.y, a.x * b.y + a.y * b.x);", "}"
+        "/* complex multiplication */",
+        "vec2 cm (in vec2 a, in vec2 b)", "{",
+        "    return vec2 (a.x * b.x - a.y * b.y, a.x * b.y + a.y * b.x);",
+        "}"
     ];
     return lines.join("\n");
 };
@@ -132,7 +136,8 @@ GLSL.glslM = function(p, vx, vy) {
     var lines = ["float M (in vec2 " + vx + ", in float rho)", "{",
         "    vec2 r = vec2 (length (" + vx + ") + rho, 0.0);",
         "    float a[" + cs.length + "];",
-        "    a[0] = length (" + GLSL.glslComplex(a0a0.constant()) + ");"
+        "    a[0] = length (" + GLSL.glslComplex(a0a0.constant()) +
+        ");"
     ];
     for (i = 0; i < leadRoots.length; i++)
         lines.push("    a[0] *= distance (" + vx + ", " +
@@ -143,7 +148,8 @@ GLSL.glslM = function(p, vx, vy) {
         GLSL.glslCoefficients(cs[i])) + ");");
     lines = lines.concat(["    float m = a[1] / a[0];",
         "    for (int j = 2; j < " + cs.length + "; j++) {",
-        "        m = max (m, pow (a[j] / a[0], 1.0 / float (j)));", "    }",
+        "        m = max (m, pow (a[j] / a[0], 1.0 / float (j)));",
+        "    }",
         "    return 2.0 * m;", "}"
     ]);
     return lines.join("\n");

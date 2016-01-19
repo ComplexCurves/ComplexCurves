@@ -16,7 +16,8 @@ function CachedSurface(stategl, file, onload) {
         new Task("mkProgram", [], function(oncomplete) {
             cachedSurface.mkProgram(stategl, oncomplete);
         }),
-        new Task("ready", ["loadModel", "mkBuffer", "mkProgram"], onload)
+        new Task("ready", ["loadModel", "mkBuffer", "mkProgram"],
+            onload)
     ]);
     schedule.run();
 }

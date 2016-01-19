@@ -13,14 +13,18 @@ SingularityExplorer.fromFile = function(canvas, file) {
             });
         }),
         new Task("cachedSurface", ["stategl"], function(oncomplete) {
-            gl.renderer = new CachedSurface(gl, file, oncomplete);
+            gl.renderer = new CachedSurface(gl, file,
+                oncomplete);
         }),
-        new Task("renderSurface", ["cachedSurface"], function(oncomplete) {
+        new Task("renderSurface", ["cachedSurface"], function(
+            oncomplete) {
             SingularityExplorer.renderSurface(state3d, gl);
             oncomplete();
         }),
-        new Task("registerEventHandlers", ["stategl"], function(oncomplete) {
-            SingularityExplorer.registerEventHandlers(canvas, state3d, gl);
+        new Task("registerEventHandlers", ["stategl"], function(
+            oncomplete) {
+            SingularityExplorer.registerEventHandlers(canvas,
+                state3d, gl);
             oncomplete();
         })
     ]);
@@ -90,7 +94,8 @@ SingularityExplorer.keyDown = function(keyCode, state3d, gl) {
             state3d.target1 = Quaternion.fromLatLong(Math.PI / 2, 0);
             break;
         case 51: // '3'
-            state3d.target1 = Quaternion.fromLatLong(Math.PI / 2, Math.PI / 2);
+            state3d.target1 = Quaternion.fromLatLong(Math.PI / 2, Math.PI /
+                2);
             break;
         case 53: // '5'
             state3d.toggleOrtho();

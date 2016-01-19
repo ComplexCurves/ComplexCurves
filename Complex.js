@@ -80,7 +80,8 @@ Complex.real = function(re) {
 Complex.sqrt = function(z) {
     var r = z.abs();
     var s = Math.sign(z.im);
-    return new Complex(Math.sqrt((r + z.re) * 0.5), s * Math.sqrt((r - z.re) * 0.5));
+    return new Complex(Math.sqrt((r + z.re) * 0.5), s * Math.sqrt((r - z.re) *
+        0.5));
 };
 
 /** @param {Complex} a

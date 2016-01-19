@@ -73,7 +73,12 @@ Quaternion.prototype.rotationMatrix = function() {
         x = this.x,
         y = this.y,
         z = this.z;
-    return [w * w + x * x - y * y - z * z, 2 * x * y + 2 * w * z, 2 * x * z - 2 * w * y, 0, 2 * x * y - 2 * w * z, w * w - x * x + y * y - z * z, 2 * y * z + 2 * w * x, 0, 2 * x * z + 2 * w * y, 2 * y * z - 2 * w * x, w * w - x * x - y * y + z * z, 0, 0, 0, 0, w * w + x * x + y * y + z * z];
+    return [w * w + x * x - y * y - z * z, 2 * x * y + 2 * w * z, 2 * x * z -
+        2 * w * y, 0, 2 * x * y - 2 * w * z, w * w - x * x + y * y - z *
+        z, 2 * y * z + 2 * w * x, 0, 2 * x * z + 2 * w * y, 2 * y * z -
+        2 * w * x, w * w - x * x - y * y + z * z, 0, 0, 0, 0, w * w + x *
+        x + y * y + z * z
+    ];
 };
 
 /** @param {Quaternion} a

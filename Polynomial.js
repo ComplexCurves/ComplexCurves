@@ -269,7 +269,9 @@ Polynomial.prototype.isUnivariate = function() {
  *  @return {Complex} */
 Polynomial.laguerre = function(cs, x, maxiter) {
     var n = cs.length - 1;
-    var rand = [1.0, 0.3141, 0.5926, 0.5358, 0.9793, 0.2385, 0.6264, 0.3383, 0.2795, 0.0288];
+    var rand = [1.0, 0.3141, 0.5926, 0.5358, 0.9793, 0.2385, 0.6264, 0.3383,
+        0.2795, 0.0288
+    ];
     var a, p, q, s, g, g2, h, r, d1, d2;
     var tol = 1e-14;
     for (var iter = 1; iter <= maxiter; iter++) {
@@ -289,7 +291,8 @@ Polynomial.laguerre = function(cs, x, maxiter) {
         g = Complex.div(q, p);
         g2 = Complex.mul(g, g);
         h = Complex.sub(g2, Complex.div(Complex.mul(Complex.real(2), s), p));
-        r = Complex.sqrt(Complex.mul(Complex.real(n - 1), Complex.sub(Complex.mul(Complex.real(n), h), g2)));
+        r = Complex.sqrt(Complex.mul(Complex.real(n - 1), Complex.sub(
+            Complex.mul(Complex.real(n), h), g2)));
         d1 = Complex.add(g, r);
         d2 = Complex.sub(g, r);
         if (d1.abs() < d2.abs())
@@ -297,7 +300,8 @@ Polynomial.laguerre = function(cs, x, maxiter) {
         if (tol < d1.abs())
             a = Complex.div(Complex.real(n), d1);
         else
-            a = Complex.mul(Complex.real(x.abs() + 1), new Complex(Math.cos(iter), Math.sin(iter)));
+            a = Complex.mul(Complex.real(x.abs() + 1), new Complex(Math.cos(
+                iter), Math.sin(iter)));
         if (a.abs() < tol)
             return x;
         if (iter % 20 === 0)

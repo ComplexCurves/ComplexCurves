@@ -23,8 +23,10 @@ function Initial(stategl, onload) {
             stategl.getWebGLDrawBuffersExtension();
             oncomplete();
         }),
-        new Task("ready", ["loadModel", "mkBuffers", "mkProgram", "mkTextures",
-            "WEBGL_draw_buffers"], onload)
+        new Task("ready", ["loadModel", "mkBuffers", "mkProgram",
+            "mkTextures",
+            "WEBGL_draw_buffers"
+        ], onload)
     ]);
     schedule.run();
 }
@@ -78,7 +80,9 @@ Initial.prototype.mkProgram = function(stategl, onload) {
 
 /** @param {StateGL} stategl */
 Initial.prototype.mkTextures = function(stategl) {
-    var gl = stategl.gl, texturesIn = [], texturesOut = [];
+    var gl = stategl.gl,
+        texturesIn = [],
+        texturesOut = [];
     for (var i = 0; i < 5; i++) {
         texturesIn[i] = gl.createTexture();
         gl.bindTexture(gl.TEXTURE_2D, texturesIn[i]);
@@ -108,7 +112,8 @@ Initial.prototype.positionBuffer = null;
  *  @param {WebGLRenderingContext} gl
  *  @param {State3D} state3d */
 Initial.prototype.render = function(stategl, gl, state3d) {
-    var texturesIn = stategl.texturesIn, texturesOut = stategl.texturesOut;
+    var texturesIn = stategl.texturesIn,
+        texturesOut = stategl.texturesOut;
     var numIndices = this.size / 2;
     var webgl_draw_buffers = stategl.webgl_draw_buffers;
     gl.useProgram(this.program);

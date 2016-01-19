@@ -35,7 +35,8 @@ State3D.identityMatrix = function() {
 
 /** @return {boolean} */
 State3D.prototype.isRotating = function() {
-    return this.rotating || Quaternion.sub(this.rotation, this.target1).abs() > 1e-6;
+    return this.rotating || Quaternion.sub(this.rotation, this.target1).abs() >
+        1e-6;
 };
 
 /** @param {number} theta
@@ -68,7 +69,8 @@ State3D.rightView = State3D.fromLatLong(Math.PI / 2, Math.PI / 2);
  *  @param {boolean} ortho
  *  @return {State3D} */
 State3D.fromLatLongDegrees = function(lat, long, ortho) {
-    return (State3D.fromLatLong(lat / 180 * Math.PI, long / 180 * Math.PI))(ortho);
+    return (State3D.fromLatLong(lat / 180 * Math.PI, long / 180 * Math.PI))
+        (ortho);
 };
 /** @return {State3D} */
 State3D.twoDimensionalView = function() {
@@ -104,7 +106,8 @@ State3D.prototype.mouseMove = function(x, y) {
         r = 100,
         cost = r / Math.sqrt(r * r + dr * dr),
         sint = dr / Math.sqrt(r * r + dr * dr),
-        q2 = Quaternion.mul(new Quaternion(cost, -sint * dy, sint * dx, 0), q);
+        q2 = Quaternion.mul(new Quaternion(cost, -sint * dy, sint * dx, 0),
+            q);
     this.target1 = Quaternion.nlerp(q, q2, 0.05);
 };
 
@@ -135,7 +138,11 @@ State3D.orthographicProjectionMatrix = function(width, height, zoom) {
         zNear = -100,
         s1 = Math.min(height / width, 1),
         s2 = Math.min(width / height, 1);
-    return [s1 * 2 / (right - left), 0, 0, 0, 0, s2 * 2 / (top - bottom), 0, 0, 0, 0, -2 / (zFar - zNear), 0, -s1 * (right + left) / (right - left), -s2 * (top + bottom) / (top - bottom), -(zFar + zNear) / (zFar - zNear), 1];
+    return [s1 * 2 / (right - left), 0, 0, 0, 0, s2 * 2 / (top - bottom), 0,
+        0, 0, 0, -2 / (zFar - zNear), 0, -s1 * (right + left) / (right -
+            left), -s2 * (top + bottom) / (top - bottom), -(zFar +
+            zNear) / (zFar - zNear), 1
+    ];
 };
 
 /** perspective projection matrix, in column-major order

@@ -69,14 +69,26 @@ Subdivision.prototype.render = function(stategl, gl, state3d) {
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     gl.deleteFramebuffer(readBuffer);
     // prepare subdivision patterns and buffers
-    var subdivisionPattern = [0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 2.0, 0.0, 0.0, 1.0,
-        0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 2.0, 0.5, 0.0, 0.5, 3.0, 0.0, 1.0, 0.0, 4.0, 0.0, 0.0, 1.0, 5.0, 0.5, 0.0, 0.5,
-        0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 2.0, 0.0, 0.5, 0.5, 3.0, 0.0, 0.5, 0.5, 4.0, 0.0, 0.0, 1.0, 5.0, 1.0, 0.0, 0.0,
-        0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 2.0, 0.0, 0.5, 0.5, 3.0, 0.0, 0.5, 0.5, 4.0, 0.0, 0.0, 1.0, 5.0, 0.5, 0.0, 0.5, 6.0, 0.5, 0.0, 0.5, 7.0, 1.0, 0.0, 0.0, 8.0, 0.0, 0.5, 0.5,
-        0.0, 1.0, 0.0, 0.0, 1.0, 0.5, 0.5, 0.0, 2.0, 0.0, 0.0, 1.0, 3.0, 0.0, 0.0, 1.0, 4.0, 0.5, 0.5, 0.0, 5.0, 0.0, 1.0, 0.0,
-        0.0, 1.0, 0.0, 0.0, 1.0, 0.5, 0.5, 0.0, 2.0, 0.5, 0.0, 0.5, 3.0, 0.5, 0.0, 0.5, 4.0, 0.5, 0.5, 0.0, 5.0, 0.0, 1.0, 0.0, 6.0, 0.0, 1.0, 0.0, 7.0, 0.0, 0.0, 1.0, 8.0, 0.5, 0.0, 0.5,
-        0.0, 1.0, 0.0, 0.0, 1.0, 0.5, 0.5, 0.0, 2.0, 0.0, 0.0, 1.0, 3.0, 0.0, 0.0, 1.0, 4.0, 0.5, 0.5, 0.0, 5.0, 0.0, 0.5, 0.5, 6.0, 0.0, 0.5, 0.5, 7.0, 0.5, 0.5, 0.0, 8.0, 0.0, 1.0, 0.0,
-        0.0, 1.0, 0.0, 0.0, 1.0, 0.5, 0.5, 0.0, 2.0, 0.5, 0.0, 0.5, 3.0, 0.5, 0.5, 0.0, 4.0, 0.0, 1.0, 0.0, 5.0, 0.0, 0.5, 0.5, 6.0, 0.0, 0.5, 0.5, 7.0, 0.0, 0.0, 1.0, 8.0, 0.5, 0.0, 0.5,
+    var subdivisionPattern = [0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 2.0,
+        0.0, 0.0, 1.0,
+        0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 2.0, 0.5, 0.0, 0.5, 3.0,
+        0.0, 1.0, 0.0, 4.0, 0.0, 0.0, 1.0, 5.0, 0.5, 0.0, 0.5,
+        0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 2.0, 0.0, 0.5, 0.5, 3.0,
+        0.0, 0.5, 0.5, 4.0, 0.0, 0.0, 1.0, 5.0, 1.0, 0.0, 0.0,
+        0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 2.0, 0.0, 0.5, 0.5, 3.0,
+        0.0, 0.5, 0.5, 4.0, 0.0, 0.0, 1.0, 5.0, 0.5, 0.0, 0.5, 6.0, 0.5,
+        0.0, 0.5, 7.0, 1.0, 0.0, 0.0, 8.0, 0.0, 0.5, 0.5,
+        0.0, 1.0, 0.0, 0.0, 1.0, 0.5, 0.5, 0.0, 2.0, 0.0, 0.0, 1.0, 3.0,
+        0.0, 0.0, 1.0, 4.0, 0.5, 0.5, 0.0, 5.0, 0.0, 1.0, 0.0,
+        0.0, 1.0, 0.0, 0.0, 1.0, 0.5, 0.5, 0.0, 2.0, 0.5, 0.0, 0.5, 3.0,
+        0.5, 0.0, 0.5, 4.0, 0.5, 0.5, 0.0, 5.0, 0.0, 1.0, 0.0, 6.0, 0.0,
+        1.0, 0.0, 7.0, 0.0, 0.0, 1.0, 8.0, 0.5, 0.0, 0.5,
+        0.0, 1.0, 0.0, 0.0, 1.0, 0.5, 0.5, 0.0, 2.0, 0.0, 0.0, 1.0, 3.0,
+        0.0, 0.0, 1.0, 4.0, 0.5, 0.5, 0.0, 5.0, 0.0, 0.5, 0.5, 6.0, 0.0,
+        0.5, 0.5, 7.0, 0.5, 0.5, 0.0, 8.0, 0.0, 1.0, 0.0,
+        0.0, 1.0, 0.0, 0.0, 1.0, 0.5, 0.5, 0.0, 2.0, 0.5, 0.0, 0.5, 3.0,
+        0.5, 0.5, 0.0, 4.0, 0.0, 1.0, 0.0, 5.0, 0.0, 0.5, 0.5, 6.0, 0.0,
+        0.5, 0.5, 7.0, 0.0, 0.0, 1.0, 8.0, 0.5, 0.0, 0.5,
         9.0, 0.5, 0.5, 0.0, 10.0, 0.0, 0.5, 0.5, 11.0, 0.5, 0.0, 0.5
     ];
     var subdivisionPatternFirst = [0, 3, 9, 15, 24, 30, 39, 48];
@@ -120,23 +132,28 @@ Subdivision.prototype.render = function(stategl, gl, state3d) {
     // identify and render subdivision patterns
     gl.disable(gl.DEPTH_TEST);
     gl.viewport(0, 0, 2048, 2048);
-    var indexOffsetInLocation = gl.getUniformLocation(program, 'indexOffsetIn');
-    var indexOffsetOutLocation = gl.getUniformLocation(program, 'indexOffsetOut');
+    var indexOffsetInLocation = gl.getUniformLocation(program,
+        'indexOffsetIn');
+    var indexOffsetOutLocation = gl.getUniformLocation(program,
+        'indexOffsetOut');
     var patternIndex, numIndices;
     var primitivesWritten = 0;
     for (i = 0; i < numTriangles; i++) {
         gl.uniform1f(indexOffsetInLocation, 3 * i);
         gl.uniform1f(indexOffsetOutLocation, primitivesWritten);
-        patternIndex = 4 * pixels[12 * i + 3] + 2 * pixels[12 * i + 7] + pixels[12 * i + 11];
+        patternIndex = 4 * pixels[12 * i + 3] + 2 * pixels[12 * i + 7] +
+            pixels[12 * i + 11];
         numIndices = subdivisionPatternCount[patternIndex];
-        gl.drawArrays(gl.POINTS, subdivisionPatternFirst[patternIndex], numIndices);
+        gl.drawArrays(gl.POINTS, subdivisionPatternFirst[patternIndex],
+            numIndices);
         primitivesWritten += numIndices;
     }
     gl.flush();
 
     // cleanup
     for (i = 0; i < 5; i++)
-        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + i, gl.TEXTURE_2D, null, 0);
+        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + i,
+            gl.TEXTURE_2D, null, 0);
     for (i = 0; i < 5; i++) {
         gl.activeTexture(gl.TEXTURE0 + i);
         gl.bindTexture(gl.TEXTURE_2D, null);
