@@ -32,6 +32,37 @@ SingularityExplorer.fromFile = function(canvas, file) {
 };
 
 /** @param {HTMLCanvasElement} canvas
+ *  @param {Polynomial} polynomial */
+SingularityExplorer.fromPolynomial = function(canvas, polynomial) {
+    var state3d = State3D.topView(false);
+    var gl;
+    var schedule = new Schedule([
+        new Task("stategl", [], function(oncomplete) {
+            new StateGL(canvas, function(gl_) {
+                gl = gl_;
+                oncomplete();
+            });
+        }),
+        new Task("surface", ["stategl"], function(oncomplete) {
+            gl.renderer = new Surface(gl, polynomial,
+                oncomplete);
+        }),
+        new Task("renderSurface", ["surface"], function(
+            oncomplete) {
+            SingularityExplorer.renderSurface(state3d, gl);
+            oncomplete();
+        }),
+        new Task("registerEventHandlers", ["stategl"], function(
+            oncomplete) {
+            SingularityExplorer.registerEventHandlers(canvas,
+                state3d, gl);
+            oncomplete();
+        })
+    ]);
+    schedule.run();
+};
+
+/** @param {HTMLCanvasElement} canvas
  *  @param {State3D} state3d
  *  @param {StateGL} gl */
 SingularityExplorer.registerEventHandlers = function(canvas, state3d, gl) {
