@@ -40,35 +40,30 @@ function Surface(stategl, polynomial, depth, onload) {
             surface.initial = new Initial(stategl, surface,
                 function() {
                     surface.initial.render(stategl, surface, gl);
-                    for (var i = 0; i < 5; i++)
-                        stategl.printTexture(20, surface.texturesIn[i]);
                     oncomplete();
                 });
         }),
         new Task("subdivisionPre", ["initial"], function(oncomplete) {
-            surface.subdivisionPre = new SubdivisionPre(stategl,
-                function() {
-                    surface.subdivisionPre.render(stategl, surface, gl);
-                    for (var i = 0; i < 5; i++)
-                        stategl.printTexture(20, surface.texturesIn[i]);
-                    oncomplete();
-                });
+            surface.subdivisionPre = new SubdivisionPre(stategl, oncomplete);
         }),
-        /*
         new Task("subdivision", ["commonShaderSrc", "customShaderSrc"],
             function(oncomplete) {
-                surface.subdivision = new Subdivision(stategl,
+                surface.subdivision = new Subdivision(stategl, surface,
                     oncomplete);
             }),
-        new Task("subdivide", ["initial", "subdivisionPre",
-            "subdivision"
-        ], function(oncomplete) {
-            for (var i = 0; i < this.depth; i++) {
-                surface.subdivisionPre.render(stategl, surface, gl);
-                surface.subdivision.render(stategl, surface, gl);
-            }
-            oncomplete();
-        }),
+        new Task("subdivide", ["initial", "subdivisionPre", "subdivision"],
+            function(oncomplete) {
+                for (var i = 0; i < surface.depth; i++) {
+                    console.log(surface.numIndices);
+                    surface.subdivisionPre.render(stategl, surface, gl);
+                    surface.subdivision.render(stategl, surface, gl);
+                    for (var j = 0; j < 5; j++)
+                        stategl.printTexture(20, surface.texturesIn[j]);
+                    console.log(surface.numIndices);
+                }
+                oncomplete();
+            }),
+        /*
         new Task("assembly", ["commonShaderSrc", "customShaderSrc",
             "subdivide"
         ], function(oncomplete) {
@@ -83,7 +78,7 @@ function Surface(stategl, polynomial, depth, onload) {
         new Task("ready", ["assembly", "fillIndexBuffer", "mkProgram"],
             onload)
         */
-        new Task("ready", ["initial", "STOP"], onload)
+        new Task("ready", ["subdivide", "STOP"], onload)
     ]);
     schedule.run();
 }
@@ -153,4 +148,10 @@ Surface.prototype.render = function(stategl, gl, state3d) {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.drawArrays(gl.TRIANGLES, 0, this.numIndices);
     gl.flush();
+};
+
+/** @param {string} src
+ *  @return {string} */
+Surface.prototype.withCustomAndCommon = function(src) {
+    return [this.customShaderSrc, this.commonShaderSrc, src].join("\n");
 };

@@ -10,7 +10,7 @@ SingularityExplorer.fromEquation = function(canvas, equation) {
             y: 2
         }))
     ]);
-    SingularityExplorer.fromPolynomial(canvas, p, 8);
+    SingularityExplorer.fromPolynomial(canvas, p, 2);
 };
 
 /** @param {HTMLCanvasElement} canvas

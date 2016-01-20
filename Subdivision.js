@@ -1,42 +1,26 @@
 /** @constructor
  *  @param {StateGL} stategl
+ *  @param {Surface} surface
  *  @param {function()} onload
  *  @implements {Stage} */
-function Subdivision(stategl, onload) {
+function Subdivision(stategl, surface, onload) {
     var subdivision = this;
     var schedule = new Schedule([
-        new Task("mkBuffers", [], function(oncomplete) {
-            subdivision.mkBuffers(stategl);
-            oncomplete();
-        }),
         new Task("mkProgram", [], function(oncomplete) {
-            subdivision.mkProgram(stategl, oncomplete);
+            subdivision.mkProgram(stategl, surface, oncomplete);
         }),
-        new Task("ready", ["mkBuffers", "mkProgram"], onload)
+        new Task("ready", ["mkProgram"], onload)
     ]);
     schedule.run();
 }
 
-/** @type {WebGLBuffer} */
-Subdivision.prototype.indexBuffer = null;
-
-/** @param {StateGL} stategl */
-Subdivision.prototype.mkBuffers = function(stategl) {
-    var gl = stategl.gl;
-    this.indexBuffer = gl.createBuffer();
-    var indices = [];
-    for (var i = 0; i < this.size / 2; i++)
-        indices[i] = i;
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.indexBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(indices), gl.STATIC_DRAW);
-    this.framebuffer = gl.createFramebuffer();
-};
-
 /** @param {StateGL} stategl
+ *  @param {Surface} surface
  *  @param {function()} onload */
-Subdivision.prototype.mkProgram = function(stategl, onload) {
+Subdivision.prototype.mkProgram = function(stategl, surface, onload) {
     var subdivision = this;
     StateGL.getShaderSources("subdivision", function(sources) {
+        sources[1] = surface.withCustomAndCommon(sources[1]);
         subdivision.program = stategl.mkProgram(sources);
         onload();
     });
@@ -48,7 +32,7 @@ Subdivision.prototype.mkProgram = function(stategl, onload) {
 Subdivision.prototype.render = function(stategl, surface, gl) {
     var texturesIn = surface.texturesIn,
         texturesOut = surface.texturesOut;
-    var numTriangles = this.size / 6;
+    var numTriangles = surface.numIndices / 3;
     var webgl_draw_buffers = stategl["WEBGL_draw_buffers"];
     var program = this.program;
     gl.useProgram(program);
@@ -99,7 +83,7 @@ Subdivision.prototype.render = function(stategl, surface, gl) {
         gl.STATIC_DRAW);
     gl.vertexAttribPointer(0, 4, gl.FLOAT, false, 0, 0);
     // prepare output textures
-    gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, surface.framebuffer);
     for (var i = 0; i < texturesOut.length; i++) {
         gl.bindTexture(gl.TEXTURE_2D, texturesOut[i]);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
@@ -161,8 +145,9 @@ Subdivision.prototype.render = function(stategl, surface, gl) {
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
     gl.deleteBuffer(subdivisionBuffer);
-    return primitivesWritten;
-};
 
-/** @type {number} */
-Subdivision.prototype.size = 0;
+    surface.numIndices = primitivesWritten;
+    var texturesTmp = texturesIn;
+    surface.texturesIn = texturesOut;
+    surface.texturesOut = texturesTmp;
+};

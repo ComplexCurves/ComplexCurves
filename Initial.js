@@ -62,9 +62,7 @@ Initial.prototype.mkBuffers = function(stategl, surface, positions) {
 Initial.prototype.mkProgram = function(stategl, surface, onload) {
     var initial = this;
     StateGL.getShaderSources("initial", function(sources) {
-        sources[1] = [surface.customShaderSrc, surface.commonShaderSrc,
-            sources[1]
-        ].join("\n");
+        sources[1] = surface.withCustomAndCommon(sources[1]);
         initial.program = stategl.mkProgram(sources);
         onload();
     });
