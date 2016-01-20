@@ -50,7 +50,7 @@ Assembly.prototype.render = function(stategl, gl) {
         textureOut = stategl.texturesOut[0];
     var numIndices = this.size / 2;
     var sheets = stategl.sheets; // FIXME
-    var webgl_draw_buffers = stategl.webgl_draw_buffers;
+    var webgl_draw_buffers = stategl["WEBGL_draw_buffers"];
     gl.useProgram(this.program);
 
     var indices = [];

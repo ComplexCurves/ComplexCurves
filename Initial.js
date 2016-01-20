@@ -19,14 +19,10 @@ function Initial(stategl, onload) {
             initial.mkTextures(stategl);
             oncomplete();
         }),
-        new Task("WEBGL_draw_buffers", [], function(oncomplete) {
-            stategl.getWebGLDrawBuffersExtension();
-            oncomplete();
-        }),
         new Task("ready", ["loadModel", "mkBuffers", "mkProgram",
-            "mkTextures",
-            "WEBGL_draw_buffers"
-        ], onload)
+                "mkTextures"
+            ],
+            onload)
     ]);
     schedule.run();
 }
@@ -114,7 +110,7 @@ Initial.prototype.render = function(stategl, gl) {
     var texturesIn = stategl.texturesIn,
         texturesOut = stategl.texturesOut;
     var numIndices = this.size / 2;
-    var webgl_draw_buffers = stategl.webgl_draw_buffers;
+    var webgl_draw_buffers = stategl["WEBGL_draw_buffers"];
     gl.useProgram(this.program);
     gl.enableVertexAttribArray(0);
     gl.enableVertexAttribArray(1);

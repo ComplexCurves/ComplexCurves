@@ -20,11 +20,24 @@ function Surface(stategl, polynomial, depth, onload) {
             surface.customShaderSrc = GLSL.polynomialShaderSource(polynomial);
             oncomplete();
         }),
-        new Task("initial", ["commonShaderSrc", "customShaderSrc"], function(oncomplete) {
-            surface.initial = new Initial(stategl, function() {
-                surface.initial.render(stategl, gl);
+        new Task("OES_texture_float", [], function(oncomplete) {
+            stategl.getExtension("OES_texture_float");
+            if (stategl["OES_texture_float"])
                 oncomplete();
-            });
+        }),
+        new Task("WEBGL_draw_buffers", [], function(oncomplete) {
+            stategl.getExtension("WEBGL_draw_buffers");
+            if (stategl["WEBGL_draw_buffers"])
+                oncomplete();
+        }),
+        new Task("initial", ["commonShaderSrc", "customShaderSrc",
+            "OES_texture_float", "WEBGL_draw_buffers"
+        ], function(oncomplete) {
+            surface.initial = new Initial(stategl, surface,
+                function() {
+                    surface.initial.render(stategl, gl);
+                    oncomplete();
+                });
         }),
         new Task("subdivisionPre", [], function(oncomplete) {
             surface.subdivisionPre = new SubdivisionPre(stategl,

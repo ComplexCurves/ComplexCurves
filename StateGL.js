@@ -24,11 +24,14 @@ StateGL.prototype.fxaa = true;
 /** @type {WebGLProgram} */
 StateGL.prototype.fxaaProgram = null;
 
-StateGL.prototype.getWebGLDrawBuffersExtension = function() {
-    this.webgl_draw_buffers = this.gl.getExtension('WEBGL_draw_buffers');
-    if (!this.webgl_draw_buffers) {
-        alert('WEBGL_draw_buffers not supported on your device');
-        return;
+/** @param {string} name */
+StateGL.prototype.getExtension = function(name) {
+    if (this[name] === undefined) {
+        this[name] = this.gl.getExtension(name);
+        if (!this[name]) {
+            alert('Extension ' + name + ' not supported on your device');
+            return;
+        }
     }
 };
 

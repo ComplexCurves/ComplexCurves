@@ -48,7 +48,7 @@ Subdivision.prototype.render = function(stategl, gl) {
     var texturesIn = stategl.texturesIn,
         texturesOut = stategl.texturesOut;
     var numTriangles = this.size / 6;
-    var webgl_draw_buffers = stategl.webgl_draw_buffers;
+    var webgl_draw_buffers = stategl["WEBGL_draw_buffers"];
     var program = this.program;
     gl.useProgram(program);
 
