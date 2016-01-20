@@ -43,10 +43,11 @@ SubdivisionPre.prototype.mkProgram = function(stategl, onload) {
 };
 
 /** @param {StateGL} stategl
+ *  @param {Surface} surface
  *  @param {WebGLRenderingContext} gl */
-SubdivisionPre.prototype.render = function(stategl, gl) {
-    var textureIn = stategl.texturesIn[0],
-        textureOut = stategl.texturesOut[0];
+SubdivisionPre.prototype.render = function(stategl, surface, gl) {
+    var textureIn = surface.texturesIn[0],
+        textureOut = surface.texturesOut[0];
     var numIndices = this.size / 2;
     gl.useProgram(this.program);
 

@@ -44,10 +44,11 @@ Assembly.prototype.mkProgram = function(stategl, onload) {
 };
 
 /** @param {StateGL} stategl
+ *  @param {Surface} surface
  *  @param {WebGLRenderingContext} gl */
-Assembly.prototype.render = function(stategl, gl) {
-    var texturesIn = stategl.texturesIn,
-        textureOut = stategl.texturesOut[0];
+Assembly.prototype.render = function(stategl, surface, gl) {
+    var texturesIn = surface.texturesIn,
+        textureOut = surface.texturesOut[0];
     var numIndices = this.size / 2;
     var sheets = 2; // FIXME
     var webgl_draw_buffers = stategl["WEBGL_draw_buffers"];

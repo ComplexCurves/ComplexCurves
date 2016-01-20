@@ -9,19 +9,16 @@ function Initial(stategl, surface, onload) {
         new Task("mkProgram", [], function(oncomplete) {
             initial.mkProgram(stategl, surface, oncomplete);
         }),
-        new Task("mkTextures", [], function(oncomplete) {
-            initial.mkTextures(stategl);
-            oncomplete();
-        }),
         new Task("loadModel", [], function(oncomplete) {
             // TODO generate mesh instead?
             initial.loadModel(stategl, "initial.bin", oncomplete);
         }),
         new Task("mkBuffers", ["loadModel"], function(oncomplete) {
             initial.mkBuffers(stategl, initial.positions);
+            surface.numIndices = initial.positions.byteLength / 8;
             oncomplete();
         }),
-        new Task("ready", ["mkBuffers", "mkProgram", "mkTextures"], onload)
+        new Task("ready", ["mkBuffers", "mkProgram"], onload)
     ]);
     schedule.run();
 }
@@ -77,30 +74,6 @@ Initial.prototype.mkProgram = function(stategl, surface, onload) {
     });
 };
 
-/** @param {StateGL} stategl */
-Initial.prototype.mkTextures = function(stategl) {
-    var gl = stategl.gl,
-        texturesIn = [],
-        texturesOut = [];
-    for (var i = 0; i < 5; i++) {
-        texturesIn[i] = gl.createTexture();
-        gl.bindTexture(gl.TEXTURE_2D, texturesIn[i]);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 2048, 2048, 0, gl.RGBA,
-            gl.FLOAT, null);
-        texturesOut[i] = gl.createTexture();
-        gl.bindTexture(gl.TEXTURE_2D, texturesOut[i]);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 2048, 2048, 0, gl.RGBA,
-            gl.FLOAT, null);
-    }
-    gl.bindTexture(gl.TEXTURE_2D, null);
-    stategl.texturesIn = texturesIn;
-    stategl.texturesOut = texturesOut;
-};
-
 /** @type {ArrayBuffer} */
 Initial.prototype.positions = null;
 
@@ -108,10 +81,11 @@ Initial.prototype.positions = null;
 Initial.prototype.positionBuffer = null;
 
 /** @param {StateGL} stategl
+ *  @param {Surface} surface
  *  @param {WebGLRenderingContext} gl */
-Initial.prototype.render = function(stategl, gl) {
-    var texturesIn = stategl.texturesIn,
-        texturesOut = stategl.texturesOut;
+Initial.prototype.render = function(stategl, surface, gl) {
+    var texturesIn = surface.texturesIn,
+        texturesOut = surface.texturesOut;
     var numIndices = this.size / 2;
     var webgl_draw_buffers = stategl["WEBGL_draw_buffers"];
     gl.useProgram(this.program);

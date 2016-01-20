@@ -31,15 +31,21 @@ function Surface(stategl, polynomial, depth, onload) {
             if (stategl["WEBGL_draw_buffers"])
                 oncomplete();
         }),
-        new Task("initial", ["commonShaderSrc", "customShaderSrc",
-            "OES_texture_float", "WEBGL_draw_buffers"
-        ], function(oncomplete) {
+        new Task("mkTextures", ["OES_texture_float", "WEBGL_draw_buffers"],
+        function(oncomplete) {
+            surface.mkTextures(stategl);
+            oncomplete();
+        }),
+        new Task("initial", ["commonShaderSrc", "customShaderSrc", "mkTextures"], function(oncomplete) {
             surface.initial = new Initial(stategl, surface,
                 function() {
-                    surface.initial.render(stategl, gl);
+                    surface.initial.render(stategl, surface, gl);
+                    for (var i = 0; i < 5; i++)
+                        stategl.printTexture(20, surface.texturesOut[i]);
                     oncomplete();
                 });
         }),
+        /*
         new Task("subdivisionPre", [], function(oncomplete) {
             surface.subdivisionPre = new SubdivisionPre(stategl,
                 oncomplete);
@@ -53,8 +59,8 @@ function Surface(stategl, polynomial, depth, onload) {
             "subdivision"
         ], function(oncomplete) {
             for (var i = 0; i < this.depth; i++) {
-                surface.subdivisionPre.render(stategl, gl);
-                surface.subdivision.render(stategl, gl);
+                surface.subdivisionPre.render(stategl, surface, gl);
+                surface.subdivision.render(stategl, surface, gl);
             }
             oncomplete();
         }),
@@ -62,7 +68,7 @@ function Surface(stategl, polynomial, depth, onload) {
             "subdivide"
         ], function(oncomplete) {
             surface.assembly = new Assembly(stategl, function() {
-                surface.assembly.render(stategl, gl);
+                surface.assembly.render(stategl, surface, gl);
                 oncomplete();
             });
         }),
@@ -75,6 +81,8 @@ function Surface(stategl, polynomial, depth, onload) {
         }),
         new Task("ready", ["assembly", "mkBuffers", "mkProgram"],
             onload)
+        */
+        new Task("ready", ["initial"], onload)
     ]);
     schedule.run();
 }
@@ -104,6 +112,33 @@ Surface.prototype.mkProgram = function(stategl, onload) {
         onload();
     });
 };
+
+/** @param {StateGL} stategl */
+Surface.prototype.mkTextures = function(stategl) {
+    var gl = stategl.gl,
+        texturesIn = [],
+        texturesOut = [];
+    for (var i = 0; i < 5; i++) {
+        texturesIn[i] = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, texturesIn[i]);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 2048, 2048, 0, gl.RGBA,
+            gl.FLOAT, null);
+        texturesOut[i] = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, texturesOut[i]);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 2048, 2048, 0, gl.RGBA,
+            gl.FLOAT, null);
+    }
+    gl.bindTexture(gl.TEXTURE_2D, null);
+    this.texturesIn = texturesIn;
+    this.texturesOut = texturesOut;
+};
+
+/** @type {number} */
+Surface.prototype.numIndices = 0;
 
 /** @param {StateGL} stategl
  *  @param {WebGLRenderingContext} gl
