@@ -45,7 +45,7 @@ Initial.prototype.loadModel = function(stategl, file, onload) {
  *  @param {ArrayBuffer} positions */
 Initial.prototype.mkBuffers = function(stategl, surface, positions) {
     var gl = stategl.gl;
-    surface.numIndices = positions.byteLength / (2 * 8);
+    surface.numIndices = positions.byteLength / 8;
     gl.enableVertexAttribArray(0);
     surface.indexBuffer = gl.createBuffer();
     surface.fillIndexBuffer(stategl);
