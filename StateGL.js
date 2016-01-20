@@ -125,7 +125,7 @@ StateGL.prototype.polynomial = null;
  *  @param {WebGLTexture} texture */
 StateGL.prototype.printTexture = function(length, texture) {
     var gl = this.gl;
-    var framebuffer = gl.getParameter(gl.FRAMEBUFFER_BINDING);
+    var framebuffer = /** @type {WebGLFramebuffer} */ (gl.getParameter(gl.FRAMEBUFFER_BINDING));
     var readBuffer = gl.createFramebuffer();
     gl.bindFramebuffer(gl.FRAMEBUFFER, readBuffer);
     gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -140,7 +140,7 @@ StateGL.prototype.printTexture = function(length, texture) {
         null, 0);
     gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
     gl.deleteFramebuffer(readBuffer);
-    console.log(pixels.slice(0, length));
+    console.log(Array.prototype.slice.call(pixels, 0, length));
 }
 
 /** @type {Stage} */
