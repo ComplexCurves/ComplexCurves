@@ -48,11 +48,7 @@ Initial.prototype.mkBuffers = function(stategl, surface, positions) {
     surface.numIndices = positions.byteLength / (2 * 8);
     gl.enableVertexAttribArray(0);
     surface.indexBuffer = gl.createBuffer();
-    var indices = [];
-    for (var i = 0; i < surface.numIndices; i++)
-        indices[i] = i;
-    gl.bindBuffer(gl.ARRAY_BUFFER, surface.indexBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(indices), gl.STATIC_DRAW);
+    surface.fillIndexBuffer(stategl);
     gl.enableVertexAttribArray(1);
     this.positionBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
