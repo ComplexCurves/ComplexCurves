@@ -6,6 +6,13 @@
 function Initial(stategl, surface, onload) {
     var initial = this;
     var schedule = new Schedule([
+        new Task("mkProgram", [], function(oncomplete) {
+            initial.mkProgram(stategl, surface, oncomplete);
+        }),
+        new Task("mkTextures", [], function(oncomplete) {
+            initial.mkTextures(stategl);
+            oncomplete();
+        }),
         new Task("loadModel", [], function(oncomplete) {
             // TODO generate mesh instead?
             initial.loadModel(stategl, "initial.bin", oncomplete);
@@ -14,17 +21,7 @@ function Initial(stategl, surface, onload) {
             initial.mkBuffers(stategl, initial.positions);
             oncomplete();
         }),
-        new Task("mkProgram", [], function(oncomplete) {
-            initial.mkProgram(stategl, surface, oncomplete);
-        }),
-        new Task("mkTextures", [], function(oncomplete) {
-            initial.mkTextures(stategl);
-            oncomplete();
-        }),
-        new Task("ready", ["loadModel", "mkBuffers", "mkProgram",
-                "mkTextures"
-            ],
-            onload)
+        new Task("ready", ["mkBuffers", "mkProgram", "mkTextures"], onload)
     ]);
     schedule.run();
 }
