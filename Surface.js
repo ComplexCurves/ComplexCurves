@@ -96,7 +96,7 @@ Surface.prototype.mkBuffers = function(stategl, positions) {
     var gl = stategl.gl;
     this.indexBuffer = gl.createBuffer();
     var indices = [];
-    for (var i = 0; i < this.size / 2; i++)
+    for (var i = 0; i < this.numIndices; i++)
         indices[i] = i;
     gl.bindBuffer(gl.ARRAY_BUFFER, this.indexBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(indices), gl.STATIC_DRAW);
@@ -150,9 +150,6 @@ Surface.prototype.render = function(stategl, gl, state3d) {
     gl.viewport(0, 0, 800, 800);
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-    gl.drawArrays(gl.TRIANGLES, 0, this.size);
+    gl.drawArrays(gl.TRIANGLES, 0, this.numIndices);
     gl.flush();
 };
-
-/** @type {number} */
-Surface.prototype.size = 0;

@@ -15,7 +15,7 @@ function Initial(stategl, surface, onload) {
         }),
         new Task("mkBuffers", ["loadModel"], function(oncomplete) {
             initial.mkBuffers(stategl, initial.positions);
-            surface.numIndices = initial.positions.byteLength / 8;
+            surface.numIndices = initial.positions.byteLength / (2 * 8);
             oncomplete();
         }),
         new Task("ready", ["mkBuffers", "mkProgram"], onload)
