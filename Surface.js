@@ -54,31 +54,28 @@ function Surface(stategl, polynomial, depth, onload) {
         new Task("subdivide", ["initial", "subdivisionPre", "subdivision"],
             function(oncomplete) {
                 for (var i = 0; i < surface.depth; i++) {
-                    console.log(surface.numIndices);
                     surface.subdivisionPre.render(stategl, surface, gl);
                     surface.subdivision.render(stategl, surface, gl);
-                    for (var j = 0; j < 5; j++)
-                        stategl.printTexture(20, surface.texturesIn[j]);
-                    console.log(surface.numIndices);
                 }
                 oncomplete();
             }),
-        /*
-        new Task("assembly", ["commonShaderSrc", "customShaderSrc",
-            "subdivide"
+        new Task("assembly", ["commonShaderSrc", "customShaderSrc", "subdivide"
         ], function(oncomplete) {
-            surface.assembly = new Assembly(stategl, function() {
+            surface.assembly = new Assembly(stategl, surface, function() {
                 surface.assembly.render(stategl, surface, gl);
+                for (var j = 0; j < 5; j++)
+                    stategl.printTexture(20, surface.texturesIn[j]);
                 oncomplete();
             });
         }),
+        /*
         new Task("mkProgram", [], function(oncomplete) {
             surface.mkProgram(stategl, oncomplete);
         }),
         new Task("ready", ["assembly", "fillIndexBuffer", "mkProgram"],
             onload)
         */
-        new Task("ready", ["subdivide", "STOP"], onload)
+        new Task("ready", ["assembly", "STOP"], onload)
     ]);
     schedule.run();
 }

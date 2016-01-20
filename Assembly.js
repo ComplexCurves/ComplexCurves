@@ -1,43 +1,26 @@
 /** @constructor
  *  @param {StateGL} stategl
+ *  @param {Surface} surface
  *  @param {function()} onload
  *  @implements {Stage} */
-function Assembly(stategl, onload) {
+function Assembly(stategl, surface, onload) {
     var assembly = this;
     var schedule = new Schedule([
-        new Task("mkBuffers", [], function(oncomplete) {
-            assembly.mkBuffers(stategl, null); // FIXME assembly.positions
-            oncomplete();
-        }),
         new Task("mkProgram", [], function(oncomplete) {
-            assembly.mkProgram(stategl, oncomplete);
+            assembly.mkProgram(stategl, surface, oncomplete);
         }),
-        new Task("ready", ["mkBuffers", "mkProgram"], onload)
+        new Task("ready", ["mkProgram"], onload)
     ]);
     schedule.run();
 }
 
-/** @type {WebGLBuffer} */
-Assembly.prototype.indexBuffer = null;
-
 /** @param {StateGL} stategl
- *  @param {ArrayBuffer} positions */
-Assembly.prototype.mkBuffers = function(stategl, positions) {
-    var gl = stategl.gl;
-    this.indexBuffer = gl.createBuffer();
-    var indices = [];
-    for (var i = 0; i < this.size / 2; i++)
-        indices[i] = i;
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.indexBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(indices), gl.STATIC_DRAW);
-    this.framebuffer = gl.createFramebuffer();
-};
-
-/** @param {StateGL} stategl
+ *  @param {Surface} surface
  *  @param {function()} onload */
-Assembly.prototype.mkProgram = function(stategl, onload) {
+Assembly.prototype.mkProgram = function(stategl, surface, onload) {
     var assembly = this;
     StateGL.getShaderSources("assembly", function(sources) {
+        sources[1] = surface.withCustomAndCommon(sources[1]);
         assembly.program = stategl.mkProgram(sources);
         onload();
     });
@@ -49,18 +32,17 @@ Assembly.prototype.mkProgram = function(stategl, onload) {
 Assembly.prototype.render = function(stategl, surface, gl) {
     var texturesIn = surface.texturesIn,
         textureOut = surface.texturesOut[0];
-    var numIndices = this.size / 2;
     var sheets = 2; // FIXME
     var webgl_draw_buffers = stategl["WEBGL_draw_buffers"];
     gl.useProgram(this.program);
 
     var indices = [];
-    for (var i = 0; i < sheets * numIndices; i++)
+    for (var i = 0; i < sheets * surface.numIndices; i++)
         indices[i] = i;
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.indexBuffer);
+    gl.bindBuffer(gl.ARRAY_BUFFER, surface.indexBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(indices), gl.STATIC_DRAW);
     gl.vertexAttribPointer(0, 1, gl.FLOAT, false, 0, 0);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, surface.framebuffer);
     gl.bindTexture(gl.TEXTURE_2D, textureOut);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D,
         textureOut, 0);
@@ -84,7 +66,8 @@ Assembly.prototype.render = function(stategl, surface, gl) {
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D,
         null, 0);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-};
 
-/** @type {number} */
-Assembly.prototype.size = 0;
+    var texturesTmp = surface.texturesIn;
+    surface.texturesIn = surface.texturesOut;
+    surface.texturesOut = texturesTmp;
+};
