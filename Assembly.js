@@ -36,9 +36,13 @@ Assembly.prototype.render = function(stategl, surface, gl) {
     var webgl_draw_buffers = stategl["WEBGL_draw_buffers"];
     gl.useProgram(this.program);
 
+    var numIndicesLoc = gl.getUniformLocation(this.program, 'numIndices');
+    gl.uniform1f(numIndicesLoc, surface.numIndices);
+
     surface.numIndices *= sheets;
     surface.fillIndexBuffer(stategl);
     gl.vertexAttribPointer(0, 1, gl.FLOAT, false, 0, 0);
+
     gl.bindFramebuffer(gl.FRAMEBUFFER, surface.framebuffer);
     gl.bindTexture(gl.TEXTURE_2D, textureOut);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D,
