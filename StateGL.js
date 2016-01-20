@@ -121,6 +121,28 @@ StateGL.prototype.numIndices = 0;
 /** @type {Polynomial} */
 StateGL.prototype.polynomial = null;
 
+/** @param {number} length
+ *  @param {WebGLTexture} texture */
+StateGL.prototype.printTexture = function(length, texture) {
+    var gl = this.gl;
+    var framebuffer = gl.getParameter(gl.FRAMEBUFFER_BINDING);
+    var readBuffer = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, readBuffer);
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D,
+        texture, 0);
+    var pixels = new Float32Array(4 * 2048 * 2048);
+    gl.readPixels(0, 0, 2048, 2048, gl.RGBA, gl.FLOAT, pixels);
+    gl.bindTexture(gl.TEXTURE_2D, null);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D,
+        null, 0);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
+    gl.deleteFramebuffer(readBuffer);
+    console.log(pixels.slice(0, length));
+}
+
 /** @type {Stage} */
 StateGL.prototype.renderer = null;
 
