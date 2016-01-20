@@ -72,14 +72,10 @@ function Surface(stategl, polynomial, depth, onload) {
                 oncomplete();
             });
         }),
-        new Task("mkBuffers", [], function(oncomplete) {
-            surface.mkBuffers(stategl, surface.positions);
-            oncomplete();
-        }),
         new Task("mkProgram", [], function(oncomplete) {
             surface.mkProgram(stategl, oncomplete);
         }),
-        new Task("ready", ["assembly", "mkBuffers", "mkProgram"],
+        new Task("ready", ["assembly", "fillIndexBuffer", "mkProgram"],
             onload)
         */
         new Task("ready", ["initial"], onload)
@@ -90,17 +86,14 @@ function Surface(stategl, polynomial, depth, onload) {
 /** @type {WebGLBuffer} */
 Surface.prototype.indexBuffer = null;
 
-/** @param {StateGL} stategl
- *  @param {ArrayBuffer} positions */
-Surface.prototype.mkBuffers = function(stategl, positions) {
+/** @param {StateGL} stategl */
+Surface.prototype.fillIndexBuffer = function(stategl) {
     var gl = stategl.gl;
-    this.indexBuffer = gl.createBuffer();
     var indices = [];
     for (var i = 0; i < this.numIndices; i++)
         indices[i] = i;
     gl.bindBuffer(gl.ARRAY_BUFFER, this.indexBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(indices), gl.STATIC_DRAW);
-    this.framebuffer = gl.createFramebuffer();
 };
 
 /** @param {StateGL} stategl

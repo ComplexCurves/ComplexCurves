@@ -14,8 +14,7 @@ function Initial(stategl, surface, onload) {
             initial.loadModel(stategl, "initial.bin", oncomplete);
         }),
         new Task("mkBuffers", ["loadModel"], function(oncomplete) {
-            initial.mkBuffers(stategl, initial.positions);
-            surface.numIndices = initial.positions.byteLength / (2 * 8);
+            initial.mkBuffers(stategl, surface, initial.positions);
             oncomplete();
         }),
         new Task("ready", ["mkBuffers", "mkProgram"], onload)
@@ -42,21 +41,22 @@ Initial.prototype.loadModel = function(stategl, file, onload) {
 };
 
 /** @param {StateGL} stategl
+ *  @param {Surface} surface
  *  @param {ArrayBuffer} positions */
-Initial.prototype.mkBuffers = function(stategl, positions) {
+Initial.prototype.mkBuffers = function(stategl, surface, positions) {
     var gl = stategl.gl;
-    this.size = positions.byteLength / 8;
+    surface.numIndices = positions.byteLength / (2 * 8);
     gl.enableVertexAttribArray(0);
+    surface.indexBuffer = gl.createBuffer();
+    var indices = [];
+    for (var i = 0; i < surface.numIndices; i++)
+        indices[i] = i;
+    gl.bindBuffer(gl.ARRAY_BUFFER, surface.indexBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(indices), gl.STATIC_DRAW);
+    gl.enableVertexAttribArray(1);
     this.positionBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
-    gl.enableVertexAttribArray(1);
-    this.indexBuffer = gl.createBuffer();
-    var indices = [];
-    for (var i = 0; i < this.size / 2; i++)
-        indices[i] = i;
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.indexBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(indices), gl.STATIC_DRAW);
     this.framebuffer = gl.createFramebuffer();
 };
 
@@ -86,15 +86,14 @@ Initial.prototype.positionBuffer = null;
 Initial.prototype.render = function(stategl, surface, gl) {
     var texturesIn = surface.texturesIn,
         texturesOut = surface.texturesOut;
-    var numIndices = this.size / 2;
     var webgl_draw_buffers = stategl["WEBGL_draw_buffers"];
     gl.useProgram(this.program);
     gl.enableVertexAttribArray(0);
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
-    gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, surface.indexBuffer);
+    gl.vertexAttribPointer(0, 1, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(1);
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.indexBuffer);
-    gl.vertexAttribPointer(1, 1, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
+    gl.vertexAttribPointer(1, 2, gl.FLOAT, false, 0, 0);
     gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
     for (var i = 0; i < texturesOut.length; i++) {
         gl.bindTexture(gl.TEXTURE_2D, texturesOut[i]);
@@ -114,7 +113,7 @@ Initial.prototype.render = function(stategl, surface, gl) {
     ]);
     gl.disable(gl.DEPTH_TEST);
     gl.viewport(0, 0, 2048, 2048);
-    gl.drawArrays(gl.POINTS, 0, numIndices);
+    gl.drawArrays(gl.POINTS, 0, surface.numIndices);
     gl.flush();
 
     webgl_draw_buffers.drawBuffersWEBGL([
@@ -128,6 +127,3 @@ Initial.prototype.render = function(stategl, surface, gl) {
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
     gl.disableVertexAttribArray(1);
 };
-
-/** @type {number} */
-Initial.prototype.size = 0;

@@ -34,7 +34,7 @@ SingularityExplorer.fromFile = function(canvas, file) {
             SingularityExplorer.renderSurface(state3d, gl);
             oncomplete();
         }),
-        new Task("registerEventHandlers", ["stategl"], function(
+        new Task("registerEventHandlers", ["renderSurface"], function(
             oncomplete) {
             SingularityExplorer.registerEventHandlers(canvas,
                 state3d, gl);
@@ -66,7 +66,7 @@ SingularityExplorer.fromPolynomial = function(canvas, polynomial, depth) {
             SingularityExplorer.renderSurface(state3d, gl);
             oncomplete();
         }),
-        new Task("registerEventHandlers", ["stategl"], function(
+        new Task("registerEventHandlers", ["renderSurface"], function(
             oncomplete) {
             SingularityExplorer.registerEventHandlers(canvas,
                 state3d, gl);

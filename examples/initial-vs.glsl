@@ -3,8 +3,8 @@ precision highp float;
 #else
 precision mediump float;
 #endif
-attribute vec2 position;
 attribute float index;
+attribute vec2 position;
 varying vec2 vPosition;
 void main (void) {
     vPosition = position;
