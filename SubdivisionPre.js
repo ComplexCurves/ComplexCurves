@@ -29,7 +29,6 @@ SubdivisionPre.prototype.mkBuffers = function(stategl) {
         indices[i] = i;
     gl.bindBuffer(gl.ARRAY_BUFFER, this.indexBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(indices), gl.STATIC_DRAW);
-    this.framebuffer = gl.createFramebuffer();
 };
 
 /** @param {StateGL} stategl
@@ -57,7 +56,7 @@ SubdivisionPre.prototype.render = function(stategl, surface, gl) {
     gl.bindBuffer(gl.ARRAY_BUFFER, this.indexBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(indices), gl.STATIC_DRAW);
     gl.vertexAttribPointer(0, 1, gl.FLOAT, false, 0, 0);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, surface.framebuffer);
     gl.bindTexture(gl.TEXTURE_2D, textureOut);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D,
         textureOut, 0);

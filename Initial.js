@@ -57,7 +57,7 @@ Initial.prototype.mkBuffers = function(stategl, surface, positions) {
     this.positionBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
-    this.framebuffer = gl.createFramebuffer();
+    surface.framebuffer = gl.createFramebuffer();
 };
 
 /** @param {StateGL} stategl
@@ -94,7 +94,7 @@ Initial.prototype.render = function(stategl, surface, gl) {
     gl.enableVertexAttribArray(1);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
     gl.vertexAttribPointer(1, 2, gl.FLOAT, false, 0, 0);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
+    gl.bindFramebuffer(gl.FRAMEBUFFER, surface.framebuffer);
     for (var i = 0; i < texturesOut.length; i++) {
         gl.bindTexture(gl.TEXTURE_2D, texturesOut[i]);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
