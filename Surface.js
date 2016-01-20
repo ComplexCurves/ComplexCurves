@@ -44,10 +44,11 @@ function Surface(stategl, polynomial, depth, onload) {
             surface.subdivisionPre = new SubdivisionPre(stategl,
                 oncomplete);
         }),
-        new Task("subdivision", ["commonShaderSrc", "customShaderSrc"], function(oncomplete) {
-            surface.subdivision = new Subdivision(stategl,
-                oncomplete);
-        }),
+        new Task("subdivision", ["commonShaderSrc", "customShaderSrc"],
+            function(oncomplete) {
+                surface.subdivision = new Subdivision(stategl,
+                    oncomplete);
+            }),
         new Task("subdivide", ["initial", "subdivisionPre",
             "subdivision"
         ], function(oncomplete) {
@@ -57,7 +58,9 @@ function Surface(stategl, polynomial, depth, onload) {
             }
             oncomplete();
         }),
-        new Task("assembly", ["commonShaderSrc", "customShaderSrc", "subdivide"], function(oncomplete) {
+        new Task("assembly", ["commonShaderSrc", "customShaderSrc",
+            "subdivide"
+        ], function(oncomplete) {
             surface.assembly = new Assembly(stategl, function() {
                 surface.assembly.render(stategl, gl);
                 oncomplete();
