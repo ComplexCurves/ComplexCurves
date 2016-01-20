@@ -7,6 +7,7 @@ function Initial(stategl, surface, onload) {
     var initial = this;
     var schedule = new Schedule([
         new Task("loadModel", [], function(oncomplete) {
+            // TODO generate mesh instead?
             initial.loadModel(stategl, "initial.bin", oncomplete);
         }),
         new Task("mkBuffers", ["loadModel"], function(oncomplete) {
