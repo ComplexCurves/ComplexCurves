@@ -1,8 +1,9 @@
 /** @constructor
  *  @param {StateGL} stategl
+ *  @param {Surface} surface
  *  @param {function()} onload
  *  @implements {Stage} */
-function Initial(stategl, onload) {
+function Initial(stategl, surface, onload) {
     var initial = this;
     var schedule = new Schedule([
         new Task("loadModel", [], function(oncomplete) {
@@ -13,7 +14,7 @@ function Initial(stategl, onload) {
             oncomplete();
         }),
         new Task("mkProgram", [], function(oncomplete) {
-            initial.mkProgram(stategl, oncomplete);
+            initial.mkProgram(stategl, surface, oncomplete);
         }),
         new Task("mkTextures", [], function(oncomplete) {
             initial.mkTextures(stategl);
@@ -65,10 +66,14 @@ Initial.prototype.mkBuffers = function(stategl, positions) {
 };
 
 /** @param {StateGL} stategl
+ *  @param {Surface} surface
  *  @param {function()} onload */
-Initial.prototype.mkProgram = function(stategl, onload) {
+Initial.prototype.mkProgram = function(stategl, surface, onload) {
     var initial = this;
     StateGL.getShaderSources("initial", function(sources) {
+        sources[1] = [surface.customShaderSrc, surface.commonShaderSrc,
+            sources[1]
+        ].join("\n");
         initial.program = stategl.mkProgram(sources);
         onload();
     });
