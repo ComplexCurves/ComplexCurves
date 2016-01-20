@@ -1,6 +1,19 @@
 var SingularityExplorer = {};
 
 /** @param {HTMLCanvasElement} canvas
+ *  @param {string} equation */
+SingularityExplorer.fromEquation = function(canvas, equation) {
+    var p = new Polynomial([new Term(Complex.real(-1), new Monomial({
+            x: 1
+        })),
+        new Term(Complex.one(), new Monomial({
+            y: 2
+        }))
+    ]);
+    SingularityExplorer.fromPolynomial(canvas, p, 8);
+};
+
+/** @param {HTMLCanvasElement} canvas
  *  @param {string} file */
 SingularityExplorer.fromFile = function(canvas, file) {
     var state3d = State3D.topView(false);
@@ -156,4 +169,5 @@ SingularityExplorer.renderSurface = function(st, gl) {
 };
 
 window['SingularityExplorer'] = SingularityExplorer;
+window['SingularityExplorer']['fromEquation'] = SingularityExplorer.fromEquation;
 window['SingularityExplorer']['fromFile'] = SingularityExplorer.fromFile;
