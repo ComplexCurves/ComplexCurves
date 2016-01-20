@@ -14,7 +14,7 @@ se_mods = Assembly CachedSurface Complex GLSL Initial Matrix Misc Polynomial \
 se_srcs = $(se_mods:%=%.js)
 
 JAVA=java
-CLOSURE=$(JAVA) -jar compiler.jar
+CLOSURE=$(JAVA) -jar closure-compiler-v20151216.jar
 se_closure_level = ADVANCED
 se_closure_warnings = VERBOSE
 se_closure_args = \
