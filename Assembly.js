@@ -36,11 +36,8 @@ Assembly.prototype.render = function(stategl, surface, gl) {
     var webgl_draw_buffers = stategl["WEBGL_draw_buffers"];
     gl.useProgram(this.program);
 
-    var indices = [];
-    for (var i = 0; i < sheets * surface.numIndices; i++)
-        indices[i] = i;
-    gl.bindBuffer(gl.ARRAY_BUFFER, surface.indexBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(indices), gl.STATIC_DRAW);
+    surface.numIndices *= sheets;
+    surface.fillIndexBuffer(stategl);
     gl.vertexAttribPointer(0, 1, gl.FLOAT, false, 0, 0);
     gl.bindFramebuffer(gl.FRAMEBUFFER, surface.framebuffer);
     gl.bindTexture(gl.TEXTURE_2D, textureOut);
@@ -48,7 +45,7 @@ Assembly.prototype.render = function(stategl, surface, gl) {
         textureOut, 0);
     gl.bindTexture(gl.TEXTURE_2D, null);
     var texIs = [];
-    for (i = 0; i < texturesIn.length; i++) {
+    for (var i = 0; i < texturesIn.length; i++) {
         gl.activeTexture(gl.TEXTURE0 + i);
         gl.bindTexture(gl.TEXTURE_2D, texturesIn[i]);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
@@ -61,7 +58,7 @@ Assembly.prototype.render = function(stategl, surface, gl) {
     gl.uniform1iv(samplersLocation, texIs);
     gl.disable(gl.DEPTH_TEST);
     gl.viewport(0, 0, 2048, 2048);
-    gl.drawArrays(gl.POINTS, 0, indices.length);
+    gl.drawArrays(gl.POINTS, 0, surface.numIndices);
     gl.flush();
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D,
         null, 0);

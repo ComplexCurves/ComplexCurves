@@ -68,14 +68,10 @@ function Surface(stategl, polynomial, depth, onload) {
                 oncomplete();
             });
         }),
-        /*
         new Task("mkProgram", [], function(oncomplete) {
             surface.mkProgram(stategl, oncomplete);
         }),
-        new Task("ready", ["assembly", "fillIndexBuffer", "mkProgram"],
-            onload)
-        */
-        new Task("ready", ["assembly", "STOP"], onload)
+        new Task("ready", ["assembly", "mkProgram"], onload)
     ]);
     schedule.run();
 }
@@ -101,6 +97,7 @@ Surface.prototype.fillIndexBuffer = function(stategl) {
 Surface.prototype.mkProgram = function(stategl, onload) {
     var surface = this;
     StateGL.getShaderSources("surface", function(sources) {
+        sources[1] = surface.withCustomAndCommon(sources[1]);
         surface.program = stategl.mkProgram(sources);
         onload();
     });
