@@ -118,9 +118,9 @@ Initial.prototype.render = function(stategl, gl) {
     var webgl_draw_buffers = stategl["WEBGL_draw_buffers"];
     gl.useProgram(this.program);
     gl.enableVertexAttribArray(0);
-    gl.enableVertexAttribArray(1);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
     gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(1);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.indexBuffer);
     gl.vertexAttribPointer(1, 1, gl.FLOAT, false, 0, 0);
     gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);

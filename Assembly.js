@@ -6,7 +6,7 @@ function Assembly(stategl, onload) {
     var assembly = this;
     var schedule = new Schedule([
         new Task("mkBuffers", [], function(oncomplete) {
-            assembly.mkBuffers(stategl, assembly.positions);
+            assembly.mkBuffers(stategl, null); // FIXME assembly.positions
             oncomplete();
         }),
         new Task("mkProgram", [], function(oncomplete) {
@@ -49,7 +49,7 @@ Assembly.prototype.render = function(stategl, gl) {
     var texturesIn = stategl.texturesIn,
         textureOut = stategl.texturesOut[0];
     var numIndices = this.size / 2;
-    var sheets = stategl.sheets; // FIXME
+    var sheets = 2; // FIXME
     var webgl_draw_buffers = stategl["WEBGL_draw_buffers"];
     gl.useProgram(this.program);
 
