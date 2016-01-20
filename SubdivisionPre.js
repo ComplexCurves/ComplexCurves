@@ -53,6 +53,10 @@ SubdivisionPre.prototype.render = function(stategl, surface, gl) {
         null, 0);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
+
+    var textureTmp = textureIn;
+    surface.texturesIn[0] = textureOut;
+    surface.texturesOut[0] = textureTmp;
 };
 
 /** @type {number} */

@@ -122,4 +122,8 @@ Initial.prototype.render = function(stategl, surface, gl) {
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
     gl.disableVertexAttribArray(1);
+
+    var texturesTmp = texturesIn;
+    surface.texturesIn = texturesOut;
+    surface.texturesOut = texturesTmp;
 };
