@@ -12,9 +12,9 @@ function Task(name, dependencies, action) {
  *  @constructor */
 function Schedule(tasks) {
     this.tasks = tasks;
+    this.completed = {};
+    this.running = {};
 }
-
-Schedule.prototype.completed = {};
 
 /** @param {Task} task
  * @return {boolean} */
@@ -33,8 +33,6 @@ Schedule.prototype.isTaskRunnable = function(task) {
             return false;
     return true;
 };
-
-Schedule.prototype.running = {};
 
 Schedule.prototype.run = function() {
     var tasks = this.tasks;
