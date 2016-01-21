@@ -32,11 +32,13 @@ function Surface(stategl, polynomial, depth, onload) {
                 oncomplete();
         }),
         new Task("mkTextures", ["OES_texture_float", "WEBGL_draw_buffers"],
-        function(oncomplete) {
-            surface.mkTextures(stategl);
-            oncomplete();
-        }),
-        new Task("initial", ["commonShaderSrc", "customShaderSrc", "mkTextures"], function(oncomplete) {
+            function(oncomplete) {
+                surface.mkTextures(stategl);
+                oncomplete();
+            }),
+        new Task("initial", ["commonShaderSrc", "customShaderSrc",
+            "mkTextures"
+        ], function(oncomplete) {
             surface.initial = new Initial(stategl, surface,
                 function() {
                     surface.initial.render(stategl, surface, gl);
@@ -44,7 +46,8 @@ function Surface(stategl, polynomial, depth, onload) {
                 });
         }),
         new Task("subdivisionPre", ["initial"], function(oncomplete) {
-            surface.subdivisionPre = new SubdivisionPre(stategl, oncomplete);
+            surface.subdivisionPre = new SubdivisionPre(stategl,
+                oncomplete);
         }),
         new Task("subdivision", ["commonShaderSrc", "customShaderSrc"],
             function(oncomplete) {
@@ -67,11 +70,14 @@ function Surface(stategl, polynomial, depth, onload) {
             oncomplete();
         }),
         new Task("assembly", ["commonShaderSrc", "customShaderSrc", "subdivide",
-        "sheets"], function(oncomplete) {
-            surface.assembly = new Assembly(stategl, surface, function() {
-                surface.assembly.render(stategl, surface, gl);
-                oncomplete();
-            });
+            "sheets"
+        ], function(oncomplete) {
+            surface.assembly = new Assembly(stategl, surface,
+                function() {
+                    surface.assembly.render(stategl, surface,
+                        gl);
+                    oncomplete();
+                });
         }),
         new Task("mkProgram", [], function(oncomplete) {
             surface.mkProgram(stategl, oncomplete);

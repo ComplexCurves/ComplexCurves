@@ -27,20 +27,17 @@ SingularityExplorer.fromFile = function(canvas, file) {
             });
         }),
         new Task("cachedSurface", ["stategl"], function(oncomplete) {
-            gl.renderer = new CachedSurface(gl, file,
-                oncomplete);
+            gl.renderer = new CachedSurface(gl, file, oncomplete);
         }),
-        new Task("renderSurface", ["cachedSurface"], function(
-            oncomplete) {
+        new Task("renderSurface", ["cachedSurface"], function(oncomplete) {
             SingularityExplorer.renderSurface(state3d, gl);
             oncomplete();
         }),
-        new Task("registerEventHandlers", ["renderSurface"], function(
-            oncomplete) {
-            SingularityExplorer.registerEventHandlers(canvas,
-                state3d, gl);
-            oncomplete();
-        })
+        new Task("registerEventHandlers", ["renderSurface"],
+            function(oncomplete) {
+                SingularityExplorer.registerEventHandlers(canvas, state3d, gl);
+                oncomplete();
+            })
     ]);
     schedule.run();
 };
@@ -59,20 +56,17 @@ SingularityExplorer.fromPolynomial = function(canvas, polynomial, depth) {
             });
         }),
         new Task("surface", ["stategl"], function(oncomplete) {
-            gl.renderer = new Surface(gl, polynomial, depth,
-                oncomplete);
+            gl.renderer = new Surface(gl, polynomial, depth, oncomplete);
         }),
-        new Task("renderSurface", ["surface"], function(
-            oncomplete) {
+        new Task("renderSurface", ["surface"], function(oncomplete) {
             SingularityExplorer.renderSurface(state3d, gl);
             oncomplete();
         }),
-        new Task("registerEventHandlers", ["renderSurface"], function(
-            oncomplete) {
-            SingularityExplorer.registerEventHandlers(canvas,
-                state3d, gl);
-            oncomplete();
-        })
+        new Task("registerEventHandlers", ["renderSurface"],
+            function(oncomplete) {
+                SingularityExplorer.registerEventHandlers(canvas, state3d, gl);
+                oncomplete();
+            })
     ]);
     schedule.run();
 };

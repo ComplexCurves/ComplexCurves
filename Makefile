@@ -1,7 +1,7 @@
 all: SingularityExplorer
 
 beautify:
-	js-beautify -r -f *.js
+	js-beautify --max-preserve-newlines 3 --end-with-newline -r -f *.js
 
 clean:
 	$(RM) -r build
