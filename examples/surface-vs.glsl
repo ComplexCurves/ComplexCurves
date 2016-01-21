@@ -8,6 +8,7 @@ uniform mat4 v;
 uniform mat4 p;
 uniform sampler2D sampler;
 attribute float index;
+varying vec4 vPos;
 varying vec2 v_value;
 const float w = 2048.0, h = 2048.0;
 vec2 uvPosition (in float w, in float h, in float i) {
@@ -16,6 +17,7 @@ vec2 uvPosition (in float w, in float h, in float i) {
 void main (void)
 {
     vec4 posValue = texture2D (sampler, uvPosition (w, h, index));
+    vPos = vec4 (posValue.xyz, 1.0);
     v_value = posValue.zw;
-    gl_Position = p * v * m * vec4 (posValue.xyz, 1.0);
+    gl_Position = p * v * m * vPos;
 }

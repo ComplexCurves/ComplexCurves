@@ -63,8 +63,6 @@ function Surface(stategl, polynomial, depth, onload) {
         ], function(oncomplete) {
             surface.assembly = new Assembly(stategl, surface, function() {
                 surface.assembly.render(stategl, surface, gl);
-                for (var j = 0; j < 5; j++)
-                    stategl.printTexture(20, surface.texturesIn[j]);
                 oncomplete();
             });
         }),
@@ -150,7 +148,6 @@ Surface.prototype.render = function(stategl, gl, state3d) {
 
     this.fillIndexBuffer(stategl);
     gl.vertexAttribPointer(0, 1, gl.FLOAT, false, 0, 0);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     gl.enable(gl.DEPTH_TEST);
     gl.viewport(0, 0, 800, 800);
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
