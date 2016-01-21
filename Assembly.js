@@ -32,14 +32,13 @@ Assembly.prototype.mkProgram = function(stategl, surface, onload) {
 Assembly.prototype.render = function(stategl, surface, gl) {
     var texturesIn = surface.texturesIn,
         textureOut = surface.texturesOut[0];
-    var sheets = 2; // FIXME
     var webgl_draw_buffers = stategl["WEBGL_draw_buffers"];
     gl.useProgram(this.program);
 
     var numIndicesLoc = gl.getUniformLocation(this.program, 'numIndices');
     gl.uniform1f(numIndicesLoc, surface.numIndices);
 
-    surface.numIndices *= sheets;
+    surface.numIndices *= surface.sheets;
     surface.fillIndexBuffer(stategl);
     gl.vertexAttribPointer(0, 1, gl.FLOAT, false, 0, 0);
 

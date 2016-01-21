@@ -59,8 +59,15 @@ function Surface(stategl, polynomial, depth, onload) {
                 }
                 oncomplete();
             }),
-        new Task("assembly", ["commonShaderSrc", "customShaderSrc", "subdivide"
-        ], function(oncomplete) {
+        new Task("sheets", [], function(oncomplete) {
+            var p = surface.polynomial;
+            var vars = p.variableList();
+            var vy = vars.length === 0 ? "y" : vars[vars.length - 1];
+            surface.sheets = p.degree(vy);
+            oncomplete();
+        }),
+        new Task("assembly", ["commonShaderSrc", "customShaderSrc", "subdivide",
+        "sheets"], function(oncomplete) {
             surface.assembly = new Assembly(stategl, surface, function() {
                 surface.assembly.render(stategl, surface, gl);
                 oncomplete();
