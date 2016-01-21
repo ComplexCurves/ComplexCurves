@@ -1,8 +1,9 @@
 var SingularityExplorer = {};
 
 /** @param {HTMLCanvasElement} canvas
- *  @param {string} equation */
-SingularityExplorer.fromEquation = function(canvas, equation) {
+ *  @param {string} equation
+ *  @param {number} depth */
+SingularityExplorer.fromEquation = function(canvas, equation, depth) {
     var p = new Polynomial([new Term(Complex.real(-1), new Monomial({
             x: 1
         })),
@@ -10,7 +11,7 @@ SingularityExplorer.fromEquation = function(canvas, equation) {
             y: 2
         }))
     ]);
-    SingularityExplorer.fromPolynomial(canvas, p, 2);
+    SingularityExplorer.fromPolynomial(canvas, p, depth);
 };
 
 /** @param {HTMLCanvasElement} canvas
