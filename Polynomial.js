@@ -329,16 +329,23 @@ Polynomial.prototype.neg = function() {
     return new Polynomial(ts);
 };
 
-/** @param {number} e
+/** @param {Polynomial} p
+ *  @param {number} e
  *  @return {Polynomial} */
-Polynomial.prototype.pow = function(e) {
-    var p = this;
+Polynomial.pow = function(p, e) {
+    var res = p;
     if (e > Math.floor(e))
         console.error("Non-integer power of Polynomial!");
     // TODO use fast exponentiation
     for (var i = e; i > 1; i--)
-        p = Polynomial.mul(p, this);
-    return p;
+        res = Polynomial.mul(res, p);
+    return res;
+};
+
+/** @param {number} e
+ *  @return {Polynomial} */
+Polynomial.prototype.pow = function(e) {
+    return Polynomial.pow(this, e);
 };
 
 /** @param {Array<Complex>} cs
@@ -393,6 +400,19 @@ Polynomial.roots = function(cs) {
         roots[n - 1] = qroots[1];
     }
     return roots; // TODO sort?
+};
+
+/** @param {Polynomial} p
+ *  @param {Polynomial} q
+ *  @return {Polynomial} */
+Polynomial.sub = function(p, q) {
+    return Polynomial.add(p, q.neg());
+};
+
+/** @param {Polynomial} p
+ *  @return {Polynomial} */
+Polynomial.prototype.sub = function(p) {
+    return Polynomial.sub(this, p);
 };
 
 /** @param {string} v
