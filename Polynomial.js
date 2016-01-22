@@ -50,16 +50,12 @@ Term.add = function(a, b) {
 Term.mul = function(a, b) {
     var monomial = {};
     var oa = a.monomial.value,
-        ob = a.monomial.value;
+        ob = b.monomial.value;
     for (var key in oa) {
-        monomial[key] = oa[key];
-        if (ob.hasOwnProperty(key))
-            monomial[key] += ob[key];
+        monomial[key] = oa[key] + (ob[key] || 0);
     }
-    for (key in ob) {
-        monomial[key] = ob[key];
-        if (oa.hasOwnProperty(key))
-            monomial[key] += oa[key];
+    for (var key in ob) {
+        monomial[key] = ob[key] + (oa[key] || 0);
     }
     return new Term(Complex.mul(a.coefficient, b.coefficient),
         new Monomial(monomial));
