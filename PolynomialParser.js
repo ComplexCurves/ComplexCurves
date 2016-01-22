@@ -1,5 +1,44 @@
 function PolynomialParser() {};
 
+PolynomialParser.eval = function(tree) {
+    var type = tree.type;
+    var value = tree.value;
+    var first, second;
+    if (type === "infix") {
+        first = PolynomialParser.eval(tree.first);
+        second = PolynomialParser.eval(tree.second);
+        if (value === "+")
+            return Polynomial.add(first, second);
+        else if (value === "-")
+            return Polynomial.sub(first, second);
+        else if (value === "*")
+            return Polynomial.mul(first, second);
+        else if (value === "^") {
+            if (second.isConstant()) {
+                var s = second.constant();
+                if (s.re >= 0 && s.im === 0)
+                    return Polynomial.pow(first, s.re);
+            }
+            console.error("Illegal exponent");
+        } else
+            console.error("Infix operator '" + value + "' not implemented");
+    } else if (type === "prefix") {
+        first = PolynomialParser.eval(tree.first);
+        if (value === "+")
+            return first;
+        else if (value === "-")
+            return first.neg();
+        else
+            console.error("Prefix operator '" + value + "' not implemented");
+    } else if (type === "number") {
+        return Polynomial.real(parseFloat(value));
+    } else if (type === "variable")
+        return Polynomial.variable(value);
+    else if (type === "imaginary")
+        return Polynomial.complex(new Complex(0, 1));
+    return null;
+};
+
 /** @param {string} str */
 PolynomialParser.parse = function(str) {
     var tokens = PolynomialParser.tokenize(str);
@@ -222,3 +261,4 @@ PolynomialParser.tokenize = function(str) {
 
 window['PolynomialParser'] = PolynomialParser;
 window['PolynomialParser']['parse'] = PolynomialParser.parse;
+window['PolynomialParser']['eval'] = PolynomialParser.eval;
