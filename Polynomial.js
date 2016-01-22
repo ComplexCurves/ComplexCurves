@@ -120,23 +120,10 @@ Polynomial.prototype.add = function(p) {
     return Polynomial.add(this, p);
 };
 
-/** @param {Polynomial} p
- *  @param {Polynomial} q
+/** @param {Complex} z
  *  @return {Polynomial} */
-Polynomial.mul = function(p, q) {
-    var ps = p.terms,
-        qs = q.terms;
-    var terms = [];
-    for (var i = 0; i < ps.length; i++)
-        for (var j = 0; j < qs.length; j++)
-            terms.push(Term.mul(ps[i], qs[j]));
-    return new Polynomial(Term.reduce(terms));
-};
-
-/** @param {Polynomial} p
- *  @return {Polynomial} */
-Polynomial.prototype.mul = function(p) {
-    return Polynomial.mul(this, p);
+Polynomial.complex = function(z) {
+    return new Polynomial([new Term(z, new Monomial({}))]);
 };
 
 /** j-th coefficient of a Polynomial in a given variable
@@ -318,6 +305,25 @@ Polynomial.prototype.leading = function(v) {
     return this.coefficient(v, this.degree(v));
 };
 
+/** @param {Polynomial} p
+ *  @param {Polynomial} q
+ *  @return {Polynomial} */
+Polynomial.mul = function(p, q) {
+    var ps = p.terms,
+        qs = q.terms;
+    var terms = [];
+    for (var i = 0; i < ps.length; i++)
+        for (var j = 0; j < qs.length; j++)
+            terms.push(Term.mul(ps[i], qs[j]));
+    return new Polynomial(Term.reduce(terms));
+};
+
+/** @param {Polynomial} p
+ *  @return {Polynomial} */
+Polynomial.prototype.mul = function(p) {
+    return Polynomial.mul(this, p);
+};
+
 /** @return {Polynomial} */
 Polynomial.prototype.neg = function() {
     var terms = this.terms;
@@ -325,6 +331,18 @@ Polynomial.prototype.neg = function() {
     for (var i = 0; i < terms.length; i++)
         ts.push(Term.neg(terms[i]));
     return new Polynomial(ts);
+};
+
+/** @param {number} e
+ *  @return {Polynomial} */
+Polynomial.prototype.pow = function(e) {
+    var p = this;
+    if (e > Math.floor(e))
+        console.error("Non-integer power of Polynomial!");
+    // TODO use fast exponentiation
+    for (var i = e; i > 1; i--)
+        p = Polynomial.mul(p, this);
+    return p;
 };
 
 /** @param {Array<Complex>} cs
@@ -342,6 +360,12 @@ Polynomial.quadratic_roots = function(cs) {
     return [Complex.div(Complex.sub(r, b), Complex.mul(Complex.real(2), a)),
         Complex.div(Complex.mul(Complex.real(2), c), Complex.sub(r, b))
     ];
+};
+
+/** @param {number} x
+ *  @return {Polynomial} */
+Polynomial.real = function(x) {
+    return new Polynomial([new Term(Complex.real(x), new Monomial({}))]);
 };
 
 /** @param {string} v
@@ -401,6 +425,14 @@ Polynomial.sylvester = function(v, p, q) {
     for (var j = 0; j < m; j++)
         ms.push(shift(q_, j));
     return new Matrix(ms);
+};
+
+/** @param {number} v
+ *  @return {Polynomial} */
+Polynomial.variable = function(v) {
+    var m = {};
+    m[v] = 1;
+    return new Polynomial([new Term(Complex.one(), new Monomial(m))]);
 };
 
 /** @return {Array<string>} */
