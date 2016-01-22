@@ -333,11 +333,11 @@ Polynomial.prototype.neg = function() {
  *  @param {number} e
  *  @return {Polynomial} */
 Polynomial.pow = function(p, e) {
-    var res = p;
+    var res = Polynomial.real(1);
     if (e > Math.floor(e))
         console.error("Non-integer power of Polynomial!");
     // TODO use fast exponentiation
-    for (var i = e; i > 1; i--)
+    for (var i = e; i > 0; i--)
         res = Polynomial.mul(res, p);
     return res;
 };
