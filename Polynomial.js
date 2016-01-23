@@ -386,7 +386,7 @@ Polynomial.roots = function(cs) {
     var cs_orig = cs;
     var n = cs.length - 1;
     if (n === 1)
-        roots[0] = Complex.div(cs[0], cs[1]).neg();
+        roots[0] = Complex.div(cs[1], cs[0]).neg();
     else if (n === 2)
         roots = Polynomial.quadratic_roots(cs);
     else if (n > 2) {
