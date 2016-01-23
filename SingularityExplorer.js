@@ -4,13 +4,7 @@ var SingularityExplorer = {};
  *  @param {string} equation
  *  @param {number} depth */
 SingularityExplorer.fromEquation = function(canvas, equation, depth) {
-    var p = new Polynomial([new Term(Complex.real(-1), new Monomial({
-            x: 1
-        })),
-        new Term(Complex.one(), new Monomial({
-            y: 2
-        }))
-    ]);
+    var p = PolynomialParser.eval(PolynomialParser.parse(equation));
     SingularityExplorer.fromPolynomial(canvas, p, depth);
 };
 
