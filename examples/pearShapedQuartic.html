@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<title>Singularity Explorer</title>
+<link rel="stylesheet" type="text/css" href="SingularityExplorer.css" />
+<script type="text/javascript" src="../build/SingularityExplorer.js"></script>
+<script type="text/javascript">
+document.addEventListener ("DOMContentLoaded", function () {
+    var canvas = document.createElement('canvas');
+    canvas.width = 800;
+    canvas.height = 800;
+    canvas.style.width = "500px";
+    canvas.style.height = "500px";
+    document.body.appendChild(canvas);
+    SingularityExplorer.fromEquation(canvas, 'y^4-2*y^3+1^2*x^2', 8);
+}, false);
+</script>
+</head>
+<body>
+</body>
+</html>
