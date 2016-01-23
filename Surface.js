@@ -88,10 +88,10 @@ function Surface(stategl, polynomial, depth, onload) {
 }
 
 /** @type {WebGLFramebuffer} */
-Surface.prototype.frameBuffer;
+Surface.prototype.frameBuffer = null;
 
 /** @type {WebGLBuffer} */
-Surface.prototype.indexBuffer;
+Surface.prototype.indexBuffer = null;
 
 /** @param {StateGL} stategl */
 Surface.prototype.fillIndexBuffer = function(stategl) {

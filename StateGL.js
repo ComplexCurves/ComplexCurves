@@ -141,7 +141,7 @@ StateGL.prototype.printTexture = function(length, texture) {
     gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
     gl.deleteFramebuffer(readBuffer);
     console.log(Array.prototype.slice.call(pixels, 0, length));
-}
+};
 
 /** @type {Stage} */
 StateGL.prototype.renderer = null;

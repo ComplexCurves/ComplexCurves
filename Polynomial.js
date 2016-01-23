@@ -18,7 +18,8 @@ Monomial.clone = function(m) {
  *  @param {Monomial} b
  *  @return {boolean} */
 Monomial.is = function(a, b) {
-    for (var key in a.value)
+    var key;
+    for (key in a.value)
         if (!b.value.hasOwnProperty(key) || a.value[key] !== b.value[key])
             return false;
     for (key in b.value)
@@ -50,11 +51,12 @@ Term.add = function(a, b) {
 Term.mul = function(a, b) {
     var monomial = {};
     var oa = a.monomial.value,
-        ob = b.monomial.value;
-    for (var key in oa) {
+        ob = b.monomial.value,
+        key;
+    for (key in oa) {
         monomial[key] = oa[key] + (ob[key] || 0);
     }
-    for (var key in ob) {
+    for (key in ob) {
         monomial[key] = ob[key] + (oa[key] || 0);
     }
     return new Term(Complex.mul(a.coefficient, b.coefficient),
