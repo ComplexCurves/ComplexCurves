@@ -64,10 +64,8 @@ Complex.prototype.neg = function() {
     return new Complex(-this.re, -this.im);
 };
 
-/** @return {Complex} */
-Complex.one = function() {
-    return new Complex(1, 0);
-};
+/** @type {Complex} */
+Complex.one = new Complex(1, 0);
 
 /** @param {number} re
  *  @return {Complex} */
@@ -91,9 +89,7 @@ Complex.sub = function(a, b) {
     return new Complex(a.re - b.re, a.im - b.im);
 };
 
-/** @return {Complex} */
-Complex.zero = function() {
-    return new Complex(0, 0);
-};
+/** @type {Complex} */
+Complex.zero = new Complex(0, 0);
 
 Complex.prototype.zero = Complex.zero;

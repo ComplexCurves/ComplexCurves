@@ -29,7 +29,7 @@ Matrix.prototype.det = function() {
  *  @return {Matrix} */
 Matrix.mu = function(x) {
     var xs = x.values;
-    var zero = xs[0][0].zero();
+    var zero = xs[0][0].zero;
     var ms = [];
     for (var i = 0; i < xs.length; i++) {
         ms[i] = [];
@@ -60,7 +60,7 @@ Matrix.mul = function(a, b) {
     var cs = [];
     var rows = as.length,
         cols = bs[0].length,
-        zero = as[0][0].zero();
+        zero = as[0][0].zero;
     for (var i = 0; i < rows; i++) {
         cs[i] = [];
         for (var j = 0; j < cols; j++) {

@@ -36,7 +36,7 @@ GLSL.glslComplex = function(z) {
 GLSL.glslF = function(p, vx, vy) {
     function pad(cs) {
         var n = GLSL.N - cs.length + 1;
-        var zero = GLSL.glslComplex(Complex.zero());
+        var zero = GLSL.glslComplex(Complex.zero);
         for (var i = 0; i < n; i++)
             cs.push(zero);
         return cs;

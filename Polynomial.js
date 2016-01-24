@@ -2,7 +2,7 @@
  *  @constructor */
 function Polynomial(terms) {
     if (terms.length === 0)
-        this.terms = [new Term(Complex.zero(), new Monomial({}))];
+        this.terms = [new Term(Complex.zero, new Monomial({}))];
     else
         this.terms = Term.reduce(terms);
 }
@@ -72,7 +72,7 @@ Polynomial.prototype.coefficientList_ = function() {
 /** constant term of Polynomial as number
  *  @return {Complex} */
 Polynomial.prototype.constant = function() {
-    var c = Complex.zero();
+    var c = Complex.zero;
     var terms = this.terms;
     for (var i = 0; i < terms.length; i++) {
         var term = terms[i];
@@ -162,8 +162,8 @@ Polynomial.laguerre = function(cs, x, maxiter) {
     var a, p, q, s, g, g2, h, r, d1, d2;
     var tol = 1e-14;
     for (var iter = 1; iter <= maxiter; iter++) {
-        s = Complex.zero();
-        q = Complex.zero();
+        s = Complex.zero;
+        q = Complex.zero;
         p = cs[0];
 
         for (var i = 1; i <= n; i++) {
@@ -259,7 +259,7 @@ Polynomial.quadratic_roots = function(cs) {
         b = cs[1],
         c = cs[2];
     if (c.re === 0 && c.im === 0)
-        return [Complex.zero(), Complex.div(b, a).neg()];
+        return [Complex.zero, Complex.div(b, a).neg()];
     var r = Complex.sqrt(Complex.sub(Complex.mul(b, b),
         Complex.mul(Complex.real(4), Complex.mul(a, c))));
     if (b.re >= 0)
@@ -295,7 +295,7 @@ Polynomial.roots = function(cs) {
         roots = Polynomial.quadratic_roots(cs);
     else if (n > 2) {
         for (var i = 0; i < n - 2; i++) {
-            roots[i] = Polynomial.laguerre(cs, Complex.zero(), 200);
+            roots[i] = Polynomial.laguerre(cs, Complex.zero, 200);
             roots[i] = Polynomial.laguerre(cs_orig, roots[i], 1);
             cs = Polynomial.deflate(cs, roots[i]);
         }
@@ -333,7 +333,7 @@ Polynomial.sylvester = function(v, p, q) {
     function zeros(n) {
         var zs = [];
         for (var i = 0; i < n; i++)
-            zs[i] = Polynomial.zero();
+            zs[i] = Polynomial.zero;
         return zs;
     }
 
@@ -352,7 +352,7 @@ Polynomial.sylvester = function(v, p, q) {
 Polynomial.variable = function(v) {
     var m = {};
     m[v] = 1;
-    return new Polynomial([new Term(Complex.one(), new Monomial(m))]);
+    return new Polynomial([new Term(Complex.one, new Monomial(m))]);
 };
 
 /** @return {Array<string>} */
@@ -372,10 +372,8 @@ Polynomial.prototype.variableList = function() {
     return vars.sort();
 };
 
-/** @return {Polynomial} */
-Polynomial.zero = function() {
-    return new Polynomial([]);
-};
+/** @type {Polynomial} */
+Polynomial.zero = new Polynomial([]);
 
-/** @return {Polynomial} */
+/** @type {Polynomial} */
 Polynomial.prototype.zero = Polynomial.zero;
