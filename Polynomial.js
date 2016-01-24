@@ -347,7 +347,7 @@ Polynomial.sylvester = function(v, p, q) {
     return new Matrix(ms);
 };
 
-/** @param {number} v
+/** @param {string} v
  *  @return {Polynomial} */
 Polynomial.variable = function(v) {
     var m = {};
