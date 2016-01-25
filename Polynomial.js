@@ -191,8 +191,8 @@ Polynomial.laguerre = function(cs, x, maxiter) {
                 iter), Math.sin(iter)));
         if (a.abs() < tol)
             return x;
-        if (iter % 20 === 0)
-            a = Complex.mul(a, Complex.real(rand[iter / 20]));
+        if (iter % 20 === 0 && iter < maxiter - 19)
+            a = Complex.mul(a, Complex.real(rand[Math.floor(iter / 20)]));
         x = Complex.sub(x, a);
     }
     return x;
@@ -289,11 +289,18 @@ Polynomial.roots = function(cs) {
     var roots = [];
     var cs_orig = cs;
     var n = cs.length - 1;
+    if (n <= 0)
+        return [];
+    if (Complex.isZero(cs[0])) {
+        roots = Polynomial.roots(cs.slice(1));
+        roots.push(Complex.infinity);
+        return roots;
+    }
     if (n === 1)
         roots[0] = Complex.div(cs[1], cs[0]).neg();
     else if (n === 2)
         roots = Polynomial.quadratic_roots(cs);
-    else if (n > 2) {
+    else {
         for (var i = 0; i < n - 2; i++) {
             roots[i] = Polynomial.laguerre(cs, Complex.zero, 200);
             roots[i] = Polynomial.laguerre(cs_orig, roots[i], 1);
