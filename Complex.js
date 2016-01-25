@@ -39,6 +39,9 @@ Complex.div = function(a, b) {
     return new Complex(re / abs2, im / abs2);
 };
 
+/** @type {Complex} */
+Complex.infinity = new Complex(Infinity, Infinity);
+
 /** @param {Complex} z
  *  @return {Complex} */
 Complex.inv = function(z) {
