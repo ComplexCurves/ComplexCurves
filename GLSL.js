@@ -131,7 +131,7 @@ GLSL.glslM = function(p, vx, vy) {
         cs[i] = new Polynomial(terms);
     }
     var a0a0 = cs[0].leading(vx);
-    var an = p.leading(vx);
+    var an = p.leading(vy);
     var leadRoots = Polynomial.roots(an.coefficientList_());
     var lines = ["float M (in vec2 " + vx + ", in float rho)", "{",
         "    vec2 r = vec2 (length (" + vx + ") + rho, 0.0);",
@@ -174,14 +174,9 @@ GLSL.glslRho = function(p, vx, vy) {
     var lines = ["float rho (in vec2 " + vx + ") {",
         "    float d = 100.0;"
     ];
-    var lines2 = [];
     for (i = 0; i < critical.length; i++)
-        lines2.push("    d = min (d, distance (" + vx + ", " +
+        lines.push("    d = min (d, distance (" + vx + ", " +
             GLSL.glslComplex(critical[i]) + "));");
-    lines2 = lines2.sort();
-    while (lines2[lines2.length - 1] == lines2[lines2.length - 2])
-        lines2.pop();
-    lines = lines.concat(lines2);
     lines = lines.concat(["    return 0.999 * d;", "}"]);
     return lines.join("\n");
 };
