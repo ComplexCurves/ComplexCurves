@@ -43,7 +43,7 @@ Complex.div = function(a, b) {
  *  @return {Complex} */
 Complex.inv = function(z) {
     var abs2 = z.abs2();
-    return new Complex(z.re, -z.im);
+    return new Complex(z.re / abs2, -z.im / abs2);
 };
 
 /** @param {Complex} a
