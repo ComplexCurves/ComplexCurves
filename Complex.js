@@ -46,6 +46,12 @@ Complex.inv = function(z) {
     return new Complex(z.re / abs2, -z.im / abs2);
 };
 
+/** @param {Complex} z
+ *  @return {boolean} */
+Complex.isZero = function(z) {
+    return z.re === 0 && z.im === 0;
+};
+
 /** @param {Complex} a
  *  @param {Complex} b
  *  @return {Complex} */
@@ -76,8 +82,10 @@ Complex.real = function(re) {
 /** @param {Complex} z
  *  @return {Complex} */
 Complex.sqrt = function(z) {
+    if (Complex.isZero(z))
+        return Complex.zero;
     var r = z.abs();
-    var s = Math.sign(z.im);
+    var s = Math.sign(z.im) || 1;
     return new Complex(Math.sqrt((r + z.re) * 0.5), s * Math.sqrt((r - z.re) *
         0.5));
 };
