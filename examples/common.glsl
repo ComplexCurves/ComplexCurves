@@ -106,6 +106,7 @@ void weierstrass (in vec2 cs[N+1], out vec2 roots2[N]) {
     float upperBound = 1.0 + maxabs; /// length (cs[n]);
     float phi = 2.0 * acos (-1.0) / float (sheets + 1);
     float d = upperBound / float (sheets);
+    d = clamp (d, 1.0, 10.0);
 	for (int i = 0; i < sheets; i++)
         roots2[i] = float (i) * d * vec2 (cos (float (i) * phi), sin (float (i) * phi));
 

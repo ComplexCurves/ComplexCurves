@@ -238,7 +238,7 @@ Polynomial.prototype.neg = function() {
  *  @return {Polynomial} */
 Polynomial.pow = function(p, e) {
     var res = Polynomial.real(1);
-    if (e > Math.floor(e))
+    if (!Number.isInteger(e))
         console.error("Non-integer power of Polynomial!");
     // TODO use fast exponentiation
     for (var i = e; i > 0; i--)
