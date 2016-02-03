@@ -8,18 +8,20 @@ clean:
 
 .PHONY: all beautify clean
 
-se_mods = Assembly CachedSurface Complex GLSL Initial Matrix Misc Monomial \
-	Parser Polynomial PolynomialParser Quaternion Schedule SingularityExplorer \
-	Stage State3D StateGL Subdivision SubdivisionPre Surface Term Tokenizer
+se_mods = Assembly CachedSurface Complex GLSL Initial Matrix \
+	Misc Monomial Parser Polynomial PolynomialParser Quaternion Schedule \
+	SingularityExplorer Stage State3D StateGL Subdivision SubdivisionPre \
+	Surface Task Term Tokenizer
 se_srcs = $(se_mods:%=%.js)
 
 JAVA=java
-CLOSURE=$(JAVA) -jar closure-compiler-v20151216.jar
+CLOSURE=$(JAVA) -jar compiler.jar
 se_closure_level = ADVANCED
 se_closure_warnings = VERBOSE
 se_closure_args = \
 	--language_in ECMASCRIPT6_STRICT \
 	--language_out ECMASCRIPT5_STRICT \
+	--dependency_mode LOOSE \
 	--create_source_map build/SingularityExplorer.js.map \
 	--compilation_level $(se_closure_level) \
 	--warning_level $(se_closure_warnings) \
@@ -38,9 +40,9 @@ build/SingularityExplorer.js: compiler.jar $(se_srcs)
 	$(CLOSURE) $(se_closure_args)
 
 compiler.jar:
-	wget http://dl.google.com/closure-compiler/compiler-latest.zip
-	unzip compiler-latest.zip compiler.jar
-	rm compiler-latest.zip
+	wget http://dl.google.com/closure-compiler/compiler-20160201.zip
+	unzip compiler-20160201.zip compiler.jar
+	rm compiler-20160201.zip
 
 SingularityExplorer: build/SingularityExplorer.js
 
