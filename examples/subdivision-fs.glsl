@@ -55,4 +55,3 @@ void main(void) {
     gl_FragData[4].xy = sheets > 6 ? values[6] : zero;
     gl_FragData[4].zw = sheets > 7 ? values[7] : zero;
 }
-
