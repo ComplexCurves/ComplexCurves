@@ -196,6 +196,6 @@ GLSL.polynomialShaderSource = function(p) {
         GLSL.glslFy(p, vx, vy),
         GLSL.glslRho(p, vx, vy),
         GLSL.glslM(p, vx, vy)
-    ];
-    return sources.join("\n\n");
+    ].join("\n\n");
+    return sources;
 };
