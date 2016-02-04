@@ -135,6 +135,9 @@ Subdivision.prototype.render = function(stategl, surface, gl) {
         gl.uniform1f(indexOffsetOutLocation, primitivesWritten);
         patternIndex = 4 * pixels[12 * i + 3] + 2 * pixels[12 * i + 7] +
             pixels[12 * i + 11];
+        // FIXME: fill holes created by patterns 5, 6 in square root example
+        if ([5, 6].indexOf(patternIndex) > -1)
+            patternIndex = 7;
         numIndices = subdivisionPatternCount[patternIndex];
         gl.drawArrays(gl.POINTS, subdivisionPatternFirst[patternIndex],
             numIndices);
