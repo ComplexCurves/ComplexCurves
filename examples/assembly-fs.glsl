@@ -16,8 +16,8 @@ void readTex (out vec2 pos[3], out float delta[3], out vec2 values[3*N]) {
         delta[i] = s.z;
         for (int j = 1; j < N/2; j++) {
             s = texture2D (samplers[j], texCoord[i]);
-            values[i*N+2*(j-1)] = s.xy;
-            values[i*N+2*(j-1)+1] = s.zw;
+            values[i*N+2*j-2] = s.xy;
+            values[i*N+2*j-1] = s.zw;
         }
     }
 }
