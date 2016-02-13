@@ -63,19 +63,19 @@ Subdivision.prototype.render = function(stategl, surface, gl) {
         0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 2.0, 0.0, 0.5, 0.5,
         3.0, 0.0, 0.5, 0.5, 4.0, 0.0, 0.0, 1.0, 5.0, 1.0, 0.0, 0.0,
         // 4th pattern
-        0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 2.0, 0.0, 0.5, 0.5,
+        0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 2.0, 0.5, 0.0, 0.5,
         3.0, 0.0, 0.5, 0.5, 4.0, 0.0, 0.0, 1.0, 5.0, 0.5, 0.0, 0.5,
-        6.0, 0.5, 0.0, 0.5, 7.0, 1.0, 0.0, 0.0, 8.0, 0.0, 0.5, 0.5,
+        6.0, 0.5, 0.0, 0.5, 7.0, 0.0, 1.0, 0.0, 8.0, 0.0, 0.5, 0.5,
         // 5th pattern
         0.0, 1.0, 0.0, 0.0, 1.0, 0.5, 0.5, 0.0, 2.0, 0.0, 0.0, 1.0,
         3.0, 0.0, 0.0, 1.0, 4.0, 0.5, 0.5, 0.0, 5.0, 0.0, 1.0, 0.0,
         // 6th pattern
         0.0, 1.0, 0.0, 0.0, 1.0, 0.5, 0.5, 0.0, 2.0, 0.5, 0.0, 0.5,
-        3.0, 0.5, 0.0, 0.5, 4.0, 0.5, 0.5, 0.0, 5.0, 0.0, 1.0, 0.0,
-        6.0, 0.0, 1.0, 0.0, 7.0, 0.0, 0.0, 1.0, 8.0, 0.5, 0.0, 0.5,
+        3.0, 0.5, 0.0, 0.5, 4.0, 0.5, 0.5, 0.0, 5.0, 0.0, 0.0, 1.0,
+        6.0, 0.0, 1.0, 0.0, 7.0, 0.0, 0.0, 1.0, 8.0, 0.5, 0.5, 0.0,
         // 7th pattern
-        0.0, 1.0, 0.0, 0.0, 1.0, 0.5, 0.5, 0.0, 2.0, 0.0, 0.0, 1.0,
-        3.0, 0.0, 0.0, 1.0, 4.0, 0.5, 0.5, 0.0, 5.0, 0.0, 0.5, 0.5,
+        0.0, 1.0, 0.0, 0.0, 1.0, 0.5, 0.5, 0.0, 2.0, 0.0, 0.5, 0.5,
+        3.0, 0.0, 0.0, 1.0, 4.0, 1.0, 0.0, 0.0, 5.0, 0.0, 0.5, 0.5,
         6.0, 0.0, 0.5, 0.5, 7.0, 0.5, 0.5, 0.0, 8.0, 0.0, 1.0, 0.0,
         // 8th pattern
         0.0, 1.0, 0.0, 0.0, 1.0, 0.5, 0.5, 0.0, 2.0, 0.5, 0.0, 0.5,
@@ -135,11 +135,6 @@ Subdivision.prototype.render = function(stategl, surface, gl) {
         gl.uniform1f(indexOffsetOutLocation, primitivesWritten);
         patternIndex = 4 * pixels[12 * i + 3] + 2 * pixels[12 * i + 7] +
             pixels[12 * i + 11];
-        // FIXME: fill holes created by patterns 5, 6 in square root example,
-        // and holes created by pattern 3 in cissoid example
-        // Note: these are exactly the patterns that divide into 2 triangles
-        if ([3, 5, 6].indexOf(patternIndex) > -1)
-            patternIndex = 7;
         numIndices = subdivisionPatternCount[patternIndex];
         gl.drawArrays(gl.POINTS, subdivisionPatternFirst[patternIndex],
             numIndices);
