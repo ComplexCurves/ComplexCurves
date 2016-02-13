@@ -11,7 +11,7 @@ function Initial(stategl, surface, onload) {
         }),
         new Task("loadModel", [], function(oncomplete) {
             // TODO generate mesh instead?
-            initial.loadModel(stategl, "deltille.bin", oncomplete);
+            initial.loadModel(stategl, "tetrakis.bin", oncomplete);
         }),
         new Task("mkBuffers", ["loadModel"], function(oncomplete) {
             initial.mkBuffers(stategl, surface, initial.positions);
