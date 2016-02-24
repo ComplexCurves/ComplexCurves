@@ -38,7 +38,8 @@ StateGL.prototype.getExtension = function(name) {
 /** @param {string} shaderId
  *  @param {function(Array<string>)} onload */
 StateGL.getShaderSources = function(shaderId, onload) {
-    var files = [shaderId + '-vs.glsl', shaderId + '-fs.glsl'];
+    var dir = '../shaders/';
+    var files = [dir + shaderId + '-vs.glsl', dir + shaderId + '-fs.glsl'];
     Misc.loadTextFiles(files, onload);
 };
 

@@ -11,7 +11,7 @@ function Surface(stategl, polynomial, depth, onload) {
     var surface = this;
     var schedule = new Schedule([
         new Task("commonShaderSrc", [], function(oncomplete) {
-            Misc.loadTextFiles(["common.glsl"], function(sources) {
+            Misc.loadTextFiles(["../shaders/common.glsl"], function(sources) {
                 surface.commonShaderSrc = sources[0];
                 oncomplete();
             });
