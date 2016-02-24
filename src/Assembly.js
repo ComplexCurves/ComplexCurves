@@ -19,7 +19,7 @@ function Assembly(stategl, surface, onload) {
  *  @param {function()} onload */
 Assembly.prototype.mkProgram = function(stategl, surface, onload) {
     var assembly = this;
-    StateGL.getShaderSources("assembly", function(sources) {
+    StateGL.getShaderSources("Assembly", function(sources) {
         sources[1] = surface.withCustomAndCommon(sources[1]);
         assembly.program = stategl.mkProgram(sources);
         onload();

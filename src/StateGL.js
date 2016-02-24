@@ -39,7 +39,7 @@ StateGL.prototype.getExtension = function(name) {
  *  @param {function(Array<string>)} onload */
 StateGL.getShaderSources = function(shaderId, onload) {
     var dir = '../shaders/';
-    var files = [dir + shaderId + '-vs.glsl', dir + shaderId + '-fs.glsl'];
+    var files = [dir + shaderId + '.vert', dir + shaderId + '.frag'];
     Misc.loadTextFiles(files, onload);
 };
 
@@ -49,7 +49,7 @@ StateGL.prototype.gl = null;
 /** @param {function()} onload */
 StateGL.prototype.mkFXAAProgram = function(onload) {
     var gl = this;
-    StateGL.getShaderSources("fxaa", function(sources) {
+    StateGL.getShaderSources("FXAA", function(sources) {
         gl.fxaaProgram = gl.mkProgram(sources);
         onload();
     });

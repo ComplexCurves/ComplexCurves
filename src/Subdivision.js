@@ -19,7 +19,7 @@ function Subdivision(stategl, surface, onload) {
  *  @param {function()} onload */
 Subdivision.prototype.mkProgram = function(stategl, surface, onload) {
     var subdivision = this;
-    StateGL.getShaderSources("subdivision", function(sources) {
+    StateGL.getShaderSources("Subdivision", function(sources) {
         sources[1] = surface.withCustomAndCommon(sources[1]);
         subdivision.program = stategl.mkProgram(sources);
         onload();

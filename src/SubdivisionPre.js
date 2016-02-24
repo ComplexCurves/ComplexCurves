@@ -17,7 +17,7 @@ function SubdivisionPre(stategl, onload) {
  *  @param {function()} onload */
 SubdivisionPre.prototype.mkProgram = function(stategl, onload) {
     var subdivisionPre = this;
-    StateGL.getShaderSources("subdivision-pre", function(sources) {
+    StateGL.getShaderSources("SubdivisionPre", function(sources) {
         subdivisionPre.program = stategl.mkProgram(sources);
         onload();
     });

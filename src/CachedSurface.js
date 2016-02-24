@@ -52,7 +52,7 @@ CachedSurface.prototype.mkBuffer = function(stategl, positions) {
  *  @param {function()} onload */
 CachedSurface.prototype.mkProgram = function(stategl, onload) {
     var cachedSurface = this;
-    StateGL.getShaderSources("cached-surface", function(sources) {
+    StateGL.getShaderSources("CachedSurface", function(sources) {
         cachedSurface.program = stategl.mkProgram(sources);
         onload();
     });
