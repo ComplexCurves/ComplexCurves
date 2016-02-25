@@ -1,7 +1,7 @@
 all: SingularityExplorer
 
 beautify:
-	js-beautify --max-preserve-newlines 3 --end-with-newline -r -f src/*.js
+	js-beautify --max-preserve-newlines 3 --end-with-newline -r -f src/js/*.js
 
 clean:
 	$(RM) -r build
@@ -12,7 +12,7 @@ se_mods = Assembly CachedSurface Complex GLSL Initial Matrix \
 	Misc Monomial Parser Polynomial PolynomialParser Quaternion \
 	SingularityExplorer Stage State3D StateGL Subdivision SubdivisionPre \
 	Surface Term Tokenizer
-se_srcs = $(se_mods:%=src/%.js) build/resources.js
+se_srcs = $(se_mods:%=src/js/%.js) build/resources.js
 
 JAVA=java
 CLOSURE=$(JAVA) -jar compiler.jar
@@ -27,18 +27,18 @@ se_closure_args = \
 	--warning_level $(se_closure_warnings) \
 	--source_map_format V3 \
 	--source_map_location_mapping "build/|" \
-	--source_map_location_mapping "src/|../src/" \
-	--output_wrapper_file src/SingularityExplorer.js.wrapper \
+	--source_map_location_mapping "src/js/|../src/js/" \
+	--output_wrapper_file src/js/SingularityExplorer.js.wrapper \
 	--summary_detail_level 3 \
 	--js_output_file $@ \
 	$(se_extra_args) \
 	--js $(se_srcs)
 se_dbg_args = --formatting PRETTY_PRINT
 
-build/resources.js: $(wildcard shaders/*)
+build/resources.js: $(wildcard src/glsl/*)
 	mkdir -p $(@D)
 	echo "var resources = {};" > $@
-	for i in shaders/*; do \
+	for i in src/glsl/*; do \
 		echo "resources['$$(basename $$i)'] = \`" >> $@; \
 		sed -e 's/ \+/ /g;s/^ //g' $$i >> $@; \
 		echo '`;' >> $@; \
