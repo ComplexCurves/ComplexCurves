@@ -5,21 +5,12 @@
  *  @implements {Stage} */
 function Initial(stategl, surface, onload) {
     var initial = this;
-    var schedule = new Schedule([
-        new Task("mkProgram", [], function(oncomplete) {
-            initial.mkProgram(stategl, surface, oncomplete);
-        }),
-        new Task("loadModel", [], function(oncomplete) {
-            // TODO generate mesh instead?
-            initial.loadModel(stategl, "../models/Tetrakis.bin", oncomplete);
-        }),
-        new Task("mkBuffers", ["loadModel"], function(oncomplete) {
-            initial.mkBuffers(stategl, surface, initial.positions);
-            oncomplete();
-        }),
-        new Task("ready", ["mkBuffers", "mkProgram"], onload)
-    ]);
-    schedule.run();
+    // TODO generate mesh instead?!
+    initial.loadModel(stategl, "../models/Tetrakis.bin", function () {
+        initial.mkBuffers(stategl, surface, initial.positions);
+        initial.mkProgram(stategl, surface);
+        onload();
+    });
 }
 
 /** @type {WebGLBuffer} */
@@ -57,15 +48,11 @@ Initial.prototype.mkBuffers = function(stategl, surface, positions) {
 };
 
 /** @param {StateGL} stategl
- *  @param {Surface} surface
- *  @param {function()} onload */
-Initial.prototype.mkProgram = function(stategl, surface, onload) {
-    var initial = this;
-    StateGL.getShaderSources("Initial", function(sources) {
-        sources[1] = surface.withCustomAndCommon(sources[1]);
-        initial.program = stategl.mkProgram(sources);
-        onload();
-    });
+ *  @param {Surface} surface */
+Initial.prototype.mkProgram = function(stategl, surface) {
+    var sources = StateGL.getShaderSources("Initial");
+    sources[1] = surface.withCustomAndCommon(sources[1]);
+    this.program = stategl.mkProgram(sources);
 };
 
 /** @type {ArrayBuffer} */

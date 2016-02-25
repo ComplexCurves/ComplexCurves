@@ -1,26 +1,9 @@
 /** @constructor
  *  @param {StateGL} stategl
- *  @param {function()} onload
  *  @implements {Stage} */
-function SubdivisionPre(stategl, onload) {
-    var subdivisionPre = this;
-    var schedule = new Schedule([
-        new Task("mkProgram", [], function(oncomplete) {
-            subdivisionPre.mkProgram(stategl, oncomplete);
-        }),
-        new Task("ready", ["mkProgram"], onload)
-    ]);
-    schedule.run();
-}
-
-/** @param {StateGL} stategl
- *  @param {function()} onload */
-SubdivisionPre.prototype.mkProgram = function(stategl, onload) {
-    var subdivisionPre = this;
-    StateGL.getShaderSources("SubdivisionPre", function(sources) {
-        subdivisionPre.program = stategl.mkProgram(sources);
-        onload();
-    });
+function SubdivisionPre(stategl) {
+    var sources = StateGL.getShaderSources("SubdivisionPre")
+    this.program = stategl.mkProgram(sources);
 };
 
 /** @param {StateGL} stategl

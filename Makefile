@@ -9,9 +9,9 @@ clean:
 .PHONY: all beautify clean
 
 se_mods = Assembly CachedSurface Complex GLSL Initial Matrix \
-	Misc Monomial Parser Polynomial PolynomialParser Quaternion Schedule \
+	Misc Monomial Parser Polynomial PolynomialParser Quaternion \
 	SingularityExplorer Stage State3D StateGL Subdivision SubdivisionPre \
-	Surface Task Term Tokenizer
+	Surface Term Tokenizer
 se_srcs = $(se_mods:%=src/%.js) build/resources.js
 
 JAVA=java

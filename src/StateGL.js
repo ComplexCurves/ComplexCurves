@@ -1,18 +1,14 @@
 /** @param {HTMLCanvasElement} canvas
- *  @param {function(StateGL)} onload
  *  @constructor */
-function StateGL(canvas, onload) {
-    var gl = /** @type WebGLRenderingContext */ (canvas.getContext('webgl', {
+function StateGL(canvas) {
+    this.gl = /** @type WebGLRenderingContext */ (canvas.getContext('webgl', {
         preserveDrawingBuffer: true
     }));
+    var gl = this.gl;
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.enable(gl.DEPTH_TEST);
-    this.gl = gl;
     this.mkRenderToTextureObjects();
-    var stategl = this;
-    stategl.mkFXAAProgram(function() {
-        onload(stategl);
-    });
+    this.mkFXAAProgram();
 }
 
 /** @type {boolean} */
@@ -36,23 +32,17 @@ StateGL.prototype.getExtension = function(name) {
 };
 
 /** @param {string} shaderId
- *  @param {function(Array<string>)} onload */
-StateGL.getShaderSources = function(shaderId, onload) {
-    var dir = '../shaders/';
-    var files = [dir + shaderId + '.vert', dir + shaderId + '.frag'];
-    Misc.loadTextFiles(files, onload);
+ *  @return {Array<string>} */
+StateGL.getShaderSources = function(shaderId) {
+    return [resources[shaderId + '.vert'], resources[shaderId + '.frag']];
 };
 
 /** @type {WebGLRenderingContext} */
 StateGL.prototype.gl = null;
 
-/** @param {function()} onload */
-StateGL.prototype.mkFXAAProgram = function(onload) {
-    var gl = this;
-    StateGL.getShaderSources("FXAA", function(sources) {
-        gl.fxaaProgram = gl.mkProgram(sources);
-        onload();
-    });
+StateGL.prototype.mkFXAAProgram = function() {
+    var sources = StateGL.getShaderSources("FXAA");
+    this.fxaaProgram = this.mkProgram(sources);
 };
 
 /** @param {Array<string>} sources

@@ -1,29 +1,11 @@
 /** @constructor
  *  @param {StateGL} stategl
  *  @param {Surface} surface
- *  @param {function()} onload
  *  @implements {Stage} */
-function Subdivision(stategl, surface, onload) {
-    var subdivision = this;
-    var schedule = new Schedule([
-        new Task("mkProgram", [], function(oncomplete) {
-            subdivision.mkProgram(stategl, surface, oncomplete);
-        }),
-        new Task("ready", ["mkProgram"], onload)
-    ]);
-    schedule.run();
-}
-
-/** @param {StateGL} stategl
- *  @param {Surface} surface
- *  @param {function()} onload */
-Subdivision.prototype.mkProgram = function(stategl, surface, onload) {
-    var subdivision = this;
-    StateGL.getShaderSources("Subdivision", function(sources) {
-        sources[1] = surface.withCustomAndCommon(sources[1]);
-        subdivision.program = stategl.mkProgram(sources);
-        onload();
-    });
+function Subdivision(stategl, surface) {
+    var sources = StateGL.getShaderSources("Subdivision")
+    sources[1] = surface.withCustomAndCommon(sources[1]);
+    this.program = stategl.mkProgram(sources);
 };
 
 /** @param {StateGL} stategl

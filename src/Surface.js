@@ -9,82 +9,28 @@ function Surface(stategl, polynomial, depth, onload) {
     this.depth = depth;
     var gl = stategl.gl;
     var surface = this;
-    var schedule = new Schedule([
-        new Task("commonShaderSrc", [], function(oncomplete) {
-            Misc.loadTextFiles(["../shaders/Common.glsl"], function(sources) {
-                surface.commonShaderSrc = sources[0];
-                oncomplete();
-            });
-        }),
-        new Task("customShaderSrc", [], function(oncomplete) {
-            surface.customShaderSrc = GLSL.polynomialShaderSource(
-                polynomial);
-            oncomplete();
-        }),
-        new Task("OES_texture_float", [], function(oncomplete) {
-            stategl.getExtension("OES_texture_float");
-            if (stategl["OES_texture_float"])
-                oncomplete();
-        }),
-        new Task("WEBGL_draw_buffers", [], function(oncomplete) {
-            stategl.getExtension("WEBGL_draw_buffers");
-            if (stategl["WEBGL_draw_buffers"])
-                oncomplete();
-        }),
-        new Task("mkTextures", ["OES_texture_float", "WEBGL_draw_buffers"],
-            function(oncomplete) {
-                surface.mkTextures(stategl);
-                oncomplete();
-            }),
-        new Task("initial", ["commonShaderSrc", "customShaderSrc",
-            "mkTextures"
-        ], function(oncomplete) {
-            surface.initial = new Initial(stategl, surface,
-                function() {
-                    surface.initial.render(stategl, surface, gl);
-                    oncomplete();
-                });
-        }),
-        new Task("subdivisionPre", ["initial"], function(oncomplete) {
-            surface.subdivisionPre = new SubdivisionPre(stategl,
-                oncomplete);
-        }),
-        new Task("subdivision", ["commonShaderSrc", "customShaderSrc"],
-            function(oncomplete) {
-                surface.subdivision = new Subdivision(stategl, surface,
-                    oncomplete);
-            }),
-        new Task("subdivide", ["initial", "subdivisionPre", "subdivision"],
-            function(oncomplete) {
-                for (var i = 0; i < surface.depth; i++) {
-                    surface.subdivisionPre.render(stategl, surface, gl);
-                    surface.subdivision.render(stategl, surface, gl);
-                }
-                oncomplete();
-            }),
-        new Task("sheets", [], function(oncomplete) {
-            var p = surface.polynomial;
-            var vars = p.variableList();
-            var vy = vars.length === 0 ? "y" : vars[vars.length - 1];
-            surface.sheets = p.degree(vy);
-            oncomplete();
-        }),
-        new Task("assembly", ["commonShaderSrc", "customShaderSrc", "subdivide",
-            "sheets"
-        ], function(oncomplete) {
-            surface.assembly = new Assembly(stategl, surface,
-                function() {
-                    surface.assembly.render(stategl, surface,
-                        gl);
-                    oncomplete();
-                });
-        }),
-        new Task("mkProgram", [], function(oncomplete) {
-            surface.mkProgram(stategl, oncomplete);
-        }),
-        new Task("ready", ["assembly", "mkProgram"], onload)
-    ]);
-    schedule.run();
+    surface.commonShaderSrc = resources["Common.glsl"];
+    surface.customShaderSrc = GLSL.polynomialShaderSource(polynomial);
+    stategl.getExtension("OES_texture_float");
+    stategl.getExtension("WEBGL_draw_buffers");
+    surface.mkTextures(stategl);
+    surface.initial = new Initial(stategl, surface, function() {
+        surface.initial.render(stategl, surface, gl);
+        surface.subdivisionPre = new SubdivisionPre(stategl);
+        surface.subdivision = new Subdivision(stategl, surface);
+        for (var i = 0; i < surface.depth; i++) {
+            surface.subdivisionPre.render(stategl, surface, gl);
+            surface.subdivision.render(stategl, surface, gl);
+        }
+        var p = surface.polynomial;
+        var vars = p.variableList();
+        var vy = vars.length === 0 ? "y" : vars[vars.length - 1];
+        surface.sheets = p.degree(vy);
+        surface.assembly = new Assembly(stategl, surface);
+        surface.assembly.render(stategl, surface, gl);
+        surface.mkProgram(stategl);
+        onload();
+    });
 }
 
 /** @type {WebGLFramebuffer} */
@@ -103,15 +49,11 @@ Surface.prototype.fillIndexBuffer = function(stategl) {
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(indices), gl.STATIC_DRAW);
 };
 
-/** @param {StateGL} stategl
- *  @param {function()} onload */
-Surface.prototype.mkProgram = function(stategl, onload) {
-    var surface = this;
-    StateGL.getShaderSources("Surface", function(sources) {
-        sources[1] = surface.withCustomAndCommon(sources[1]);
-        surface.program = stategl.mkProgram(sources);
-        onload();
-    });
+/** @param {StateGL} stategl */
+Surface.prototype.mkProgram = function(stategl) {
+    var sources = StateGL.getShaderSources("Surface");
+    sources[1] = this.withCustomAndCommon(sources[1]);
+    this.program = stategl.mkProgram(sources);
 };
 
 /** @param {StateGL} stategl */

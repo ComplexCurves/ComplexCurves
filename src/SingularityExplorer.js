@@ -12,28 +12,11 @@ SingularityExplorer.fromEquation = function(canvas, equation, depth) {
  *  @param {string} file */
 SingularityExplorer.fromFile = function(canvas, file) {
     var state3d = State3D.topView(false);
-    var gl;
-    var schedule = new Schedule([
-        new Task("stategl", [], function(oncomplete) {
-            new StateGL(canvas, function(gl_) {
-                gl = gl_;
-                oncomplete();
-            });
-        }),
-        new Task("CachedSurface", ["stategl"], function(oncomplete) {
-            gl.renderer = new CachedSurface(gl, file, oncomplete);
-        }),
-        new Task("renderSurface", ["CachedSurface"], function(oncomplete) {
-            SingularityExplorer.renderSurface(state3d, gl);
-            oncomplete();
-        }),
-        new Task("registerEventHandlers", ["renderSurface"],
-            function(oncomplete) {
-                SingularityExplorer.registerEventHandlers(canvas, state3d, gl);
-                oncomplete();
-            })
-    ]);
-    schedule.run();
+    var gl = new StateGL(canvas);
+    gl.renderer = new CachedSurface(gl, file, function() {
+        SingularityExplorer.renderSurface(state3d, gl);
+        SingularityExplorer.registerEventHandlers(canvas, state3d, gl);
+    });
 };
 
 /** @param {HTMLCanvasElement} canvas
@@ -41,28 +24,11 @@ SingularityExplorer.fromFile = function(canvas, file) {
  *  @param {number} depth */
 SingularityExplorer.fromPolynomial = function(canvas, polynomial, depth) {
     var state3d = State3D.topView(false);
-    var gl;
-    var schedule = new Schedule([
-        new Task("stategl", [], function(oncomplete) {
-            new StateGL(canvas, function(gl_) {
-                gl = gl_;
-                oncomplete();
-            });
-        }),
-        new Task("surface", ["stategl"], function(oncomplete) {
-            gl.renderer = new Surface(gl, polynomial, depth, oncomplete);
-        }),
-        new Task("renderSurface", ["surface"], function(oncomplete) {
-            SingularityExplorer.renderSurface(state3d, gl);
-            oncomplete();
-        }),
-        new Task("registerEventHandlers", ["renderSurface"],
-            function(oncomplete) {
-                SingularityExplorer.registerEventHandlers(canvas, state3d, gl);
-                oncomplete();
-            })
-    ]);
-    schedule.run();
+    var gl = new StateGL(canvas);
+    gl.renderer = new Surface(gl, polynomial, depth, function() {
+        SingularityExplorer.renderSurface(state3d, gl);
+        SingularityExplorer.registerEventHandlers(canvas, state3d, gl);
+    });
 };
 
 /** @param {HTMLCanvasElement} canvas

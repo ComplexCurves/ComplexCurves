@@ -1,29 +1,11 @@
 /** @constructor
  *  @param {StateGL} stategl
  *  @param {Surface} surface
- *  @param {function()} onload
  *  @implements {Stage} */
-function Assembly(stategl, surface, onload) {
-    var assembly = this;
-    var schedule = new Schedule([
-        new Task("mkProgram", [], function(oncomplete) {
-            assembly.mkProgram(stategl, surface, oncomplete);
-        }),
-        new Task("ready", ["mkProgram"], onload)
-    ]);
-    schedule.run();
-}
-
-/** @param {StateGL} stategl
- *  @param {Surface} surface
- *  @param {function()} onload */
-Assembly.prototype.mkProgram = function(stategl, surface, onload) {
-    var assembly = this;
-    StateGL.getShaderSources("Assembly", function(sources) {
-        sources[1] = surface.withCustomAndCommon(sources[1]);
-        assembly.program = stategl.mkProgram(sources);
-        onload();
-    });
+function Assembly(stategl, surface) {
+    var sources = StateGL.getShaderSources("Assembly")
+    sources[1] = surface.withCustomAndCommon(sources[1]);
+    this.program = stategl.mkProgram(sources);
 };
 
 /** @param {StateGL} stategl

@@ -5,21 +5,11 @@
  *  @implements {Stage} */
 function CachedSurface(stategl, file, onload) {
     var cachedSurface = this;
-    var schedule = new Schedule([
-        new Task("loadModel", [], function(oncomplete) {
-            cachedSurface.loadModel(stategl, file, oncomplete);
-        }),
-        new Task("mkBuffer", ["loadModel"], function(oncomplete) {
-            cachedSurface.mkBuffer(stategl, cachedSurface.positions);
-            oncomplete();
-        }),
-        new Task("mkProgram", [], function(oncomplete) {
-            cachedSurface.mkProgram(stategl, oncomplete);
-        }),
-        new Task("ready", ["loadModel", "mkBuffer", "mkProgram"],
-            onload)
-    ]);
-    schedule.run();
+    cachedSurface.loadModel(stategl, file, function () {
+        cachedSurface.mkBuffer(stategl, cachedSurface.positions);
+        cachedSurface.mkProgram(stategl);
+        onload();
+    });
 }
 
 /** @param {StateGL} stategl
@@ -48,14 +38,10 @@ CachedSurface.prototype.mkBuffer = function(stategl, positions) {
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
 };
 
-/** @param {StateGL} stategl
- *  @param {function()} onload */
-CachedSurface.prototype.mkProgram = function(stategl, onload) {
-    var cachedSurface = this;
-    StateGL.getShaderSources("CachedSurface", function(sources) {
-        cachedSurface.program = stategl.mkProgram(sources);
-        onload();
-    });
+/** @param {StateGL} stategl */
+CachedSurface.prototype.mkProgram = function(stategl) {
+    var sources = StateGL.getShaderSources("CachedSurface");
+    this.program = stategl.mkProgram(sources);
 };
 
 /** @type {ArrayBuffer} */
