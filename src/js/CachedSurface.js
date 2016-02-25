@@ -5,7 +5,7 @@
  *  @implements {Stage} */
 function CachedSurface(stategl, file, onload) {
     var cachedSurface = this;
-    cachedSurface.loadModel(stategl, file, function () {
+    cachedSurface.loadModel(stategl, file, function() {
         cachedSurface.mkBuffer(stategl, cachedSurface.positions);
         cachedSurface.mkProgram(stategl);
         onload();
