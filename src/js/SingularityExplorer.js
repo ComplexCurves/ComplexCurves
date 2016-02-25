@@ -25,10 +25,9 @@ SingularityExplorer.fromFile = function(canvas, file) {
 SingularityExplorer.fromPolynomial = function(canvas, polynomial, depth) {
     var state3d = State3D.topView(false);
     var gl = new StateGL(canvas);
-    gl.renderer = new Surface(gl, polynomial, depth, function() {
-        SingularityExplorer.renderSurface(state3d, gl);
-        SingularityExplorer.registerEventHandlers(canvas, state3d, gl);
-    });
+    gl.renderer = new Surface(gl, polynomial, depth);
+    SingularityExplorer.renderSurface(state3d, gl);
+    SingularityExplorer.registerEventHandlers(canvas, state3d, gl);
 };
 
 /** @param {HTMLCanvasElement} canvas

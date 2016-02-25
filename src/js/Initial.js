@@ -1,42 +1,21 @@
 /** @constructor
  *  @param {StateGL} stategl
  *  @param {Surface} surface
- *  @param {function()} onload
  *  @implements {Stage} */
-function Initial(stategl, surface, onload) {
-    var initial = this;
-    // TODO generate mesh instead?!
-    initial.loadModel(stategl, "../models/Tetrakis.bin", function () {
-        initial.mkBuffers(stategl, surface, initial.positions);
-        initial.mkProgram(stategl, surface);
-        onload();
-    });
+function Initial(stategl, surface) {
+    this.mkBuffers(stategl, surface, Mesh.tetrakis(1));
+    this.mkProgram(stategl, surface);
 }
 
 /** @type {WebGLBuffer} */
 Initial.prototype.indexBuffer = null;
 
 /** @param {StateGL} stategl
- *  @param {string} file
- *  @param {function()} onload */
-Initial.prototype.loadModel = function(stategl, file, onload) {
-    var initial = this;
-    var req = new XMLHttpRequest();
-    req.open("GET", file, true);
-    req.responseType = "arraybuffer";
-    req.onload = function() {
-        initial.positions = /** @type {ArrayBuffer|null} */ (req.response);
-        onload();
-    };
-    req.send();
-};
-
-/** @param {StateGL} stategl
  *  @param {Surface} surface
- *  @param {ArrayBuffer} positions */
+ *  @param {Array<number>} positions */
 Initial.prototype.mkBuffers = function(stategl, surface, positions) {
     var gl = stategl.gl;
-    surface.numIndices = positions.byteLength / 8;
+    surface.numIndices = positions.length / 2;
     gl.enableVertexAttribArray(0);
     surface.indexBuffer = gl.createBuffer();
     surface.fillIndexBuffer(stategl);
@@ -54,9 +33,6 @@ Initial.prototype.mkProgram = function(stategl, surface) {
     sources[1] = surface.withCustomAndCommon(sources[1]);
     this.program = stategl.mkProgram(sources);
 };
-
-/** @type {ArrayBuffer} */
-Initial.prototype.positions = null;
 
 /** @type {WebGLBuffer} */
 Initial.prototype.positionBuffer = null;

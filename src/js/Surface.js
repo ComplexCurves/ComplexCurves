@@ -2,9 +2,8 @@
  *  @param {StateGL} stategl
  *  @param {Polynomial} polynomial
  *  @param {number} depth
- *  @param {function()} onload
  *  @implements {Stage} */
-function Surface(stategl, polynomial, depth, onload) {
+function Surface(stategl, polynomial, depth) {
     this.polynomial = polynomial;
     this.depth = depth;
     var gl = stategl.gl;
@@ -14,23 +13,21 @@ function Surface(stategl, polynomial, depth, onload) {
     stategl.getExtension("OES_texture_float");
     stategl.getExtension("WEBGL_draw_buffers");
     surface.mkTextures(stategl);
-    surface.initial = new Initial(stategl, surface, function() {
-        surface.initial.render(stategl, surface, gl);
-        surface.subdivisionPre = new SubdivisionPre(stategl);
-        surface.subdivision = new Subdivision(stategl, surface);
-        for (var i = 0; i < surface.depth; i++) {
-            surface.subdivisionPre.render(stategl, surface, gl);
-            surface.subdivision.render(stategl, surface, gl);
-        }
-        var p = surface.polynomial;
-        var vars = p.variableList();
-        var vy = vars.length === 0 ? "y" : vars[vars.length - 1];
-        surface.sheets = p.degree(vy);
-        surface.assembly = new Assembly(stategl, surface);
-        surface.assembly.render(stategl, surface, gl);
-        surface.mkProgram(stategl);
-        onload();
-    });
+    surface.initial = new Initial(stategl, surface);
+    surface.initial.render(stategl, surface, gl);
+    surface.subdivisionPre = new SubdivisionPre(stategl);
+    surface.subdivision = new Subdivision(stategl, surface);
+    for (var i = 0; i < surface.depth; i++) {
+        surface.subdivisionPre.render(stategl, surface, gl);
+        surface.subdivision.render(stategl, surface, gl);
+    }
+    var p = surface.polynomial;
+    var vars = p.variableList();
+    var vy = vars.length === 0 ? "y" : vars[vars.length - 1];
+    surface.sheets = p.degree(vy);
+    surface.assembly = new Assembly(stategl, surface);
+    surface.assembly.render(stategl, surface, gl);
+    surface.mkProgram(stategl);
 }
 
 /** @type {WebGLFramebuffer} */
