@@ -8,7 +8,7 @@ clean:
 
 .PHONY: all beautify clean
 
-se_mods = Assembly CachedSurface Complex GLSL Initial Matrix \
+se_mods = API Assembly CachedSurface Complex GLSL Initial Matrix \
 	Mesh Misc Monomial Parser Polynomial PolynomialParser Quaternion \
 	SingularityExplorer Stage State3D StateGL Subdivision SubdivisionPre \
 	Surface Term Tokenizer
