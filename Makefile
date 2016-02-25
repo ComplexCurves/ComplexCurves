@@ -58,6 +58,6 @@ SingularityExplorer: build/SingularityExplorer.js
 
 SingularityExplorer-dbg:
 	$(RM) build/SingularityExplorer.js
-	$(MAKE) se_extra_args='$(se_dbg_args)' build/SingularityExplorer.js
+	$(MAKE) se_extra_args='$(se_dbg_args)' se_closure_level='WHITESPACE_ONLY' build/SingularityExplorer.js
 
 .PHONY: SingularityExplorer
