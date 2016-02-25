@@ -12,7 +12,7 @@ se_mods = Assembly CachedSurface Complex GLSL Initial Matrix \
 	Misc Monomial Parser Polynomial PolynomialParser Quaternion Schedule \
 	SingularityExplorer Stage State3D StateGL Subdivision SubdivisionPre \
 	Surface Task Term Tokenizer
-se_srcs = $(se_mods:%=src/%.js)
+se_srcs = $(se_mods:%=src/%.js) build/resources.js
 
 JAVA=java
 CLOSURE=$(JAVA) -jar compiler.jar
@@ -35,8 +35,16 @@ se_closure_args = \
 	--js $(se_srcs)
 se_dbg_args = --formatting PRETTY_PRINT
 
-build/SingularityExplorer.js: compiler.jar $(se_srcs)
+build/resources.js: $(wildcard shaders/*)
 	mkdir -p $(@D)
+	echo "var resources = {};" > $@
+	for i in shaders/*; do \
+		echo "resources['$$(basename $$i)'] = \`" >> $@; \
+		sed -e 's/ \+/ /g;s/^ //g' $$i >> $@; \
+		echo '`;' >> $@; \
+		done
+
+build/SingularityExplorer.js: compiler.jar $(se_srcs)
 	$(CLOSURE) $(se_closure_args)
 
 CLOSURE_VERSION=20160208
