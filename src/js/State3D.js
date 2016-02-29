@@ -174,6 +174,16 @@ State3D.prototype.projectionMatrix = function(w, h) {
         return State3D.perspectiveProjectionMatrix(w, h, this.zoomFactor);
 };
 
+/** @param {boolean} ortho */
+State3D.prototype.setOrtho = function(ortho) {
+    this.ortho = ortho;
+};
+
+/** @param {boolean} twoD */
+State3D.prototype.setTwoD = function(twoD) {
+    this.twoD = twoD;
+};
+
 State3D.prototype.toggleOrtho = function() {
     this.ortho = !this.ortho;
 };

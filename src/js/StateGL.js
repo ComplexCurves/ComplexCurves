@@ -158,6 +158,21 @@ StateGL.prototype.rttRenderbuffer = null;
 /** @type {WebGLTexture} */
 StateGL.prototype.rttTexture = null;
 
+/** @param {boolean} fxaa */
+StateGL.prototype.setAntialiasing = function(fxaa) {
+    this.fxaa = fxaa;
+};
+
+/** @param {boolean} clipping */
+StateGL.prototype.setClipping = function(clipping) {
+    this.clipping = clipping;
+};
+
+/** @param {boolean} transparency */
+StateGL.prototype.setTransparency = function(transparency) {
+    this.transparency = transparency;
+};
+
 StateGL.prototype.toggleAntialiasing = function() {
     this.fxaa = !this.fxaa;
 };
