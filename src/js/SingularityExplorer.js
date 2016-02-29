@@ -22,7 +22,7 @@ export function SingularityExplorerFromEquation(canvas, equation, depth) {
 export function SingularityExplorerFromFile(canvas, file) {
     var singularityExplorer = new SingularityExplorer(canvas);
     var gl = singularityExplorer.stategl;
-    gl.renderer = new CachedSurface(gl, file, function () {
+    gl.renderer = new CachedSurface(gl, file, function() {
         singularityExplorer.renderSurface();
     });
     return singularityExplorer;
@@ -41,7 +41,9 @@ function SingularityExplorerFromPolynomial(canvas, polynomial, depth) {
 };
 
 SingularityExplorer.prototype.registerEventHandlers = function() {
-    var canvas = this.canvas, state3d = this.state3d, gl = this.stategl;
+    var canvas = this.canvas,
+        state3d = this.state3d,
+        gl = this.stategl;
     var singularityExplorer = this;
     canvas.addEventListener('mousedown', function(evt) {
         evt.preventDefault();
@@ -83,7 +85,8 @@ SingularityExplorer.prototype.registerEventHandlers = function() {
 
 /** @param {number} keyCode */
 SingularityExplorer.prototype.keyDown = function(keyCode) {
-    var state3d = this.state3d, gl = this.stategl;
+    var state3d = this.state3d,
+        gl = this.stategl;
     switch (keyCode) {
         case 65: // 'a'
             this.toggleAntialiasing();
@@ -116,12 +119,13 @@ SingularityExplorer.prototype.keyDown = function(keyCode) {
 };
 
 SingularityExplorer.prototype.renderSurface = function() {
-    var state3d = this.state3d, gl = this.stategl;
+    var state3d = this.state3d,
+        gl = this.stategl;
     var singularityExplorer = this;
     gl.renderSurface(state3d);
     if (state3d.isRotating()) {
         state3d.updateRotation();
-        requestAnimationFrame(function () {
+        requestAnimationFrame(function() {
             singularityExplorer.renderSurface();
         });
     }
