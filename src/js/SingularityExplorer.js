@@ -110,14 +110,14 @@ SingularityExplorer.keyDown = function(keyCode, state3d, gl) {
     SingularityExplorer.renderSurface(state3d, gl);
 };
 
-/** @param {State3D} st
+/** @param {State3D} state3d
  *  @param {StateGL} gl */
-SingularityExplorer.renderSurface = function(st, gl) {
-    gl.renderSurface(st);
-    if (st.isRotating()) {
-        st.updateRotation();
+SingularityExplorer.renderSurface = function(state3d, gl) {
+    gl.renderSurface(state3d);
+    if (state3d.isRotating()) {
+        state3d.updateRotation();
         requestAnimationFrame(function() {
-            SingularityExplorer.renderSurface(st, gl);
+            SingularityExplorer.renderSurface(state3d, gl);
         });
     }
 };
