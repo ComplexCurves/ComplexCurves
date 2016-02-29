@@ -38,7 +38,7 @@ function SingularityExplorerFromPolynomial(canvas, polynomial, depth) {
     gl.renderer = new Surface(gl, polynomial, depth);
     singularityExplorer.renderSurface();
     return singularityExplorer;
-};
+}
 
 SingularityExplorer.prototype.registerEventHandlers = function() {
     var canvas = this.canvas,

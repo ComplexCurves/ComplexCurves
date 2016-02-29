@@ -2,9 +2,9 @@
  *  @param {StateGL} stategl
  *  @implements {Stage} */
 function SubdivisionPre(stategl) {
-    var sources = StateGL.getShaderSources("SubdivisionPre")
+    var sources = StateGL.getShaderSources("SubdivisionPre");
     this.program = stategl.mkProgram(sources);
-};
+}
 
 /** @param {StateGL} stategl
  *  @param {Surface} surface

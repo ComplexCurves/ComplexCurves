@@ -3,10 +3,10 @@
  *  @param {Surface} surface
  *  @implements {Stage} */
 function Assembly(stategl, surface) {
-    var sources = StateGL.getShaderSources("Assembly")
+    var sources = StateGL.getShaderSources("Assembly");
     sources[1] = surface.withCustomAndCommon(sources[1]);
     this.program = stategl.mkProgram(sources);
-};
+}
 
 /** @param {StateGL} stategl
  *  @param {Surface} surface
