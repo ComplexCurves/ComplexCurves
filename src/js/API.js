@@ -1,17 +1,16 @@
-import SingularityExplorer from 'src/js/SingularityExplorer';
-window['SingularityExplorer'] = {
-    'fromEquation': SingularityExplorer.fromEquation,
-    'fromFile': SingularityExplorer.fromFile,
-    'rotateFront': SingularityExplorer.rotateFront,
-    'rotateLatLong': SingularityExplorer.rotateLatLong,
-    'rotateRight': SingularityExplorer.rotateRight,
-    'rotateTop': SingularityExplorer.rotateTop,
-    'setAntialiasing': SingularityExplorer.setAntialiasing,
-    'setClipping': SingularityExplorer.setClipping,
-    'setOrtho': SingularityExplorer.setOrtho,
-    'setTransparency': SingularityExplorer.setTransparency,
-    'toggleAntialiasing': SingularityExplorer.toggleAntialiasing,
-    'toggleClipping': SingularityExplorer.toggleClipping,
-    'toggleOrtho': SingularityExplorer.toggleOrtho,
-    'toggleTransparency': SingularityExplorer.toggleTransparency
-};
+import { SingularityExplorer, SingularityExplorerFromEquation, SingularityExplorerFromFile } from 'src/js/SingularityExplorer';
+window['SingularityExplorer'] = SingularityExplorer;
+SingularityExplorer['fromEquation'] = SingularityExplorerFromEquation;
+SingularityExplorer['fromFile'] = SingularityExplorerFromFile;
+SingularityExplorer.prototype['rotateFront'] = SingularityExplorer.prototype.rotateFront;
+SingularityExplorer.prototype['rotateLatLong'] = SingularityExplorer.prototype.rotateLatLong;
+SingularityExplorer.prototype['rotateRight'] = SingularityExplorer.prototype.rotateRight;
+SingularityExplorer.prototype['rotateTop'] = SingularityExplorer.prototype.rotateTop;
+SingularityExplorer.prototype['setAntialiasing'] = SingularityExplorer.prototype.setAntialiasing;
+SingularityExplorer.prototype['setClipping'] = SingularityExplorer.prototype.setClipping;
+SingularityExplorer.prototype['setOrtho'] = SingularityExplorer.prototype.setOrtho;
+SingularityExplorer.prototype['setTransparency'] = SingularityExplorer.prototype.setTransparency;
+SingularityExplorer.prototype['toggleAntialiasing'] = SingularityExplorer.prototype.toggleAntialiasing;
+SingularityExplorer.prototype['toggleClipping'] = SingularityExplorer.prototype.toggleClipping;
+SingularityExplorer.prototype['toggleOrtho'] = SingularityExplorer.prototype.toggleOrtho;
+SingularityExplorer.prototype['toggleTransparency'] = SingularityExplorer.prototype.toggleTransparency;
