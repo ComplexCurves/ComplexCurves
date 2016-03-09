@@ -12,6 +12,7 @@ SingularityExplorer.prototype['rotateRight'] = SingularityExplorer.prototype.rot
 SingularityExplorer.prototype['rotateTop'] = SingularityExplorer.prototype.rotateTop;
 SingularityExplorer.prototype['setAntialiasing'] = SingularityExplorer.prototype.setAntialiasing;
 SingularityExplorer.prototype['setClipping'] = SingularityExplorer.prototype.setClipping;
+SingularityExplorer.prototype['setLatLong'] = SingularityExplorer.prototype.setLatLong;
 SingularityExplorer.prototype['setOrtho'] = SingularityExplorer.prototype.setOrtho;
 SingularityExplorer.prototype['setTransparency'] = SingularityExplorer.prototype.setTransparency;
 SingularityExplorer.prototype['toggleAntialiasing'] = SingularityExplorer.prototype.toggleAntialiasing;
