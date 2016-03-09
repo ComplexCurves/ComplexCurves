@@ -57,13 +57,14 @@ Quaternion.mul = function(a, b) {
  *  @param {number} t
  *  @return {Quaternion} */
 Quaternion.nlerp = function(a, b, t) {
-    var q = Quaternion.lerp(a, b, t),
+    return Quaternion.lerp(a, b, t).normalize();
+};
+
+/** @return {Quaternion} */
+Quaternion.prototype.normalize = function() {
+    var q = this,
         abs = q.abs();
-    q.w /= abs;
-    q.x /= abs;
-    q.y /= abs;
-    q.z /= abs;
-    return q;
+    return new Quaternion(q.w / abs, q.x / abs, q.y / abs, q.z / abs);
 };
 
 /** rotation matrix from quaternion, in column-major order
