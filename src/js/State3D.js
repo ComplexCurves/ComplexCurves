@@ -41,36 +41,35 @@ State3D.prototype.isRotating = function() {
 
 /** @param {number} theta
  *  @param {number} phi
- *  @return {function(boolean) : State3D} */
-State3D.fromLatLong = function(theta, phi) {
-    return function(ortho) {
-        var q = Quaternion.fromLatLong(theta, phi),
-            st = new State3D();
-        st.ortho = ortho;
-        st.rotation = st.target0 = st.target1 = q;
-        return st;
-    };
+ *  @param {boolean} ortho
+ *  @return {State3D} */
+State3D.fromLatLong = function(theta, phi, ortho) {
+    var q = Quaternion.fromLatLong(theta, phi),
+        st = new State3D();
+    st.ortho = ortho;
+    st.rotation = st.target0 = st.target1 = q;
+    return st;
 };
 
 /** @type {function(boolean) : State3D} */
-State3D.backView = State3D.fromLatLong(Math.PI / 2, Math.PI);
+State3D.backView = State3D.fromLatLong.bind(null, Math.PI / 2, Math.PI);
 /** @type {function(boolean) : State3D} */
-State3D.frontView = State3D.fromLatLong(Math.PI / 2, 0);
+State3D.frontView = State3D.fromLatLong.bind(null, Math.PI / 2, 0);
 /** @type {function(boolean) : State3D} */
-State3D.topView = State3D.fromLatLong(0, 0);
+State3D.topView = State3D.fromLatLong.bind(null, 0, 0);
 /** @type {function(boolean) : State3D} */
-State3D.bottomView = State3D.fromLatLong(Math.PI, 0);
+State3D.bottomView = State3D.fromLatLong.bind(null, Math.PI, 0);
 /** @type {function(boolean) : State3D} */
-State3D.leftView = State3D.fromLatLong(Math.PI / 2, -Math.PI / 2);
+State3D.leftView = State3D.fromLatLong.bind(null, Math.PI / 2, -Math.PI / 2);
 /** @type {function(boolean) : State3D} */
-State3D.rightView = State3D.fromLatLong(Math.PI / 2, Math.PI / 2);
+State3D.rightView = State3D.fromLatLong.bind(null, Math.PI / 2, Math.PI / 2);
 /** @param {number} lat
- *  @param {number} long
+ *  @param {number} lon
  *  @param {boolean} ortho
  *  @return {State3D} */
-State3D.fromLatLongDegrees = function(lat, long, ortho) {
-    return (State3D.fromLatLong(lat / 180 * Math.PI, long / 180 * Math.PI))
-        (ortho);
+State3D.fromLatLongDegrees = function(lat, lon, ortho) {
+    var piOver180 = Math.PI / 180;
+    return State3D.fromLatLong(lat * piOver180, lon * piOver180, ortho);
 };
 /** @return {State3D} */
 State3D.twoDimensionalView = function() {
