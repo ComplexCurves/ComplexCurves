@@ -1,8 +1,11 @@
 /** @param {HTMLCanvasElement} canvas
+ *  @param {number=} lat
+ *  @param {number=} lon
+ *  @param {boolean=} ortho
  *  @constructor */
-export function SingularityExplorer(canvas) {
+export function SingularityExplorer(canvas, lat = 0, lon = 0, ortho = false) {
     this.canvas = canvas;
-    this.state3d = State3D.topView(false);
+    this.state3d = State3D.fromLatLong(lat, lon, ortho);
     this.stategl = new StateGL(canvas);
     this.registerEventHandlers();
 }
@@ -10,17 +13,23 @@ export function SingularityExplorer(canvas) {
 /** @param {HTMLCanvasElement} canvas
  *  @param {string} equation
  *  @param {number} depth
+ *  @param {number=} lat
+ *  @param {number=} lon
+ *  @param {boolean=} ortho
  *  @return {SingularityExplorer} */
-export function SingularityExplorerFromEquation(canvas, equation, depth) {
+export function SingularityExplorerFromEquation(canvas, equation, depth, lat = 0, lon = 0, ortho = false) {
     var p = PolynomialParser.eval(PolynomialParser.parse(equation));
-    return SingularityExplorerFromPolynomial(canvas, p, depth);
+    return SingularityExplorerFromPolynomial(canvas, p, depth, lat, lon, ortho);
 }
 
 /** @param {HTMLCanvasElement} canvas
  *  @param {string} file
+ *  @param {number=} lat
+ *  @param {number=} lon
+ *  @param {boolean=} ortho
  *  @return {SingularityExplorer} */
-export function SingularityExplorerFromFile(canvas, file) {
-    var singularityExplorer = new SingularityExplorer(canvas);
+export function SingularityExplorerFromFile(canvas, file, lat = 0, lon = 0, ortho = false) {
+    var singularityExplorer = new SingularityExplorer(canvas, lat, lon, ortho);
     var gl = singularityExplorer.stategl;
     gl.renderer = new CachedSurface(gl, file, function() {
         singularityExplorer.renderSurface();
@@ -31,9 +40,12 @@ export function SingularityExplorerFromFile(canvas, file) {
 /** @param {HTMLCanvasElement} canvas
  *  @param {Polynomial} polynomial
  *  @param {number} depth
+ *  @param {number=} lat
+ *  @param {number=} lon
+ *  @param {boolean=} ortho
  *  @return {SingularityExplorer} */
-function SingularityExplorerFromPolynomial(canvas, polynomial, depth) {
-    var singularityExplorer = new SingularityExplorer(canvas);
+function SingularityExplorerFromPolynomial(canvas, polynomial, depth, lat = 0, lon = 0, ortho = false) {
+    var singularityExplorer = new SingularityExplorer(canvas, lat, lon, ortho);
     var gl = singularityExplorer.stategl;
     gl.renderer = new Surface(gl, polynomial, depth);
     singularityExplorer.renderSurface();
