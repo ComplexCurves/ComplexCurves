@@ -2,7 +2,8 @@ import {
     SingularityExplorer,
     SingularityExplorerFromEquation,
     SingularityExplorerFromFile
-} from 'src/js/SingularityExplorer';
+}
+from 'src/js/SingularityExplorer';
 window['SingularityExplorer'] = SingularityExplorer;
 SingularityExplorer['fromEquation'] = SingularityExplorerFromEquation;
 SingularityExplorer['fromFile'] = SingularityExplorerFromFile;
