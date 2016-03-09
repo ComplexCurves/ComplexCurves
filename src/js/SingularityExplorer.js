@@ -27,12 +27,15 @@ export function SingularityExplorerFromEquation(canvas, equation, depth, lat = 0
  *  @param {number=} lat
  *  @param {number=} lon
  *  @param {boolean=} ortho
+ *  @param {function()=} onload
  *  @return {SingularityExplorer} */
-export function SingularityExplorerFromFile(canvas, file, lat = 0, lon = 0, ortho = false) {
+export function SingularityExplorerFromFile(canvas, file, lat = 0, lon = 0, ortho = false, onload) {
     var singularityExplorer = new SingularityExplorer(canvas, lat, lon, ortho);
     var gl = singularityExplorer.stategl;
     gl.renderer = new CachedSurface(gl, file, function() {
         singularityExplorer.renderSurface();
+        if (onload)
+            onload();
     });
     return singularityExplorer;
 }
