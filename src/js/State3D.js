@@ -1,6 +1,9 @@
 /** @constructor */
 function State3D() {}
 
+/** @type {boolean} */
+State3D.prototype.autorotate = false;
+
 /** @type {Array<number>} */
 State3D.prototype.mouseCoord = [0, 0];
 
@@ -35,8 +38,8 @@ State3D.identityMatrix = function() {
 
 /** @return {boolean} */
 State3D.prototype.isRotating = function() {
-    return this.rotating || Quaternion.sub(this.rotation, this.target1).abs() >
-        1e-6;
+    return this.autorotate || this.rotating ||
+        Quaternion.sub(this.rotation, this.target1).abs() > 1e-6;
 };
 
 /** @param {number} theta
@@ -85,6 +88,8 @@ State3D.prototype.modelMatrix = function() {
 
 /** @param {Array<number>} xy */
 State3D.prototype.mouseDown = function(xy) {
+    if(this.autorotate)
+        return;
     this.mouseCoord = xy;
     this.rotating = true;
     this.target0 = this.target1;
@@ -173,6 +178,11 @@ State3D.prototype.projectionMatrix = function(w, h) {
         return State3D.perspectiveProjectionMatrix(w, h, this.zoomFactor);
 };
 
+/** @param {boolean} autorotate */
+State3D.prototype.setAutorotate = function(autorotate) {
+    this.autorotate = autorotate;
+};
+
 /** @param {boolean} ortho */
 State3D.prototype.setOrtho = function(ortho) {
     this.ortho = ortho;
@@ -181,6 +191,10 @@ State3D.prototype.setOrtho = function(ortho) {
 /** @param {boolean} twoD */
 State3D.prototype.setTwoD = function(twoD) {
     this.twoD = twoD;
+};
+
+State3D.prototype.toggleAutorotate = function() {
+    this.autorotate = !this.autorotate;
 };
 
 State3D.prototype.toggleOrtho = function() {
@@ -192,10 +206,15 @@ State3D.prototype.toggleTwoD = function() {
 };
 
 State3D.prototype.updateRotation = function() {
-    if (this.rotationEasing)
+    if (this.autorotate) {
+        var q = new Quaternion(0.01, 0, 0, 1).normalize();
+        q = Quaternion.mul(q, q);
+        this.rotation = Quaternion.mul(this.rotation, q);
+    } else if (this.rotationEasing) {
         this.rotation = Quaternion.nlerp(this.rotation, this.target1, 0.1);
-    else
+    } else {
         this.rotation = this.target1;
+    }
 };
 
 /** @param {number} z */

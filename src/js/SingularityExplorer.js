@@ -109,6 +109,9 @@ SingularityExplorer.prototype.keyDown = function(keyCode) {
         case 79: // 'o'
             this.toggleOrtho();
             break;
+        case 82: // 'r'
+            this.toggleAutorotate();
+            break;
         case 84: // 't'
             this.toggleTransparency();
             break;
@@ -168,6 +171,12 @@ SingularityExplorer.prototype.setAntialiasing = function(fxaa) {
     this.renderSurface();
 };
 
+/** @param {boolean} autorotate */
+SingularityExplorer.prototype.setAutorotate = function(autorotate) {
+    this.state3d.setAutorotate(autorotate);
+    this.renderSurface();
+};
+
 /** @param {boolean} clipping */
 SingularityExplorer.prototype.setClipping = function(clipping) {
     this.stategl.setClipping(clipping);
@@ -197,6 +206,11 @@ SingularityExplorer.prototype.setTransparency = function(transparency) {
 
 SingularityExplorer.prototype.toggleAntialiasing = function() {
     this.stategl.toggleAntialiasing();
+    this.renderSurface();
+};
+
+SingularityExplorer.prototype.toggleAutorotate = function() {
+    this.state3d.toggleAutorotate();
     this.renderSurface();
 };
 
