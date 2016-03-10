@@ -62,6 +62,8 @@ SingularityExplorer.prototype.registerEventHandlers = function() {
     var singularityExplorer = this;
     canvas.addEventListener('mousedown', function(evt) {
         evt.preventDefault();
+        if (state3d.autorotate)
+            return;
         state3d.mouseDown([evt.clientX, evt.clientY]);
         singularityExplorer.renderSurface();
     });
