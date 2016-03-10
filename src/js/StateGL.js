@@ -5,7 +5,6 @@ function StateGL(canvas) {
         preserveDrawingBuffer: true
     }));
     var gl = this.gl;
-    gl.clearColor(0.0, 0.0, 0.0, 1.0);
     gl.enable(gl.DEPTH_TEST);
     this.mkRenderToTextureObjects();
     this.mkFXAAProgram();
