@@ -88,7 +88,7 @@ State3D.prototype.modelMatrix = function() {
 
 /** @param {Array<number>} xy */
 State3D.prototype.mouseDown = function(xy) {
-    if(this.autorotate)
+    if (this.autorotate)
         return;
     this.mouseCoord = xy;
     this.rotating = true;
