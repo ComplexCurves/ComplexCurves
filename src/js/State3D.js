@@ -209,7 +209,7 @@ State3D.prototype.updateRotation = function() {
     if (this.autorotate) {
         var q = new Quaternion(0.01, 0, 0, 1).normalize();
         q = Quaternion.mul(q, q);
-        this.rotation = Quaternion.mul(this.rotation, q);
+        this.rotation = this.target1 = Quaternion.mul(this.rotation, q);
     } else if (this.rotationEasing) {
         this.rotation = Quaternion.nlerp(this.rotation, this.target1, 0.1);
     } else {
