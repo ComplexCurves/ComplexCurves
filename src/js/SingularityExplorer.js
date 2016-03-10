@@ -158,6 +158,7 @@ SingularityExplorer.prototype.rotateFront = function() {
 /** @param {number} lat
  *  @param {number} lon */
 SingularityExplorer.prototype.rotateLatLong = function(lat, lon) {
+    this.state3d.autorotate = false;
     this.state3d.target1 = Quaternion.fromLatLong(lat, lon);
     this.renderSurface();
 };
@@ -192,6 +193,7 @@ SingularityExplorer.prototype.setClipping = function(clipping) {
  *  @param {number} lon */
 SingularityExplorer.prototype.setLatLong = function(lat, lon) {
     var q = Quaternion.fromLatLong(lat, lon);
+    this.state3d.autorotate = false;
     this.state3d.rotating = false;
     this.state3d.rotation = this.state3d.target1 = q;
     this.renderSurface();
