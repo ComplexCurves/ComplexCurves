@@ -5,6 +5,7 @@ import {
 }
 from 'src/js/SingularityExplorer';
 window['SingularityExplorer'] = SingularityExplorer;
+SingularityExplorer['exportBinary'] = SingularityExplorer.prototype.exportBinary;
 SingularityExplorer['fromEquation'] = SingularityExplorerFromEquation;
 SingularityExplorer['fromFile'] = SingularityExplorerFromFile;
 SingularityExplorer.prototype['rotateFront'] = SingularityExplorer.prototype.rotateFront;

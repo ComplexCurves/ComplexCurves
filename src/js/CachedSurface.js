@@ -13,10 +13,23 @@ function CachedSurface(stategl, file, onload) {
 }
 
 /** @param {StateGL} stategl
+ *  @param {string=} name */
+CachedSurface.prototype.exportBinary = function(stategl, name = "surface.bin") {
+    var link = document.createElement("a");
+    link.href = this.file;
+    link.download = name || "surface.bin";
+    link.style.display = "none";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+};
+
+/** @param {StateGL} stategl
  *  @param {string} file
  *  @param {function()} onload */
 CachedSurface.prototype.loadModel = function(stategl, file, onload) {
     var cachedSurface = this;
+    cachedSurface.file = file;
     var req = new XMLHttpRequest();
     req.open("GET", file, true);
     req.responseType = "arraybuffer";

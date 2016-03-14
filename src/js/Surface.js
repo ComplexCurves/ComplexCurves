@@ -32,6 +32,25 @@ function Surface(stategl, polynomial, depth) {
     gl.viewport(0, 0, canvas.width, canvas.height);
 }
 
+/** @param {StateGL} stategl
+ *  @param {string=} name */
+Surface.prototype.exportBinary = function(stategl, name = "surface.bin") {
+    var pixels = stategl.readTexture(this.texturesIn[0]);
+    var length = 4 * this.numIndices;
+    pixels = Array.prototype.slice.call(pixels, 0, length);
+    var url = URL.createObjectURL(new Blob([pixels], {
+        type: "application/octet-stream",
+        size: length * Float32Array.BYTES_PER_ELEMENT
+    }));
+    var link = document.createElement("a");
+    link.href = url;
+    link.download = name;
+    link.style.display = "none";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+};
+
 /** @type {WebGLFramebuffer} */
 Surface.prototype.frameBuffer = null;
 

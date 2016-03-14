@@ -55,6 +55,12 @@ function SingularityExplorerFromPolynomial(canvas, polynomial, depth, lat = 0, l
     return singularityExplorer;
 }
 
+/** @param {string=} name */
+SingularityExplorer.prototype.exportBinary = function(name = "surface.bin") {
+    var gl = this.stategl;
+    gl.renderer.exportBinary(gl, name);
+};
+
 SingularityExplorer.prototype.registerEventHandlers = function() {
     var canvas = this.canvas,
         state3d = this.state3d,
@@ -105,6 +111,9 @@ SingularityExplorer.prototype.keyDown = function(keyCode) {
     switch (keyCode) {
         case 65: // 'a'
             this.toggleAntialiasing();
+            break;
+        case 66: // 'b'
+            this.exportBinary();
             break;
         case 67: // 'c'
             this.toggleClipping();

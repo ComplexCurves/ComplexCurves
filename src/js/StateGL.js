@@ -105,9 +105,6 @@ StateGL.prototype.mkRenderToTextureObjects = function() {
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
 };
 
-/** @type {number} */
-StateGL.prototype.numIndices = 0;
-
 /** @type {Polynomial} */
 StateGL.prototype.polynomial = null;
 
