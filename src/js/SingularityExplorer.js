@@ -102,8 +102,6 @@ SingularityExplorer.prototype.registerEventHandlers = function() {
 
 /** @param {number} keyCode */
 SingularityExplorer.prototype.keyDown = function(keyCode) {
-    var state3d = this.state3d,
-        gl = this.stategl;
     switch (keyCode) {
         case 65: // 'a'
             this.toggleAntialiasing();

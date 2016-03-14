@@ -35,9 +35,6 @@ function Surface(stategl, polynomial, depth) {
 /** @type {WebGLFramebuffer} */
 Surface.prototype.frameBuffer = null;
 
-/** @type {WebGLBuffer} */
-Surface.prototype.indexBuffer = null;
-
 /** @param {StateGL} stategl */
 Surface.prototype.fillIndexBuffer = function(stategl) {
     var gl = stategl.gl;
@@ -47,6 +44,9 @@ Surface.prototype.fillIndexBuffer = function(stategl) {
     gl.bindBuffer(gl.ARRAY_BUFFER, this.indexBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(indices), gl.STATIC_DRAW);
 };
+
+/** @type {WebGLBuffer} */
+Surface.prototype.indexBuffer = null;
 
 /** @param {StateGL} stategl */
 Surface.prototype.mkProgram = function(stategl) {
