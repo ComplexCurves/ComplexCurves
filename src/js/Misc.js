@@ -1,5 +1,17 @@
 var Misc = {};
 
+/** @param {string} name
+ *  @param {string|URL} url */
+Misc.download = function(name, url) {
+    var link = document.createElement("a");
+    link.href = url;
+    link.download = name;
+    link.style.display = "none";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+};
+
 /** @param {number} x
  *  @param {number} y
  *  @param {number} mu

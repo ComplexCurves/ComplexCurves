@@ -15,13 +15,7 @@ function CachedSurface(stategl, file, onload) {
 /** @param {StateGL} stategl
  *  @param {string=} name */
 CachedSurface.prototype.exportBinary = function(stategl, name = "surface.bin") {
-    var link = document.createElement("a");
-    link.href = this.file;
-    link.download = name || "surface.bin";
-    link.style.display = "none";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    Misc.download(name, this.file);
 };
 
 /** @param {StateGL} stategl

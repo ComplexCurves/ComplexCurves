@@ -39,16 +39,9 @@ Surface.prototype.exportBinary = function(stategl, name = "surface.bin") {
     var length = 4 * this.numIndices;
     pixels = Array.prototype.slice.call(pixels, 0, length);
     var url = URL.createObjectURL(new Blob([pixels], {
-        type: "application/octet-stream",
-        size: length * Float32Array.BYTES_PER_ELEMENT
+        type: "application/octet-stream"
     }));
-    var link = document.createElement("a");
-    link.href = url;
-    link.download = name;
-    link.style.display = "none";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    Misc.download(name, url);
 };
 
 /** @type {WebGLFramebuffer} */
