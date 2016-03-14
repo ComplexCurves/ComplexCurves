@@ -4,6 +4,8 @@ precision highp float;
 precision mediump float;
 #endif
 uniform sampler2D u_tex;
+uniform float width;
+uniform float height;
 
 #define FXAA_REDUCE_MIN (1.0/ 128.0)
 #define FXAA_REDUCE_MUL (1.0 / 8.0)
@@ -12,7 +14,7 @@ uniform sampler2D u_tex;
 vec4 applyFXAA(in vec2 fragCoord, in sampler2D tex)
 {
     vec4 color;
-    vec2 inverseVP = vec2(1.0 / 2048.0, 1.0 / 2048.0);
+    vec2 inverseVP = vec2(1.0 / width, 1.0 / height);
     vec3 rgbNW = texture2D(tex, (fragCoord + vec2(-1.0, -1.0)) * inverseVP).xyz;
     vec3 rgbNE = texture2D(tex, (fragCoord + vec2(1.0, -1.0)) * inverseVP).xyz;
     vec3 rgbSW = texture2D(tex, (fragCoord + vec2(-1.0, 1.0)) * inverseVP).xyz;

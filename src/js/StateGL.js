@@ -265,7 +265,12 @@ StateGL.prototype.updateViewMatrix = function(st) {
 StateGL.prototype.withFXAA = function(action) {
     this.withRenderToTexture(action);
     var gl = this.gl;
-    gl.useProgram(this.fxaaProgram);
+    var program = this.fxaaProgram;
+    gl.useProgram(program);
+    var loc = gl.getUniformLocation(program, "width");
+    gl.uniform1f(loc, gl.canvas.width);
+    loc = gl.getUniformLocation(program, "height");
+    gl.uniform1f(loc, gl.canvas.height);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.rttArrayBuffer);
     gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
     gl.activeTexture(gl.TEXTURE0);
@@ -286,6 +291,8 @@ StateGL.prototype.withOptionalFXAA = function(action) {
 StateGL.prototype.withRenderToTexture = function(action) {
     var gl = this.gl;
     gl.bindFramebuffer(gl.FRAMEBUFFER, this.rttFramebuffer);
+    gl.viewport(0, 0, 2048, 2048);
     action();
+    gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 };
