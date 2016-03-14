@@ -28,6 +28,8 @@ function Surface(stategl, polynomial, depth) {
     surface.assembly = new Assembly(stategl, surface);
     surface.assembly.render(stategl, surface, gl);
     surface.mkProgram(stategl);
+    var canvas = gl.canvas;
+    gl.viewport(0, 0, canvas.width, canvas.height);
 }
 
 /** @type {WebGLFramebuffer} */
@@ -101,7 +103,6 @@ Surface.prototype.render = function(stategl, gl, state3d) {
     this.fillIndexBuffer(stategl);
     gl.vertexAttribPointer(0, 1, gl.FLOAT, false, 0, 0);
     gl.enable(gl.DEPTH_TEST);
-    gl.viewport(0, 0, 800, 800);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.drawArrays(gl.TRIANGLES, 0, this.numIndices);
     stategl.updateTransparency(false);
