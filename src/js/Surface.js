@@ -35,12 +35,7 @@ function Surface(stategl, polynomial, depth) {
 /** @param {StateGL} stategl
  *  @param {string=} name */
 Surface.prototype.exportBinary = function(stategl, name = "surface.bin") {
-    var pixels = stategl.readTexture(this.texturesIn[0]);
-    var length = 4 * this.numIndices;
-    pixels = Array.prototype.slice.call(pixels, 0, length);
-    var url = URL.createObjectURL(new Blob([pixels], {
-        type: "application/octet-stream"
-    }));
+    var url = stategl.textureToURL(this.texturesIn[0], 4 * this.numIndices);
     Misc.download(name, url);
 };
 

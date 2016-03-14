@@ -1,7 +1,7 @@
 var Misc = {};
 
 /** @param {string} name
- *  @param {string|URL} url */
+ *  @param {string} url */
 Misc.download = function(name, url) {
     var link = document.createElement("a");
     link.href = url;

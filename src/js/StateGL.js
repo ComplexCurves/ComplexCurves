@@ -111,13 +111,13 @@ StateGL.prototype.polynomial = null;
 /** @param {number} length
  *  @param {WebGLTexture} texture */
 StateGL.prototype.printTexture = function(length, texture) {
-    var pixels = this.readTexture(texture);
-    console.log(Array.prototype.slice.call(pixels, 0, length));
+    console.log(this.readTexture(texture, length));
 };
 
 /** @param {WebGLTexture} texture
- *  @return {Float32Array} */
-StateGL.prototype.readTexture = function(texture) {
+ *  @param {number=} length
+ *  @return {Float32Array|Array} */
+StateGL.prototype.readTexture = function(texture, length) {
     var gl = this.gl;
     var framebuffer = /** @type {WebGLFramebuffer} */
         (gl.getParameter(gl.FRAMEBUFFER_BINDING));
@@ -135,7 +135,10 @@ StateGL.prototype.readTexture = function(texture) {
         null, 0);
     gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
     gl.deleteFramebuffer(readBuffer);
-    return pixels;
+    if (length)
+        return Array.prototype.slice.call(pixels, 0, length);
+    else
+        return pixels;
 };
 
 /** @type {Stage} */
@@ -175,6 +178,16 @@ StateGL.prototype.setClipping = function(clipping) {
 /** @param {boolean} transparency */
 StateGL.prototype.setTransparency = function(transparency) {
     this.transparency = transparency;
+};
+
+/** @param {WebGLTexture} texture
+ *  @param {number=} length
+ *  @return {string} */
+StateGL.prototype.textureToURL = function(texture, length) {
+    var pixels = this.readTexture(texture, length);
+    return URL.createObjectURL(new Blob([pixels], {
+        type: "application/octet-stream"
+    }));
 };
 
 StateGL.prototype.toggleAntialiasing = function() {
