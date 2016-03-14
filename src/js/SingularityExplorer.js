@@ -61,6 +61,11 @@ SingularityExplorer.prototype.exportBinary = function(name = "surface.bin") {
     gl.renderer.exportBinary(gl, name);
 };
 
+/** @param {string=} name */
+SingularityExplorer.prototype.exportScreenshot = function(name = "surface.png") {
+    Misc.download(name, this.stategl.gl.canvas.toDataURL());
+};
+
 SingularityExplorer.prototype.registerEventHandlers = function() {
     var canvas = this.canvas,
         state3d = this.state3d,
@@ -123,6 +128,9 @@ SingularityExplorer.prototype.keyDown = function(keyCode) {
             break;
         case 82: // 'r'
             this.toggleAutorotate();
+            break;
+        case 83: // 's'
+            this.exportScreenshot();
             break;
         case 84: // 't'
             this.toggleTransparency();
