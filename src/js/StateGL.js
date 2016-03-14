@@ -116,7 +116,7 @@ StateGL.prototype.printTexture = function(length, texture) {
 
 /** @param {WebGLTexture} texture
  *  @param {number=} length
- *  @return {Float32Array|Array} */
+ *  @return {Float32Array|Uint8Array|Array} */
 StateGL.prototype.readTexture = function(texture, length) {
     var gl = this.gl;
     var framebuffer = /** @type {WebGLFramebuffer} */
@@ -128,8 +128,14 @@ StateGL.prototype.readTexture = function(texture, length) {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D,
         texture, 0);
-    var pixels = new Float32Array(4 * 2048 * 2048);
-    gl.readPixels(0, 0, 2048, 2048, gl.RGBA, gl.FLOAT, pixels);
+    var pixels;
+    if(texture === this.rttTexture) {
+        pixels = new Uint8Array(4 * 2048 * 2048);
+        gl.readPixels(0, 0, 2048, 2048, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+    } else {
+        pixels = new Float32Array(4 * 2048 * 2048);
+        gl.readPixels(0, 0, 2048, 2048, gl.RGBA, gl.FLOAT, pixels);
+    }
     gl.bindTexture(gl.TEXTURE_2D, null);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D,
         null, 0);

@@ -63,7 +63,27 @@ SingularityExplorer.prototype.exportBinary = function(name = "surface.bin") {
 
 /** @param {string=} name */
 SingularityExplorer.prototype.exportScreenshot = function(name = "surface.png") {
-    Misc.download(name, this.stategl.gl.canvas.toDataURL());
+    var singularityExplorer = this;
+    var stategl = this.stategl;
+    stategl.withRenderToTexture(function () {
+        singularityExplorer.renderSurface();
+    });
+    var pixels = stategl.readTexture(stategl.rttTexture);
+    var canvas = document.createElement("canvas");
+    canvas.width = 2048;
+    canvas.height = 2048;
+    var context = canvas.getContext("2d");
+    var imageData = context.createImageData(canvas.width, canvas.height);
+    imageData.data.set(pixels);
+    context.putImageData(imageData, 0, 0);
+    var canvasFlip = document.createElement("canvas");
+    canvasFlip.width = 2048;
+    canvasFlip.height = 2048;
+    var contextFlip = canvasFlip.getContext("2d");
+    contextFlip.translate(0, canvasFlip.height - 1);
+    contextFlip.scale(1, -1);
+    contextFlip.drawImage(canvas, 0, 0);
+    Misc.download(name, canvasFlip.toDataURL());
 };
 
 SingularityExplorer.prototype.registerEventHandlers = function() {
