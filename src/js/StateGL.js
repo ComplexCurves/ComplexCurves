@@ -108,15 +108,15 @@ StateGL.prototype.mkRenderToTextureObjects = function() {
 /** @type {Polynomial} */
 StateGL.prototype.polynomial = null;
 
-/** @param {number} length
- *  @param {WebGLTexture} texture */
-StateGL.prototype.printTexture = function(length, texture) {
+/** @param {WebGLTexture} texture
+ *  @param {number} length */
+StateGL.prototype.printTexture = function(texture, length) {
     console.log(this.readTexture(texture, length));
 };
 
 /** @param {WebGLTexture} texture
  *  @param {number=} length
- *  @return {Float32Array|Uint8Array|Array} */
+ *  @return {Float32Array|Uint8Array} */
 StateGL.prototype.readTexture = function(texture, length) {
     var gl = this.gl;
     var framebuffer = /** @type {WebGLFramebuffer} */
@@ -142,7 +142,7 @@ StateGL.prototype.readTexture = function(texture, length) {
     gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
     gl.deleteFramebuffer(readBuffer);
     if (length)
-        return Array.prototype.slice.call(pixels, 0, length);
+        return new pixels.constructor(pixels.buffer, 0, length);
     else
         return pixels;
 };
@@ -192,7 +192,7 @@ StateGL.prototype.setTransparency = function(transparency) {
 StateGL.prototype.textureToURL = function(texture, length) {
     var pixels = this.readTexture(texture, length);
     return URL.createObjectURL(new Blob([pixels], {
-        type: "application/octet-stream"
+        type: "application/octet-binary"
     }));
 };
 
