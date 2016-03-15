@@ -129,7 +129,7 @@ StateGL.prototype.readTexture = function(texture, length) {
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D,
         texture, 0);
     var pixels;
-    if(texture === this.rttTexture) {
+    if (texture === this.rttTexture) {
         pixels = new Uint8Array(4 * 2048 * 2048);
         gl.readPixels(0, 0, 2048, 2048, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
     } else {

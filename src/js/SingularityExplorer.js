@@ -70,11 +70,11 @@ SingularityExplorer.prototype.exportBinary = function(name = "surface.bin") {
 SingularityExplorer.prototype.exportScreenshot = function(name = "surface.png") {
     var singularityExplorer = this;
     var stategl = this.stategl;
-    stategl.withRenderToTexture(function () {
+    stategl.withRenderToTexture(function() {
         singularityExplorer.renderSurface();
     });
-    var pixels =
-        /** @type {Uint8Array} */ (stategl.readTexture(stategl.rttTexture));
+    var pixels = /** @type {Uint8Array} */
+        (stategl.readTexture(stategl.rttTexture));
     Export.download(name, Export.pixelsToImageDataURL(pixels));
 };
 

@@ -43,7 +43,7 @@ Surface.prototype.domainColouring = function(stategl) {
     var sheets = [];
     var pixels;
     for (var sheet = 1; sheet <= this.sheets; sheet++) {
-        stategl.withRenderToTexture(function () {
+        stategl.withRenderToTexture(function() {
             gl.useProgram(program);
             gl.bindBuffer(gl.ARRAY_BUFFER, stategl.rttArrayBuffer);
             gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
@@ -52,8 +52,8 @@ Surface.prototype.domainColouring = function(stategl) {
             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
             gl.drawArrays(gl.TRIANGLES, 0, 3);
         });
-        pixels =
-            /** @type {Uint8Array} */ (stategl.readTexture(stategl.rttTexture));
+        pixels = /** @type {Uint8Array} */
+            (stategl.readTexture(stategl.rttTexture));
         sheets[sheet - 1] = Export.pixelsToImageDataURL(pixels);
     }
     return sheets;
