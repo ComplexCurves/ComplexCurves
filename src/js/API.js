@@ -5,10 +5,10 @@ import {
 }
 from 'src/js/SingularityExplorer';
 window['SingularityExplorer'] = SingularityExplorer;
-SingularityExplorer['exportBinary'] = SingularityExplorer.prototype.exportBinary;
-SingularityExplorer['exportScreenshot'] = SingularityExplorer.prototype.exportScreenshot;
 SingularityExplorer['fromEquation'] = SingularityExplorerFromEquation;
 SingularityExplorer['fromFile'] = SingularityExplorerFromFile;
+SingularityExplorer.prototype['exportBinary'] = SingularityExplorer.prototype.exportBinary;
+SingularityExplorer.prototype['exportScreenshot'] = SingularityExplorer.prototype.exportScreenshot;
 SingularityExplorer.prototype['rotateFront'] = SingularityExplorer.prototype.rotateFront;
 SingularityExplorer.prototype['rotateLatLong'] = SingularityExplorer.prototype.rotateLatLong;
 SingularityExplorer.prototype['rotateRight'] = SingularityExplorer.prototype.rotateRight;
