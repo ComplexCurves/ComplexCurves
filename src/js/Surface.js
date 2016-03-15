@@ -66,6 +66,16 @@ Surface.prototype.exportBinary = function(stategl, name = "surface.bin") {
     Export.download(name, url);
 };
 
+/** @param {StateGL} stategl
+ *  @param {string=} name */
+Surface.prototype.exportSurface = function(stategl, name = "surface") {
+    var texture = this.texturesIn[0];
+    var length = 4 * this.numIndices;
+    var pixels = /** @type {Float32Array} */
+        (stategl.readTexture(texture, length));
+    Export.exportSurface(stategl, pixels, name);
+};
+
 /** @type {WebGLFramebuffer} */
 Surface.prototype.frameBuffer = null;
 

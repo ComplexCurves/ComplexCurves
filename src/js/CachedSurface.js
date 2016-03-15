@@ -24,6 +24,12 @@ CachedSurface.prototype.exportBinary = function(stategl, name = "surface.bin") {
 };
 
 /** @param {StateGL} stategl
+ *  @param {string=} name */
+CachedSurface.prototype.exportSurface = function(stategl, name = "surface") {
+    Export.exportSurface(stategl, new Float32Array(this.positions), name);
+};
+
+/** @param {StateGL} stategl
  *  @param {string} file
  *  @param {function()} onload */
 CachedSurface.prototype.loadModel = function(stategl, file, onload) {

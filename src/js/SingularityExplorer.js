@@ -78,6 +78,12 @@ SingularityExplorer.prototype.exportScreenshot = function(name = "surface.png") 
     Export.download(name, Export.pixelsToImageDataURL(pixels));
 };
 
+/** @param {string=} name */
+SingularityExplorer.prototype.exportSurface = function(name = "surface") {
+    var gl = this.stategl;
+    gl.renderer.exportSurface(gl, name);
+};
+
 SingularityExplorer.prototype.registerEventHandlers = function() {
     var canvas = this.canvas,
         state3d = this.state3d,
@@ -134,6 +140,9 @@ SingularityExplorer.prototype.keyDown = function(keyCode) {
             break;
         case 67: // 'c'
             this.toggleClipping();
+            break;
+        case 69: // 'e'
+            this.exportSurface();
             break;
         case 79: // 'o'
             this.toggleOrtho();
