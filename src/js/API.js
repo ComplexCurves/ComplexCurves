@@ -7,6 +7,7 @@ from 'src/js/SingularityExplorer';
 window['SingularityExplorer'] = SingularityExplorer;
 SingularityExplorer['fromEquation'] = SingularityExplorerFromEquation;
 SingularityExplorer['fromFile'] = SingularityExplorerFromFile;
+SingularityExplorer.prototype['domainColouring'] = SingularityExplorer.prototype.domainColouring;
 SingularityExplorer.prototype['exportBinary'] = SingularityExplorer.prototype.exportBinary;
 SingularityExplorer.prototype['exportScreenshot'] = SingularityExplorer.prototype.exportScreenshot;
 SingularityExplorer.prototype['rotateFront'] = SingularityExplorer.prototype.rotateFront;

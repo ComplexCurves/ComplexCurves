@@ -55,6 +55,11 @@ function SingularityExplorerFromPolynomial(canvas, polynomial, depth, lat = 0, l
     return singularityExplorer;
 }
 
+SingularityExplorer.prototype.domainColouring = function() {
+    var gl = this.stategl;
+    return gl.renderer.domainColouring(gl);
+};
+
 /** @param {string=} name */
 SingularityExplorer.prototype.exportBinary = function(name = "surface.bin") {
     var gl = this.stategl;

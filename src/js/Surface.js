@@ -33,6 +33,33 @@ function Surface(stategl, polynomial, depth) {
 }
 
 /** @param {StateGL} stategl
+ *  @return {Array<string>} */
+Surface.prototype.domainColouring = function(stategl) {
+    var gl = stategl.gl;
+    var sources = StateGL.getShaderSources("DomainColouring");
+    sources[1] = this.withCustomAndCommon(sources[1]);
+    var program = stategl.mkProgram(sources);
+    var loc;
+    var sheets = [];
+    var pixels;
+    for (var sheet = 1; sheet <= this.sheets; sheet++) {
+        stategl.withRenderToTexture(function () {
+            gl.useProgram(program);
+            gl.bindBuffer(gl.ARRAY_BUFFER, stategl.rttArrayBuffer);
+            gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+            loc = gl.getUniformLocation(program, "sheet");
+            gl.uniform1i(loc, sheet);
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+            gl.drawArrays(gl.TRIANGLES, 0, 3);
+        });
+        pixels =
+            /** @type {Uint8Array} */ (stategl.readTexture(stategl.rttTexture));
+        sheets[sheet - 1] = Misc.pixelsToImageDataURL(pixels);
+    }
+    return sheets;
+};
+
+/** @param {StateGL} stategl
  *  @param {string=} name */
 Surface.prototype.exportBinary = function(stategl, name = "surface.bin") {
     var url = stategl.textureToURL(this.texturesIn[0], 4 * this.numIndices);

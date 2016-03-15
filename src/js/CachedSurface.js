@@ -12,6 +12,11 @@ function CachedSurface(stategl, file, onload) {
     });
 }
 
+/** @param {StateGL} stategl */
+CachedSurface.prototype.domainColouring = function(stategl) {
+    // not supported
+};
+
 /** @param {StateGL} stategl
  *  @param {string=} name */
 CachedSurface.prototype.exportBinary = function(stategl, name = "surface.bin") {
