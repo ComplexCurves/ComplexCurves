@@ -75,7 +75,7 @@ SingularityExplorer.prototype.exportScreenshot = function(name = "surface.png") 
     });
     var pixels =
         /** @type {Uint8Array} */ (stategl.readTexture(stategl.rttTexture));
-    Misc.download(name, Misc.pixelsToImageDataURL(pixels));
+    Export.download(name, Export.pixelsToImageDataURL(pixels));
 };
 
 SingularityExplorer.prototype.registerEventHandlers = function() {

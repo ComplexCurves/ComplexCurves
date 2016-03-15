@@ -20,7 +20,7 @@ CachedSurface.prototype.domainColouring = function(stategl) {
 /** @param {StateGL} stategl
  *  @param {string=} name */
 CachedSurface.prototype.exportBinary = function(stategl, name = "surface.bin") {
-    Misc.download(name, this.file);
+    Export.download(name, this.file);
 };
 
 /** @param {StateGL} stategl

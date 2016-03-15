@@ -54,7 +54,7 @@ Surface.prototype.domainColouring = function(stategl) {
         });
         pixels =
             /** @type {Uint8Array} */ (stategl.readTexture(stategl.rttTexture));
-        sheets[sheet - 1] = Misc.pixelsToImageDataURL(pixels);
+        sheets[sheet - 1] = Export.pixelsToImageDataURL(pixels);
     }
     return sheets;
 };
@@ -63,7 +63,7 @@ Surface.prototype.domainColouring = function(stategl) {
  *  @param {string=} name */
 Surface.prototype.exportBinary = function(stategl, name = "surface.bin") {
     var url = stategl.textureToURL(this.texturesIn[0], 4 * this.numIndices);
-    Misc.download(name, url);
+    Export.download(name, url);
 };
 
 /** @type {WebGLFramebuffer} */
