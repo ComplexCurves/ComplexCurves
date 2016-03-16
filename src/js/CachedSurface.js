@@ -12,9 +12,12 @@ function CachedSurface(stategl, file, onload) {
     });
 }
 
-/** @param {StateGL} stategl */
-CachedSurface.prototype.domainColouring = function(stategl) {
+/** @param {StateGL} stategl
+ *  @param {boolean=} big
+ *  @return {Array<string>} */
+CachedSurface.prototype.domainColouring = function(stategl, big = false) {
     // not supported
+    return [];
 };
 
 /** @param {StateGL} stategl
@@ -24,9 +27,10 @@ CachedSurface.prototype.exportBinary = function(stategl, name = "surface.bin") {
 };
 
 /** @param {StateGL} stategl
- *  @param {string=} name */
-CachedSurface.prototype.exportSurface = function(stategl, name = "surface") {
-    Export.exportSurface(stategl, new Float32Array(this.positions), name);
+ *  @param {string=} name
+ *  @param {boolean=} big */
+CachedSurface.prototype.exportSurface = function(stategl, name = "surface", big = true) {
+    Export.exportSurface(stategl, new Float32Array(this.positions), name, big);
 };
 
 /** @param {StateGL} stategl

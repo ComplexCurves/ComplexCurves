@@ -33,8 +33,9 @@ function Surface(stategl, polynomial, depth) {
 }
 
 /** @param {StateGL} stategl
+ *  @param {boolean=} big
  *  @return {Array<string>} */
-Surface.prototype.domainColouring = function(stategl) {
+Surface.prototype.domainColouring = function(stategl, big = false) {
     var gl = stategl.gl;
     var sources = StateGL.getShaderSources("DomainColouring");
     sources[1] = this.withCustomAndCommon(sources[1]);
@@ -51,9 +52,10 @@ Surface.prototype.domainColouring = function(stategl) {
             gl.uniform1i(loc, sheet);
             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
             gl.drawArrays(gl.TRIANGLES, 0, 3);
-        });
+        }, big);
+        var texture = big ? stategl.rttBigTexture : stategl.rttTexture;
         pixels = /** @type {Uint8Array} */
-            (stategl.readTexture(stategl.rttTexture));
+            (stategl.readTexture(texture));
         sheets[sheet - 1] = Export.pixelsToImageDataURL(pixels);
     }
     return sheets;
@@ -67,13 +69,14 @@ Surface.prototype.exportBinary = function(stategl, name = "surface.bin") {
 };
 
 /** @param {StateGL} stategl
- *  @param {string=} name */
-Surface.prototype.exportSurface = function(stategl, name = "surface") {
+ *  @param {string=} name
+ *  @param {boolean=} big */
+Surface.prototype.exportSurface = function(stategl, name = "surface", big = true) {
     var texture = this.texturesIn[0];
     var length = 4 * this.numIndices;
     var pixels = /** @type {Float32Array} */
         (stategl.readTexture(texture, length));
-    Export.exportSurface(stategl, pixels, name);
+    Export.exportSurface(stategl, pixels, name, big);
 };
 
 /** @type {WebGLFramebuffer} */

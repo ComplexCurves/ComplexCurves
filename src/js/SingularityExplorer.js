@@ -55,9 +55,10 @@ function SingularityExplorerFromPolynomial(canvas, polynomial, depth, lat = 0, l
     return singularityExplorer;
 }
 
-SingularityExplorer.prototype.domainColouring = function() {
+/** @param {boolean=} big */
+SingularityExplorer.prototype.domainColouring = function(big = false) {
     var gl = this.stategl;
-    return gl.renderer.domainColouring(gl);
+    return gl.renderer.domainColouring(gl, big);
 };
 
 /** @param {string=} name */
@@ -66,22 +67,24 @@ SingularityExplorer.prototype.exportBinary = function(name = "surface.bin") {
     gl.renderer.exportBinary(gl, name);
 };
 
-/** @param {string=} name */
-SingularityExplorer.prototype.exportScreenshot = function(name = "surface.png") {
+/** @param {string=} name
+ *  @param {boolean=} big */
+SingularityExplorer.prototype.exportScreenshot = function(name = "surface.png", big = false) {
     var singularityExplorer = this;
     var stategl = this.stategl;
     stategl.withRenderToTexture(function() {
         singularityExplorer.renderSurface();
-    });
+    }, big);
     var pixels = /** @type {Uint8Array} */
-        (stategl.readTexture(stategl.rttTexture));
+        (stategl.readTexture(big ? stategl.rttBigTexture : stategl.rttTexture));
     Export.download(name, Export.pixelsToImageDataURL(pixels));
 };
 
-/** @param {string=} name */
-SingularityExplorer.prototype.exportSurface = function(name = "surface") {
+/** @param {string=} name
+ *  @param {boolean=} big */
+SingularityExplorer.prototype.exportSurface = function(name = "surface", big = true) {
     var gl = this.stategl;
-    gl.renderer.exportSurface(gl, name);
+    gl.renderer.exportSurface(gl, name, big);
 };
 
 SingularityExplorer.prototype.registerEventHandlers = function() {

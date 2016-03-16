@@ -14,8 +14,9 @@ Export.download = function(name, url) {
 
 /** @param {StateGL} stategl
  *  @param {Float32Array} pixels
- *  @param {string=} name */
-Export.exportSurface = function(stategl, pixels, name = "surface") {
+ *  @param {string=} name
+ *  @param {boolean=} big */
+Export.exportSurface = function(stategl, pixels, name = "surface", big = true) {
     var d, i, j, k, u, v, x, y, z, w;
     var length, vertices, faces, uvs, indices, indices2,
         maxValue = -Infinity, minValue = Infinity;
@@ -98,9 +99,9 @@ Export.exportSurface = function(stategl, pixels, name = "surface") {
         gl.uniform1f(loc, maxValue);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         gl.drawArrays(gl.TRIANGLES, 0, 3);
-    });
+    }, big);
     var texels = /** @type {Uint8Array} */
-        (stategl.readTexture(stategl.rttTexture));
+        (stategl.readTexture(big ? stategl.rttBigTexture : stategl.rttTexture));
     Export.download(name + ".png", Export.pixelsToImageDataURL(texels));
 
     var mtl = ["newmtl surface", "map_Kd " + name + ".png", "illum 0"];
