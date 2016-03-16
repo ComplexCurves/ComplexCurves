@@ -14,7 +14,6 @@ function Assembly(stategl, surface) {
 Assembly.prototype.render = function(stategl, surface, gl) {
     var texturesIn = surface.texturesIn,
         textureOut = surface.texturesOut[0];
-    var webgl_draw_buffers = stategl["WEBGL_draw_buffers"];
     gl.useProgram(this.program);
 
     var numIndicesLoc = gl.getUniformLocation(this.program, 'numIndices');

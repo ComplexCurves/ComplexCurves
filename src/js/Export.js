@@ -50,8 +50,8 @@ Export.exportSurface = function(stategl, pixels, name = "surface", big = true) {
         var uv1 = uvs[i];
         return vertices.findIndex(function (v2, j) {
             var uv2 = uvs[j];
-            return v1[0] === v2[0] && v1[1] === v2[1] && v1[2] === v2[2]
-                && uv1[0] === uv2[0] && uv1[1] === uv2[1];
+            return v1[0] === v2[0] && v1[1] === v2[1] && v1[2] === v2[2] &&
+                uv1[0] === uv2[0] && uv1[1] === uv2[1];
         });
     });
     indices2 = Array.from(new Set(indices));
