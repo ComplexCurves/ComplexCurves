@@ -112,16 +112,17 @@ Export.exportSurface = function(stategl, pixels, name = "surface", big = true) {
 /** @param {Uint8Array} pixels
  *  @return {string} */
 Export.pixelsToImageDataURL = function(pixels) {
+    var size = Math.sqrt(pixels.length / 4);
     var canvas = document.createElement("canvas");
-    canvas.width = 2048;
-    canvas.height = 2048;
+    canvas.width = size;
+    canvas.height = size;
     var context = canvas.getContext("2d");
     var imageData = context.createImageData(canvas.width, canvas.height);
     imageData.data.set(pixels);
     context.putImageData(imageData, 0, 0);
     var canvasFlip = document.createElement("canvas");
-    canvasFlip.width = 2048;
-    canvasFlip.height = 2048;
+    canvasFlip.width = size;
+    canvasFlip.height = size;
     var contextFlip = canvasFlip.getContext("2d");
     contextFlip.translate(0, canvasFlip.height - 1);
     contextFlip.scale(1, -1);
