@@ -17,8 +17,8 @@ Export.download = function(name, url) {
  *  @param {string=} name */
 Export.exportSurface = function(stategl, pixels, name = "surface") {
     var d, i, j, k, u, v, x, y, z, w;
-    var length, vertices, faces, uvs, maxValue = -Infinity,
-        minValue = Infinity;
+    var length, vertices, faces, uvs, indices, indices2,
+        maxValue = -Infinity, minValue = Infinity;
     length = pixels.byteLength / pixels.BYTES_PER_ELEMENT / 4;
     vertices = [];
     for (i = 0; i < length * 4; i += 4) {
@@ -26,7 +26,7 @@ Export.exportSurface = function(stategl, pixels, name = "surface") {
         y = pixels[i + 1];
         z = pixels[i + 2];
         w = pixels[i + 3];
-        vertices.push("v " + x + " " + y + " " + z);
+        vertices.push([x, y, z]);
         minValue = Math.min(minValue, Math.min(z, w));
         maxValue = Math.max(maxValue, Math.max(z, w));
     }
@@ -35,19 +35,52 @@ Export.exportSurface = function(stategl, pixels, name = "surface") {
     for (i = 2; i < length * 4; i += 4) {
         u = (pixels[i] - minValue) / d;
         v = (pixels[i + 1] - minValue) / d;
-        uvs.push("vt " + u + " " + v);
+        uvs.push([u, v]);
     }
     faces = [];
     for (i = 1; i <= length; i += 3) {
         j = i + 1;
         k = i + 2;
-        faces.push("f " + i + "/" + i + " " + j + "/" + j + " " + k + "/" + k);
+        faces.push([i, j, k]);
     }
 
+    /* deduplicate mesh data */
+    indices = vertices.map(function (v1, i) {
+        var uv1 = uvs[i];
+        return vertices.findIndex(function (v2, j) {
+            var uv2 = uvs[j];
+            return v1[0] === v2[0] && v1[1] === v2[1] && v1[2] === v2[2]
+                && uv1[0] === uv2[0] && uv1[1] === uv2[1];
+        });
+    });
+    indices2 = Array.from(new Set(indices));
+    vertices = indices2.map(function (i) {
+        return vertices[i];
+    });
+    uvs = indices2.map(function (i) {
+        return uvs[i];
+    });
+    faces = faces.map(function (f) {
+        return f.map(function (i) {
+            return indices2.findIndex(function (j) {
+                return j === indices[i - 1];
+            }) + 1;
+        });
+    });
+
+    vertices = vertices.map(function (v) {
+        return "v " + v[0] + " " + v[1] + " " + v[2];
+    });
+    uvs = uvs.map(function (uv) {
+        return "vt " + uv[0] + " " + uv[1];
+    });
+    faces = faces.map(function (f) {
+        var i = f[0], j = f[1], k = f[2];
+        return "f " + i + "/" + i + " " + j + "/" + j + " " + k + "/" + k;
+    });
+
     var obj = ["mtllib " + name + ".mtl", "usemtl surface", "s 1"];
-    obj = obj.concat(vertices);
-    obj = obj.concat(uvs);
-    obj = obj.concat(faces);
+    obj = obj.concat(vertices, uvs, faces);
     obj = "data:text/plain," + encodeURIComponent(obj.join("\n"));
     Export.download(name + ".obj", obj);
 
