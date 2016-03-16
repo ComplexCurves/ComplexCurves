@@ -72,6 +72,8 @@ StateGL.prototype.mkProgram = function(sources) {
 
 StateGL.prototype.mkRenderToTextureObjects = function() {
     var gl = this.gl;
+    var big = Math.min(gl.getParameter(gl.MAX_TEXTURE_SIZE), 8192);
+    this.bigTextureSize = big;
 
     this.rttArrayBuffer = /** @type {WebGLBuffer} */ (gl.createBuffer());
     gl.bindBuffer(gl.ARRAY_BUFFER, this.rttArrayBuffer);
@@ -85,7 +87,7 @@ StateGL.prototype.mkRenderToTextureObjects = function() {
 
     this.rttBigRenderbuffer = gl.createRenderbuffer();
     gl.bindRenderbuffer(gl.RENDERBUFFER, this.rttBigRenderbuffer);
-    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, 8192, 8192);
+    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, big, big);
     gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER,
         this.rttBigRenderbuffer);
 
@@ -93,7 +95,7 @@ StateGL.prototype.mkRenderToTextureObjects = function() {
     gl.bindTexture(gl.TEXTURE_2D, this.rttBigTexture);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 8192, 8192, 0, gl.RGBA, gl.UNSIGNED_BYTE,
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, big, big, 0, gl.RGBA, gl.UNSIGNED_BYTE,
         null);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D,
         this.rttBigTexture, 0);
@@ -150,8 +152,10 @@ StateGL.prototype.readTexture = function(texture, length) {
         pixels = new Uint8Array(4 * 2048 * 2048);
         gl.readPixels(0, 0, 2048, 2048, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
     } else if (texture === this.rttBigTexture) {
-        pixels = new Uint8Array(4 * 8192 * 8192);
-        gl.readPixels(0, 0, 8192, 8192, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+        var bigTextureSize = this.bigTextureSize;
+        pixels = new Uint8Array(4 * bigTextureSize * bigTextureSize);
+        gl.readPixels(0, 0, bigTextureSize, bigTextureSize, gl.RGBA,
+            gl.UNSIGNED_BYTE, pixels);
     } else {
         pixels = new Float32Array(4 * 2048 * 2048);
         gl.readPixels(0, 0, 2048, 2048, gl.RGBA, gl.FLOAT, pixels);
@@ -327,8 +331,9 @@ StateGL.prototype.withOptionalFXAA = function(action) {
 StateGL.prototype.withRenderToTexture = function(action, big = false) {
     var gl = this.gl;
     if (big) {
+        var bigTextureSize = this.bigTextureSize;
         gl.bindFramebuffer(gl.FRAMEBUFFER, this.rttBigFramebuffer);
-        gl.viewport(0, 0, 8192, 8192);
+        gl.viewport(0, 0, bigTextureSize, bigTextureSize);
     } else {
         gl.bindFramebuffer(gl.FRAMEBUFFER, this.rttFramebuffer);
         gl.viewport(0, 0, 2048, 2048);
