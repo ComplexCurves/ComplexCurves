@@ -3,7 +3,7 @@
  *  @param {Surface} surface
  *  @implements {Stage} */
 function Initial(stategl, surface) {
-    this.mkBuffers(stategl, surface, Mesh.tetrakis(1));
+    this.mkBuffers(stategl, surface, Mesh.tetrakis(2));
     this.mkProgram(stategl, surface);
 }
 
