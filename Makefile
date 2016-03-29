@@ -47,7 +47,7 @@ build/resources.js: $(wildcard src/glsl/*)
 build/SingularityExplorer.js: compiler.jar $(se_srcs)
 	$(CLOSURE) $(se_closure_args)
 
-CLOSURE_VERSION=20160208
+CLOSURE_VERSION=20160315
 
 compiler.jar:
 	wget http://dl.google.com/closure-compiler/compiler-$(CLOSURE_VERSION).zip
