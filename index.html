@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <title>Complex Curves</title>
-<link rel="shortcut icon" href="favicon.ico" />
+<link rel="shortcut icon" href="examples/favicon.ico" />
 <script type="text/javascript" src="build/SingularityExplorer.js"></script>
 <script type="text/javascript">
 var examples, results, oldvalue;
@@ -12,12 +12,13 @@ function appendExample(curves, example, interactive = false) {
     var curve = document.createElement("div");
     curve.id = example.id;
     curve.setAttribute("class", "curve");
+    curve.style = "float: left; margin: 0.5em 0.5em 0.5em 0; padding: 1em; box-shadow: 0 1px 2px 0 rgba(34, 36, 38, 0.15); border-radius: .28571429rem; border: 1px solid rgba(34, 36, 38, .15)";
     if (interactive) {
         if (example.cached) {
             var iframe = document.createElement("iframe");
             iframe.src = "examples/" + example.id + ".cached.html";
-            iframe.width = 500;
-            iframe.height = 500;
+            iframe.width = 450;
+            iframe.height = 450;
             iframe.scrolling = "no";
             iframe.setAttribute("frameborder", "0");
             curve.appendChild(iframe);
@@ -25,18 +26,21 @@ function appendExample(curves, example, interactive = false) {
             var canvas = document.createElement('canvas');
             canvas.width = 800;
             canvas.height = 800;
-            canvas.style.width = "500px";
-            canvas.style.height = "500px";
+            canvas.style.width = "450px";
+            canvas.style.height = "450px";
             curve.appendChild(canvas);
             canvas.singularityExplorer =
                 SingularityExplorer.fromEquation(canvas, example.equation,
                     example.depth || 12);
         }
     } else {
+        var imgContainer = document.createElement("div");
+        imgContainer.style = "display: table-cell; width: 450px; height: 450px; text-align: center; vertical-align: middle";
         var img = document.createElement("img");
         img.src = "examples/" + example.id + ".png";
-        img.width = 500;
-        curve.appendChild(img);
+        img.style = "max-width: 450px; max-height: 450px";
+        imgContainer.appendChild(img);
+        curve.appendChild(imgContainer);
     }
     if (example.name) {
         var p = document.createElement("p");
