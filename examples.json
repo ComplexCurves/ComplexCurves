@@ -1,0 +1,12 @@
+[
+    {
+        "id": "SquareRoot",
+        "name": "Square root",
+        "equation": "y^2-x"
+    },
+    {
+        "id": "Circle",
+        "name": "Unit circle",
+        "equation": "x^2+y^2-1"
+    }
+]
