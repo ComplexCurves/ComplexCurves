@@ -25,3 +25,4 @@ SingularityExplorer.prototype['toggleAutorotate'] = SingularityExplorer.prototyp
 SingularityExplorer.prototype['toggleClipping'] = SingularityExplorer.prototype.toggleClipping;
 SingularityExplorer.prototype['toggleOrtho'] = SingularityExplorer.prototype.toggleOrtho;
 SingularityExplorer.prototype['toggleTransparency'] = SingularityExplorer.prototype.toggleTransparency;
+SingularityExplorer.prototype['unregisterEventHandlers'] = SingularityExplorer.prototype.unregisterEventHandlers;

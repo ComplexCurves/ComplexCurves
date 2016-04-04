@@ -87,51 +87,6 @@ SingularityExplorer.prototype.exportSurface = function(name = "surface", big = t
     gl.renderer.exportSurface(gl, name, big);
 };
 
-SingularityExplorer.prototype.registerEventHandlers = function() {
-    var canvas = this.canvas,
-        state3d = this.state3d,
-        gl = this.stategl;
-    var singularityExplorer = this;
-    canvas.addEventListener('mousedown', function(evt) {
-        evt.preventDefault();
-        if (state3d.autorotate)
-            return;
-        state3d.mouseDown([evt.clientX, evt.clientY]);
-        singularityExplorer.renderSurface();
-    });
-    canvas.addEventListener('mousemove', function(evt) {
-        evt.preventDefault();
-        state3d.mouseMove(evt.clientX, evt.clientY);
-    });
-    canvas.addEventListener('mouseup', function(evt) {
-        evt.preventDefault();
-        state3d.mouseUp();
-    });
-    canvas.addEventListener('wheel', function(evt) {
-        evt.preventDefault();
-        state3d.mouseWheel(evt.deltaY);
-        singularityExplorer.renderSurface();
-    });
-    canvas.addEventListener('touchstart', function(evt) {
-        evt.preventDefault();
-        var touch = evt.touches[0];
-        state3d.mouseDown([touch.clientX, touch.clientY]);
-        singularityExplorer.renderSurface();
-    });
-    canvas.addEventListener('touchmove', function(evt) {
-        evt.preventDefault();
-        var touch = evt.touches[0];
-        state3d.mouseMove(touch.clientX, touch.clientY);
-    });
-    canvas.addEventListener('touchend', function(evt) {
-        evt.preventDefault();
-        state3d.mouseUp();
-    });
-    window.addEventListener('keydown', function(evt) {
-        singularityExplorer.keyDown(evt.keyCode);
-    });
-};
-
 /** @param {number} keyCode */
 SingularityExplorer.prototype.keyDown = function(keyCode) {
     switch (keyCode) {
@@ -175,6 +130,59 @@ SingularityExplorer.prototype.keyDown = function(keyCode) {
             this.rotateLatLong(5 / 12 * Math.PI, Math.PI / 6);
             break;
     }
+};
+
+SingularityExplorer.prototype.registerEventHandlers = function() {
+    var canvas = this.canvas,
+        state3d = this.state3d,
+        gl = this.stategl;
+    var singularityExplorer = this;
+    this.keydownHandler = function(evt) {
+        singularityExplorer.keyDown(evt.keyCode); // TODO make portable
+    };
+    this.mousedownHandler = function(evt) {
+        evt.preventDefault();
+        if (state3d.autorotate)
+            return;
+        state3d.mouseDown([evt.clientX, evt.clientY]);
+        singularityExplorer.renderSurface();
+    };
+    this.mousemoveHandler = function(evt) {
+        evt.preventDefault();
+        state3d.mouseMove(evt.clientX, evt.clientY);
+    };
+    this.mouseupHandler = function(evt) {
+        evt.preventDefault();
+        state3d.mouseUp();
+    };
+    this.touchstartHandler = function(evt) {
+        evt.preventDefault();
+        var touch = evt.touches[0];
+        state3d.mouseDown([touch.clientX, touch.clientY]);
+        singularityExplorer.renderSurface();
+    };
+    this.touchmoveHandler = function(evt) {
+        evt.preventDefault();
+        var touch = evt.touches[0];
+        state3d.mouseMove(touch.clientX, touch.clientY);
+    };
+    this.touchendHandler = function(evt) {
+        evt.preventDefault();
+        state3d.mouseUp();
+    };
+    this.wheelHandler = function(evt) {
+        evt.preventDefault();
+        state3d.mouseWheel(evt.deltaY);
+        singularityExplorer.renderSurface();
+    };
+    window.addEventListener('keydown', this.keydownHandler);
+    canvas.addEventListener('mousedown', this.mousedownHandler);
+    canvas.addEventListener('mousemove', this.mousemoveHandler);
+    canvas.addEventListener('mouseup', this.mouseupHandler);
+    canvas.addEventListener('touchstart', this.touchstartHandler);
+    canvas.addEventListener('touchmove', this.touchmoveHandler);
+    canvas.addEventListener('touchend', this.touchendHandler);
+    canvas.addEventListener('wheel', this.wheelHandler);
 };
 
 SingularityExplorer.prototype.renderSurface = function() {
@@ -273,4 +281,16 @@ SingularityExplorer.prototype.toggleOrtho = function() {
 SingularityExplorer.prototype.toggleTransparency = function() {
     this.stategl.toggleTransparency();
     this.renderSurface();
+};
+
+SingularityExplorer.prototype.unregisterEventHandlers = function() {
+    var canvas = this.canvas;
+    window.removeEventListener('keydown', this.keydownHandler);
+    canvas.removeEventListener('mousedown', this.mousedownHandler);
+    canvas.removeEventListener('mousemove', this.mousemoveHandler);
+    canvas.removeEventListener('mouseup', this.mouseupHandler);
+    canvas.removeEventListener('touchstart', this.touchstartHandler);
+    canvas.removeEventListener('touchmove', this.touchmoveHandler);
+    canvas.removeEventListener('touchend', this.touchendHandler);
+    canvas.removeEventListener('wheel', this.wheelHandler);
 };
