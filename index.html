@@ -4,6 +4,9 @@
 <meta charset="UTF-8" />
 <title>Complex Curves</title>
 <link rel="shortcut icon" href="examples/favicon.ico" />
+<script type="text/javascript" src="http://oss.maxcdn.com/jquery/2.2.2/jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" href="http://oss.maxcdn.com/semantic-ui/2.1.8/semantic.min.css" />
+<script type="text/javascript" src="http://oss.maxcdn.com/semantic-ui/2.1.8/semantic.min.js"></script>
 <script type="text/javascript" src="build/SingularityExplorer.js"></script>
 <script type="text/javascript">
 var examples, results, oldvalue;
@@ -11,8 +14,7 @@ var examples, results, oldvalue;
 function appendExample(curves, example, interactive = false) {
     var curve = document.createElement("div");
     curve.id = example.id;
-    curve.setAttribute("class", "curve");
-    curve.style = "float: left; margin: 0.5em 0.5em 0.5em 0; padding: 1em; box-shadow: 0 1px 2px 0 rgba(34, 36, 38, 0.15); border-radius: .28571429rem; border: 1px solid rgba(34, 36, 38, .15)";
+    curve.setAttribute("class", "ui card");
     if (interactive) {
         if (example.cached) {
             var iframe = document.createElement("iframe");
@@ -26,27 +28,38 @@ function appendExample(curves, example, interactive = false) {
             var canvas = document.createElement('canvas');
             canvas.width = 800;
             canvas.height = 800;
-            canvas.style.width = "450px";
-            canvas.style.height = "450px";
+            //canvas.style.width = "450px";
+            //canvas.style.height = "450px";
             curve.appendChild(canvas);
             canvas.singularityExplorer =
                 SingularityExplorer.fromEquation(canvas, example.equation,
                     example.depth || 12);
         }
     } else {
-        var imgContainer = document.createElement("div");
-        imgContainer.style = "display: table-cell; width: 450px; height: 450px; text-align: center; vertical-align: middle";
+        //var imgContainer = document.createElement("div");
+        //imgContainer.setAttribute("class", "ui medium image");
         var img = document.createElement("img");
+        img.setAttribute("class", "ui medium image");
         img.src = "examples/" + example.id + ".png";
-        img.style = "max-width: 450px; max-height: 450px";
-        imgContainer.appendChild(img);
-        curve.appendChild(imgContainer);
+        //imgContainer.appendChild(img);
+        //curve.appendChild(imgContainer);
+        curve.appendChild(img);
     }
+    var contentContainer = document.createElement("div");
+    contentContainer.setAttribute("class", "content");
     if (example.name) {
         var p = document.createElement("p");
+        p.setAttribute("class", "header");
         p.innerHTML = example.name;
-        curve.appendChild(p);
+        contentContainer.appendChild(p);
     }
+    if (example.equation) {
+        var descriptionContainer = document.createElement("div");
+        descriptionContainer.setAttribute("class", "description");
+        descriptionContainer.innerHTML = "\\[" + example.equation + "=0\\]";
+        contentContainer.appendChild(descriptionContainer);
+    }
+    curve.appendChild(contentContainer);
     curves.appendChild(curve);
 }
 
@@ -109,6 +122,7 @@ document.addEventListener("DOMContentLoaded", function() {
         evt.stopPropagation();
     });
 
+	/*
     var form = document.querySelector("#container form");
     form.addEventListener("submit", function(evt) {
         evt.preventDefault();
@@ -117,16 +131,41 @@ document.addEventListener("DOMContentLoaded", function() {
             "equation": search.value
         });
     });
+	*/
 });
 </script>
 </head>
-<body>
-<div id="container">
-<form>
-<input type="search" placeholder="Name or equation of curve" />
-</form>
-<div id="curves">
+<body class="basic minimal">
+<div class="main ui container">
+<div class="ui search" style="margin: 1.75em 0">
+	<div class="ui icon input">
+		<input class="prompt" placeholder="Name or equation of curve" type="search">
+		<i class="search icon"></i>
+	</div>
+	<div class="results"></div>
 </div>
+<div id="curves" class="ui four cards"></div>
 </div>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  "HTML-CSS": {availableFonts: ["TeX"]},
+         MMLorHTML: {prefer: "HTML"}
+});
+MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
+  var VARIANT = MathJax.OutputJax["HTML-CSS"].FONTDATA.VARIANT;
+  VARIANT["normal"].fonts.unshift("MathJax_SansSerif");
+  VARIANT["bold"].fonts.unshift("MathJax_SansSerif-bold");
+  VARIANT["italic"].fonts.unshift("MathJax_SansSerif-italic");
+  VARIANT["-tex-mathit"].fonts.unshift("MathJax_SansSerif-italic");
+});
+MathJax.Hub.Register.StartupHook("SVG Jax Ready",function () {
+  var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;
+  VARIANT["normal"].fonts.unshift("MathJax_SansSerif");
+  VARIANT["bold"].fonts.unshift("MathJax_SansSerif-bold");
+  VARIANT["italic"].fonts.unshift("MathJax_SansSerif-italic");
+  VARIANT["-tex-mathit"].fonts.unshift("MathJax_SansSerif-italic");
+});
+</script>
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 </body>
 </html>
