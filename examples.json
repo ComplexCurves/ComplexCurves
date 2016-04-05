@@ -1,12 +1,82 @@
 [
     {
+        "id": "Circle",
+        "name": "Circle",
+        "equation": "x^2+y^2-1"
+    },
+    {
+        "id": "Cissoid",
+        "name": "Cissoid",
+        "equation": "x \\cdot (x^2 + y^2) - (1 - x)^3"
+    },
+    {
+        "id": "Conchoid",
+        "name": "Conchoid",
+        "equation": "(y+1)^2 \\cdot (x^2+y^2)-2^2 \\cdot y^2"
+    },
+    {
+        "id": "Ellipse",
+        "name": "Ellipse"
+    },
+    {
+        "id": "FigureEight",
+        "name": "Figure eight"
+    },
+    {
+        "id": "Folium",
+        "name": "Folium of Descartes"
+    },
+    {
+        "id": "Hyperbola",
+        "name": "Hyperbola"
+    },
+    {
+        "id": "Limacon",
+        "name": "Limaçon"
+    },
+    {
+        "id": "Nephroid",
+        "name": "Nephroid"
+    },
+    {
+        "id": "PearShapedQuartic",
+        "name": "Pear-shaped quartic"
+    },
+    {
+        "id": "RightStrophoid",
+        "name": "Right strophoid"
+    },
+    {
+        "id": "SemicubicalParabola",
+        "name": "Semicubical parabola"
+    },
+    {
         "id": "SquareRoot",
         "name": "Square root",
         "equation": "y^2-x"
     },
     {
-        "id": "Circle",
-        "name": "Unit circle",
-        "equation": "x^2+y^2-1"
+        "id": "Tricuspoid",
+        "name": "Tricuspoid"
+    },
+    {
+        "id": "Trifolium",
+        "name": "Trifolium"
+    },
+    {
+        "id": "TrisectrixOfMaclaurin",
+        "name": "Trisectrix of Maclaurin"
+    },
+    {
+        "id": "TschirnhausCubic",
+        "name": "Tschirnhaus cubic"
+    },
+    {
+        "id": "WattCurve",
+        "name": "Watt curve"
+    },
+    {
+        "id": "WattCurveReducible",
+        "name": "Watt curve (reducible)"
     }
 ]
