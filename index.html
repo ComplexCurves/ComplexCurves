@@ -8,6 +8,7 @@
 <link rel="stylesheet" type="text/css" href="http://oss.maxcdn.com/semantic-ui/2.1.8/semantic.min.css" />
 <script type="text/javascript" src="http://oss.maxcdn.com/semantic-ui/2.1.8/semantic.min.js"></script>
 <script type="text/javascript" src="build/SingularityExplorer.js"></script>
+<!--
 <script type="text/javascript">
 var examples, results, oldvalue;
 
@@ -134,15 +135,137 @@ document.addEventListener("DOMContentLoaded", function() {
 	*/
 });
 </script>
+-->
+<script type="text/javascript">
+document.addEventListener("DOMContentLoaded", function() {
+	var examples;
+    var req = new XMLHttpRequest();
+    req.open("GET", "examples.json");
+    req.responseType = "json";
+    req.onload = function() {
+        examples = req.response;
+		$('.ui.search').search({
+            duration: 0,
+            transition: false,
+			maxResults: 50,
+			minCharacters: 0,
+			searchFields: ['title'],
+			searchFullText: false,
+			source: examples,
+			onResultsClose: function () {
+				$('.ui.search').search('show results');
+			},
+            templates: {
+				message: function(message, type) {
+					var
+						html = ''
+					;
+					if(message !== undefined && type !== undefined) {
+						html +=  ''
+						+ '<div class="message ' + type + '">'
+						;
+						// message type
+						if(type == 'empty') {
+						html += ''
+							+ '<div class="header">No Results</div class="header">'
+							+ '<div class="description">' + message + '</div class="description">'
+						;
+						}
+						else {
+						html += ' <div class="description">' + message + '</div>';
+						}
+						html += '</div>';
+					}
+					return html;
+				},
+				standard: function(response, fields) {
+					var
+						html = ''
+					;
+					if(response[fields.results] !== undefined) {
+
+						// each result
+						$.each(response[fields.results], function(index, result) {
+						if(result[fields.url]) {
+							html  += '<a class="ui card result" href="' + result[fields.url] + '">';
+						}
+						else {
+							html  += '<a class="ui card result">';
+						}
+						if(result[fields.image] !== undefined) {
+							html += ''
+							+ '<div class="ui medium image">'
+							+ ' <img src="' + result[fields.image] + '">'
+							+ '</div>'
+							;
+						}
+						html += '<div class="content">';
+						if(result[fields.price] !== undefined) {
+							html += '<div class="price">' + result[fields.price] + '</div>';
+						}
+						if(result[fields.title] !== undefined) {
+							html += '<div class="title">' + result[fields.title] + '</div>';
+						}
+						if(result[fields.description] !== undefined) {
+							html += '<div class="description">' + result[fields.description] + '</div>';
+						}
+						html  += ''
+							+ '</div>'
+						;
+						html += '</a>';
+						});
+
+						if(response[fields.action]) {
+						html += ''
+						+ '<a href="' + response[fields.action][fields.actionURL] + '" class="action">'
+						+   response[fields.action][fields.actionText]
+						+ '</a>';
+						}
+						return html;
+					}
+					return false;
+				}
+            }
+		});
+		$('.ui.search').search('search local', '');
+		$('.ui.search').search('show results');
+    };
+    req.send();
+
+});
+</script>
+<style type="text/css">
+.results.transition.hidden {
+    display: block !important;
+    visibility: visible !important;
+}
+.ui.cards.results {
+	border: none;
+	border-radius: unset;
+	box-shadow: unset;
+	display: flex !important;
+}
+.ui.cards.results > .card {
+	display: flex !important;
+	padding: 0;
+}
+.ui.cards.results > .card > .content{
+	margin: 0 !important;
+}
+.ui.cards.results > .card > .image{
+	width: unset;
+	height: unset;
+}
+</style>
 </head>
 <body class="basic minimal">
 <div class="main ui container">
-<div class="ui search" style="margin: 1.75em 0">
+<div class="ui fluid search" style="margin: 1.75em 0">
 	<div class="ui icon input">
 		<input class="prompt" placeholder="Name or equation of curve" type="search">
 		<i class="search icon"></i>
 	</div>
-	<div class="results"></div>
+	<div class="ui four cards results"></div>
 </div>
 <div id="curves" class="ui four cards"></div>
 </div>
