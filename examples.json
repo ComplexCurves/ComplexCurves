@@ -48,6 +48,12 @@
         "title": "Nephroid"
     },
     {
+        "id": "Parabola",
+        "image": "examples/Parabola.png",
+        "title": "Parabola",
+        "equation": "y^2-x"
+    },
+    {
         "id": "PearShapedQuartic",
         "image": "examples/PearShapedQuartic.png",
         "title": "Pear-shaped quartic"
