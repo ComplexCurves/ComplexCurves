@@ -15,37 +15,45 @@
         "id": "Conchoid",
         "image": "examples/Conchoid.png",
         "title": "Conchoid",
-        "equation": "(y+1)^2*(x^2+y^2)-2^2*y^2"
+        "equation": "(y+1)^2*(x^2+y^2)-2^2*y^2",
+        "depth": 10
     },
     {
         "id": "Ellipse",
         "image": "examples/Ellipse.png",
-        "title": "Ellipse"
+        "title": "Ellipse",
+        "equation": "x^2+4*y^2-4"
     },
     {
         "id": "FigureEight",
         "image": "examples/FigureEight.png",
-        "title": "Figure eight"
+        "title": "Figure eight",
+        "equation": "y^4-y^2+x^2"
     },
     {
         "id": "Folium",
         "image": "examples/Folium.png",
-        "title": "Folium of Descartes"
+        "title": "Folium of Descartes",
+        "equation": "x^3+y^3-3*x*y"
     },
     {
         "id": "Hyperbola",
         "image": "examples/Hyperbola.png",
-        "title": "Hyperbola"
+        "title": "Hyperbola",
+        "equation": "x^2-y^2-1"
     },
     {
         "id": "Limacon",
         "image": "examples/Limacon.png",
-        "title": "Limaçon"
+        "title": "Limaçon",
+        "equation": "4*(x^2+y^2-3*x)^2-9*(x^2+y^2)"
     },
     {
         "id": "Nephroid",
         "image": "examples/Nephroid.png",
-        "title": "Nephroid"
+        "title": "Nephroid",
+        "equation": "(x^2+y^2-4)^3-108*y^2",
+        "depth": 10
     },
     {
         "id": "Parabola",
@@ -56,17 +64,20 @@
     {
         "id": "PearShapedQuartic",
         "image": "examples/PearShapedQuartic.png",
-        "title": "Pear-shaped quartic"
+        "title": "Pear-shaped quartic",
+        "equation": "y^4-2*y^3+1^2*x^2"
     },
     {
         "id": "RightStrophoid",
         "image": "examples/RightStrophoid.png",
-        "title": "Right strophoid"
+        "title": "Right strophoid",
+        "equation": "x^3+x*y^2+y^2-x^2"
     },
     {
         "id": "SemicubicalParabola",
         "image": "examples/SemicubicalParabola.png",
-        "title": "Semicubical parabola"
+        "title": "Semicubical parabola",
+        "equation": "y^3-x^2"
     },
     {
         "id": "SquareRoot",
@@ -77,31 +88,39 @@
     {
         "id": "Tricuspoid",
         "image": "examples/Tricuspoid.png",
-        "title": "Tricuspoid"
+        "title": "Tricuspoid",
+        "equation": "y^4+2*x^2*y^2+x^4+24*x*y^2-8*x^3+18*y^2+18*x^2-27",
+        "depth": 9
     },
     {
         "id": "Trifolium",
         "image": "examples/Trifolium.png",
-        "title": "Trifolium"
+        "title": "Trifolium",
+        "equation": "y^4+2*x^2*y^2+x^4-3*x*y^2+x^3"
     },
     {
         "id": "TrisectrixOfMaclaurin",
         "image": "examples/TrisectrixOfMaclaurin.png",
-        "title": "Trisectrix of Maclaurin"
+        "title": "Trisectrix of Maclaurin",
+        "equation": "x*y^2+x^3+y^2-3*x^2"
     },
     {
         "id": "TschirnhausCubic",
         "image": "examples/TschirnhausCubic.png",
-        "title": "Tschirnhaus cubic"
+        "title": "Tschirnhaus cubic",
+        "equation": "-x^3+3*y^2+2*x^2-x"
     },
     {
         "id": "WattCurve",
         "image": "examples/WattCurve.png",
-        "title": "Watt curve"
+        "title": "Watt curve",
+        "equation": "(x^2+y^2)*(x^2+y^2-2^2-2.5^2+1.5^2)^2+4*2^2*y^2*(x^2+y^2-2.5^2)"
     },
     {
         "id": "WattCurveReducible",
         "image": "examples/WattCurveReducible.png",
-        "title": "Watt curve (reducible)"
+        "title": "Watt curve (reducible)",
+        "equation": "(x^2+y^2-9)*(x^4+2*x^2*y^2+y^4-9*x^2+7*y^2)",
+        "depth": 11
     }
 ]
