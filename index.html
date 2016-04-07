@@ -8,81 +8,44 @@
 <link rel="stylesheet" type="text/css" href="http://oss.maxcdn.com/semantic-ui/2.1.8/semantic.min.css" />
 <script type="text/javascript" src="http://oss.maxcdn.com/semantic-ui/2.1.8/semantic.min.js"></script>
 <script type="text/javascript" src="build/SingularityExplorer.js"></script>
-<!--
-<script type="text/javascript">
-var examples, results, oldvalue;
-
-function appendExample(curves, example, interactive = false) {
-    var curve = document.createElement("div");
-    curve.id = example.id;
-    curve.setAttribute("class", "ui card");
-    if (interactive) {
-        if (example.cached) {
-            var iframe = document.createElement("iframe");
-            iframe.src = "examples/" + example.id + ".cached.html";
-            iframe.width = 450;
-            iframe.height = 450;
-            iframe.scrolling = "no";
-            iframe.setAttribute("frameborder", "0");
-            curve.appendChild(iframe);
-        } else {
-            var canvas = document.createElement('canvas');
-            canvas.width = 800;
-            canvas.height = 800;
-            //canvas.style.width = "450px";
-            //canvas.style.height = "450px";
-            curve.appendChild(canvas);
-            canvas.singularityExplorer =
-                SingularityExplorer.fromEquation(canvas, example.equation,
-                    example.depth || 12);
-        }
-    } else {
-        //var imgContainer = document.createElement("div");
-        //imgContainer.setAttribute("class", "ui medium image");
-        var img = document.createElement("img");
-        img.setAttribute("class", "ui medium image");
-        img.src = "examples/" + example.id + ".png";
-        //imgContainer.appendChild(img);
-        //curve.appendChild(imgContainer);
-        curve.appendChild(img);
-    }
-    var contentContainer = document.createElement("div");
-    contentContainer.setAttribute("class", "content");
-    if (example.name) {
-        var p = document.createElement("p");
-        p.setAttribute("class", "header");
-        p.innerHTML = example.name;
-        contentContainer.appendChild(p);
-    }
-    if (example.equation) {
-        var descriptionContainer = document.createElement("div");
-        descriptionContainer.setAttribute("class", "description");
-        descriptionContainer.innerHTML = "\\[" + example.equation + "=0\\]";
-        contentContainer.appendChild(descriptionContainer);
-    }
-    curve.appendChild(contentContainer);
-    curves.appendChild(curve);
+<style type="text/css">
+.ui.cards.results {
+	border: none;
+	border-radius: unset;
+	box-shadow: unset;
+	display: flex;
 }
-
-function clearExamples(curves) {
-    var canvas = curves.querySelector("canvas");
-    if (canvas)
-        canvas.singularityExplorer.unregisterEventHandlers();
-    while (curves.hasChildNodes())
-        curves.removeChild(curves.firstChild);
+.ui.cards.results > .card {
+	display: flex;
+	padding: 0;
 }
-
-function showExample(example) {
-    if (example !== null) {
-        var curves = document.getElementById("curves");
-        clearExamples(curves);
-        appendExample(curves, example, true);
-    }
+.ui.cards.results > .card > .content{
+	margin: 0 !important;
 }
-</script>
--->
+.ui.cards.results > .card > .image{
+	width: unset;
+	height: unset;
+}
+.ui.embed[class*="1:1"] {
+    position: relative;
+    background-color: #002b36 !important;
+    margin: 0;
+    width: 100%;
+    height: 0;
+    padding-bottom: 100%;
+}
+canvas {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+</style>
 <script type="text/javascript">
 document.addEventListener("DOMContentLoaded", function() {
+    var allowHiddenResults = false;
+    var canvas = document.querySelector("canvas");
 	var examples;
     var req = new XMLHttpRequest();
     req.open("GET", "examples.json");
@@ -97,9 +60,23 @@ document.addEventListener("DOMContentLoaded", function() {
 			searchFields: ['title'],
 			searchFullText: false,
 			source: examples,
+            onResultsOpen: function () {
+                $('#SingularityExplorer').hide();
+                allowHiddenResults = false;
+            },
 			onResultsClose: function () {
-				$('.ui.search').search('show results');
+                if(!allowHiddenResults)
+                    $('.ui.search').search('show results');
 			},
+            onSelect: function (example) {
+                if(canvas.singularityExplorer)
+                    canvas.singularityExplorer.unregisterEventHandlers();
+                canvas.singularityExplorer =
+                    SingularityExplorer.fromEquation(canvas, example.equation,
+                    example.depth || 12);
+                $('#SingularityExplorer').show();
+				allowHiddenResults = true;
+            },
             templates: {
 				message: function(message, type) {
 					var
@@ -179,40 +156,24 @@ document.addEventListener("DOMContentLoaded", function() {
 
 });
 </script>
-<style type="text/css">
-.results.transition.hidden {
-    display: block !important;
-    visibility: visible !important;
-}
-.ui.cards.results {
-	border: none;
-	border-radius: unset;
-	box-shadow: unset;
-	display: flex !important;
-}
-.ui.cards.results > .card {
-	display: flex !important;
-	padding: 0;
-}
-.ui.cards.results > .card > .content{
-	margin: 0 !important;
-}
-.ui.cards.results > .card > .image{
-	width: unset;
-	height: unset;
-}
-</style>
 </head>
 <body class="basic minimal">
 <div class="main ui container">
-<div class="ui fluid search" style="margin: 1.75em 0">
-	<div class="ui icon input">
-		<input class="prompt" placeholder="Name or equation of curve" type="search">
-		<i class="search icon"></i>
-	</div>
-	<div class="ui four cards results"></div>
-</div>
-<div id="curves" class="ui four cards"></div>
+    <div class="ui fluid search" style="margin: 1.75em 0">
+        <div class="ui icon input">
+            <input class="prompt" placeholder="Name or equation of curve" type="search">
+            <i class="search icon"></i>
+        </div>
+        <div class="ui four cards results"></div>
+    </div>
+    <div id="SingularityExplorer" class="ui grid" style="display: none;">
+        <div class="ui twelve wide column">
+            <div class="ui 1:1 embed">
+                <canvas width="800" height="800"></canvas>
+            </div>
+        </div>
+        <div class="ui four wide column"></div>
+    </div>
 </div>
 <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
