@@ -3,21 +3,18 @@
         "id": "Circle",
         "image": "examples/Circle.png",
         "title": "Circle",
-        "description": "\\(\\small x^2+y^2-1=0\\)",
         "equation": "x^2+y^2-1"
     },
     {
         "id": "Cissoid",
         "image": "examples/Cissoid.png",
         "title": "Cissoid",
-        "description": "\\(\\small x \\cdot (x^2 + y^2) - (1 - x)^3 = 0\\)",
         "equation": "x*(x^2+y^2)-(1-x)^3"
     },
     {
         "id": "Conchoid",
         "image": "examples/Conchoid.png",
         "title": "Conchoid",
-        "description": "\\(\\small (y+1)^2 \\cdot (x^2+y^2) - 4 y^2 = 0\\)",
         "equation": "(y+1)^2*(x^2+y^2)-2^2*y^2"
     },
     {
@@ -69,7 +66,6 @@
         "id": "SquareRoot",
         "image": "examples/SquareRoot.png",
         "title": "Square root",
-        "description": "\\(\\small y^2-x=0\\)",
         "equation": "y^2-x"
     },
     {
