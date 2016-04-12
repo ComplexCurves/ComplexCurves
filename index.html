@@ -185,26 +185,5 @@ document.addEventListener("DOMContentLoaded", function() {
         <div class="ui four wide column"></div>
     </div>
 </div>
-<script type="text/x-mathjax-config">
-MathJax.Hub.Config({
-  "HTML-CSS": {availableFonts: ["TeX"]},
-         MMLorHTML: {prefer: "HTML"}
-});
-MathJax.Hub.Register.StartupHook("HTML-CSS Jax Ready",function () {
-  var VARIANT = MathJax.OutputJax["HTML-CSS"].FONTDATA.VARIANT;
-  VARIANT["normal"].fonts.unshift("MathJax_SansSerif");
-  VARIANT["bold"].fonts.unshift("MathJax_SansSerif-bold");
-  VARIANT["italic"].fonts.unshift("MathJax_SansSerif-italic");
-  VARIANT["-tex-mathit"].fonts.unshift("MathJax_SansSerif-italic");
-});
-MathJax.Hub.Register.StartupHook("SVG Jax Ready",function () {
-  var VARIANT = MathJax.OutputJax.SVG.FONTDATA.VARIANT;
-  VARIANT["normal"].fonts.unshift("MathJax_SansSerif");
-  VARIANT["bold"].fonts.unshift("MathJax_SansSerif-bold");
-  VARIANT["italic"].fonts.unshift("MathJax_SansSerif-italic");
-  VARIANT["-tex-mathit"].fonts.unshift("MathJax_SansSerif-italic");
-});
-</script>
-<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 </body>
 </html>
