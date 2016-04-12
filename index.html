@@ -71,14 +71,17 @@ document.addEventListener("DOMContentLoaded", function() {
             onSelect: function (example) {
                 if(canvas.singularityExplorer)
                     canvas.singularityExplorer.unregisterEventHandlers();
+                var piOver180 = Math.PI / 180;
+                var lat = 75 * piOver180;
+                var lon = 30 * piOver180;
                 if(example.cached) {
                     canvas.singularityExplorer =
                         SingularityExplorer.fromFile(canvas,
-                            'models/' + example.id + '.bin');
+                            'models/' + example.id + '.bin', lat, lon);
                 } else {
                     canvas.singularityExplorer =
                         SingularityExplorer.fromEquation(canvas,
-                            example.equation, example.depth || 12);
+                            example.equation, example.depth || 12, lat, lon);
                 }
                 $('#SingularityExplorer').show();
 				allowHiddenResults = true;
