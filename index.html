@@ -71,9 +71,15 @@ document.addEventListener("DOMContentLoaded", function() {
             onSelect: function (example) {
                 if(canvas.singularityExplorer)
                     canvas.singularityExplorer.unregisterEventHandlers();
-                canvas.singularityExplorer =
-                    SingularityExplorer.fromEquation(canvas, example.equation,
-                    example.depth || 12);
+                if(example.cached) {
+                    canvas.singularityExplorer =
+                        SingularityExplorer.fromFile(canvas,
+                            'models/' + example.id + '.bin');
+                } else {
+                    canvas.singularityExplorer =
+                        SingularityExplorer.fromEquation(canvas,
+                            example.equation, example.depth || 12);
+                }
                 $('#SingularityExplorer').show();
 				allowHiddenResults = true;
             },
