@@ -4,6 +4,12 @@ import {
     SingularityExplorerFromFile
 }
 from 'src/js/SingularityExplorer';
+
+import {
+    PolynomialParser
+}
+from 'src/js/PolynomialParser';
+
 window['SingularityExplorer'] = SingularityExplorer;
 SingularityExplorer['fromEquation'] = SingularityExplorerFromEquation;
 SingularityExplorer['fromFile'] = SingularityExplorerFromFile;
@@ -26,3 +32,6 @@ SingularityExplorer.prototype['toggleClipping'] = SingularityExplorer.prototype.
 SingularityExplorer.prototype['toggleOrtho'] = SingularityExplorer.prototype.toggleOrtho;
 SingularityExplorer.prototype['toggleTransparency'] = SingularityExplorer.prototype.toggleTransparency;
 SingularityExplorer.prototype['unregisterEventHandlers'] = SingularityExplorer.prototype.unregisterEventHandlers;
+
+window['PolynomialParser'] = PolynomialParser;
+PolynomialParser['parse'] = PolynomialParser.parse;

@@ -1,3 +1,8 @@
+import {
+    PolynomialParser
+}
+from 'src/js/PolynomialParser';
+
 /** @param {HTMLCanvasElement} canvas
  *  @param {number=} lat
  *  @param {number=} lon

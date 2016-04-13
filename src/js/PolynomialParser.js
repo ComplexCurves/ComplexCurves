@@ -1,4 +1,4 @@
-function PolynomialParser() {}
+export function PolynomialParser() {}
 
 /**
  * @param {Parser.AST} tree
