@@ -82,7 +82,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 } else {
                     canvas.singularityExplorer =
                         SingularityExplorer.fromEquation(canvas,
-                            example.equation, example.depth || 12, lat, lon);
+                            example.equation ||
+                            $('.ui.search').search('get value'),
+                            example.depth || 12, lat, lon);
                 }
                 $('#SingularityExplorer').show();
 				allowHiddenResults = true;
@@ -92,6 +94,23 @@ document.addEventListener("DOMContentLoaded", function() {
 					var
 						html = ''
 					;
+                    var value = $('.ui.search').search('get value');
+                    try {
+                        PolynomialParser.parse(value);
+                        html = $('.ui.search').search('generate results', {
+                            "results": [{
+                                "id": "Custom",
+                                "cached": false,
+                                "title": "Custom equation",
+                                "equation": value,
+                                "description": value
+                            }]
+                        });
+                        $('.ui.search').search('add results', html);
+                        return;
+                    }
+                    catch (Error) {
+                    }
 					if(message !== undefined && type !== undefined) {
 						html +=  ''
 						+ '<div class="message ' + type + '">'
