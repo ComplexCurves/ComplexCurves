@@ -17,9 +17,9 @@ vec2 cinv (in vec2 z) {
 /* complex square root */
 vec2 csqrt (in vec2 z)
 {
-    float r = length (z);
-    float s = sign (z.y);
-    return vec2 (sqrt ((r + z.x) * 0.5), s * sqrt ((r - z.x) * 0.5));
+    float r = sqrt (length (z));
+    float phi = 0.5 * atan (z.y, z.x);
+    return r * vec2 (cos (phi), sin (phi));
 }
 
 vec2 laguerre (in int n, in vec2 cs[N+1], in vec2 x, in int maxiter)
