@@ -58,8 +58,8 @@ Initial.prototype.render = function(stategl, surface, gl) {
     var computedRootsLoc = gl.getUniformLocation(this.program, 'computedRoots');
     var sheets = surface.sheets;
 
-    for (var computedRoots = 0; computedRoots < sheets; computedRoots += 2) {
-        var i = Math.floor(computedRoots / 2) + 1;
+    for (var computedRoots = 0; computedRoots <= sheets + 1; computedRoots += 2) {
+        var i = computedRoots < sheets ? Math.floor(computedRoots / 2) + 1 : 0;
         gl.bindTexture(gl.TEXTURE_2D, texturesOut[i]);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
@@ -69,7 +69,6 @@ Initial.prototype.render = function(stategl, surface, gl) {
             gl.TEXTURE_2D, texturesOut[i], 0);
         gl.uniform1i(computedRootsLoc, computedRoots);
         gl.drawArrays(gl.POINTS, 0, surface.numIndices);
-        gl.flush();
         gl.activeTexture(gl.TEXTURE0 + i);
         gl.bindTexture(gl.TEXTURE_2D, texturesOut[i + 1]);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
@@ -77,17 +76,6 @@ Initial.prototype.render = function(stategl, surface, gl) {
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     }
-
-    gl.bindTexture(gl.TEXTURE_2D, texturesOut[0]);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 2048, 2048, 0, gl.RGBA,
-        gl.FLOAT, null);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0,
-        gl.TEXTURE_2D, texturesOut[0], 0);
-    gl.uniform1i(computedRootsLoc, computedRoots);
-    gl.drawArrays(gl.POINTS, 0, surface.numIndices);
-    gl.flush();
 
     for (var i = 0; i < texturesOut.length; i++) {
         gl.activeTexture(gl.TEXTURE0 + i);

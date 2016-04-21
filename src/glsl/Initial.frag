@@ -12,9 +12,6 @@ void main(void) {
     vec2 values[N];
     vec2 cs[N+1];
     f (position, cs);
-    vec2 cs_orig[N+1];
-    for (int i = 0; i < N + 1; i++)
-        cs_orig[i] = cs[i];
 
     for (int i = 0; i < N; i++) {
         if (i < computedRoots) {
