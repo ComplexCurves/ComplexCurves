@@ -4,7 +4,7 @@ precision highp float;
 precision mediump float;
 #endif
 uniform int computedRoots;
-uniform sampler2D samplers[1 + N/2];
+uniform sampler2D samplers[N/2];
 varying vec2 texCoord;
 varying vec2 vPosition;
 void main(void) {
