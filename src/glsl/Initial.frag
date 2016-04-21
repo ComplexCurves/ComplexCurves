@@ -19,7 +19,7 @@ void main(void) {
                 values[i] = texture2D (samplers[i], texCoord).xy;
             else
                 values[i] = texture2D (samplers[i - 1], texCoord).zw;
-            deflate (sheets, cs, values[i]);
+            deflate (sheets - i, cs, values[i]);
         }
     }
 
@@ -30,7 +30,7 @@ void main(void) {
     } else if (computedRoots < sheets) {
         gl_FragColor.xy = laguerre (sheets - computedRoots, cs, vec2 (0.0, 0.0), 80);
         if (computedRoots + 1 < sheets) {
-            deflate (sheets, cs, gl_FragColor.xy);
+            deflate (sheets - computedRoots, cs, gl_FragColor.xy);
             gl_FragColor.zw = laguerre (sheets - computedRoots - 1, cs, vec2 (0.0, 0.0), 80);
         }
     } else {

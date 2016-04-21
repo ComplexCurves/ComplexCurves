@@ -181,7 +181,7 @@ void roots (in int n, in vec2 cs[N+1], out vec2 roots[N])
     {
         roots[i] = laguerre (n - i, cs, vec2 (0.0, 0.0), 80);
         roots[i] = laguerre (n, cs_orig, roots[i], 1);
-        deflate (n, cs, roots[i]);
+        deflate (n - i, cs, roots[i]);
     }
     /* selection sort by real part */
     /*
