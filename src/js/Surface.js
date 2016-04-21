@@ -10,12 +10,13 @@ function Surface(stategl, polynomial, depth) {
     var surface = this;
     surface.commonShaderSrc = resources["Common.glsl"];
     surface.customShaderSrc = GLSL.polynomialShaderSource(polynomial);
+    surface.texturesShaderSrc = resources["Textures.glsl"];
     stategl.getExtension("OES_texture_float");
     stategl.getExtension("WEBGL_draw_buffers");
     surface.mkTextures(stategl);
     surface.initial = new Initial(stategl, surface);
     surface.initial.render(stategl, surface, gl);
-    surface.subdivisionPre = new SubdivisionPre(stategl);
+    surface.subdivisionPre = new SubdivisionPre(stategl, surface);
     surface.subdivision = new Subdivision(stategl, surface);
     for (var i = 0; i < surface.depth; i++) {
         surface.subdivisionPre.render(stategl, surface, gl);
@@ -98,6 +99,7 @@ Surface.prototype.indexBuffer = null;
 /** @param {StateGL} stategl */
 Surface.prototype.mkProgram = function(stategl) {
     var sources = StateGL.getShaderSources("Surface");
+    sources[0] = this.withTextures(sources[0]);
     sources[1] = this.withCustomAndCommon(sources[1]);
     this.program = stategl.mkProgram(sources);
 };
@@ -153,6 +155,12 @@ Surface.prototype.render = function(stategl, gl, state3d) {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.drawArrays(gl.TRIANGLES, 0, this.numIndices);
     stategl.updateTransparency(false);
+};
+
+/** @param {string} src
+ *  @return {string} */
+Surface.prototype.withTextures = function(src) {
+    return [this.texturesShaderSrc, src].join("\n");
 };
 
 /** @param {string} src

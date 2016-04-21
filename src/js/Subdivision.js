@@ -3,10 +3,17 @@
  *  @param {Surface} surface
  *  @implements {Stage} */
 function Subdivision(stategl, surface) {
+    this.mkProgram(stategl, surface);
+}
+
+/** @param {StateGL} stategl
+ *  @param {Surface} surface */
+Subdivision.prototype.mkProgram = function(stategl, surface) {
     var sources = StateGL.getShaderSources("Subdivision");
+    sources[0] = surface.withTextures(sources[0]);
     sources[1] = surface.withCustomAndCommon(sources[1]);
     this.program = stategl.mkProgram(sources);
-}
+};
 
 /** @param {StateGL} stategl
  *  @param {Surface} surface

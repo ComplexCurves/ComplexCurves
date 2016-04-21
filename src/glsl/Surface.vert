@@ -10,13 +10,9 @@ uniform sampler2D sampler;
 attribute float index;
 varying vec4 vPos;
 varying vec2 v_value;
-const float w = 2048.0, h = 2048.0;
-vec2 uvPosition (in float w, in float h, in float i) {
-    return vec2 (mod (i, w) / w + 0.5 / w, floor (i / w) / h + 0.5 / h);
-}
 void main (void)
 {
-    vec4 posValue = texture2D (sampler, uvPosition (w, h, index));
+    vec4 posValue = texture2D (sampler, uvPosition (index));
     vPos = vec4 (posValue.xyz, 1.0);
     v_value = posValue.zw;
     gl_Position = p * v * m * vPos;
