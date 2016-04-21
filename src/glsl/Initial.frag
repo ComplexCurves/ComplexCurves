@@ -1,25 +1,43 @@
-#extension GL_EXT_draw_buffers : require
 #ifdef GL_FRAGMENT_PRECISION_HIGH
 precision highp float;
 #else
 precision mediump float;
 #endif
+uniform int computedRoots;
+uniform sampler2D samplers[1 + N/2];
+varying vec2 texCoord;
 varying vec2 vPosition;
 void main(void) {
     vec2 position = clamp (vPosition, -5.0, 5.0);
     vec2 values[N];
     vec2 cs[N+1];
     f (position, cs);
-    weierstrass (cs, values);
-    float delta = Delta (position, values);
-    gl_FragData[0] = vec4 (position, delta, 1.0);
-    const vec2 zero = vec2 (0.0, 0.0);
-    gl_FragData[1].xy = sheets > 0 ? values[0] : zero;
-    gl_FragData[1].zw = sheets > 1 ? values[1] : zero;
-    gl_FragData[2].xy = sheets > 2 ? values[2] : zero;
-    gl_FragData[2].zw = sheets > 3 ? values[3] : zero;
-    gl_FragData[3].xy = sheets > 4 ? values[4] : zero;
-    gl_FragData[3].zw = sheets > 5 ? values[5] : zero;
-    gl_FragData[4].xy = sheets > 6 ? values[6] : zero;
-    gl_FragData[4].zw = sheets > 7 ? values[7] : zero;
+    vec2 cs_orig[N+1];
+    for (int i = 0; i < N + 1; i++)
+        cs_orig[i] = cs[i];
+
+    for (int i = 0; i < N; i++) {
+        if (i < computedRoots) {
+            if (mod(float(i), 2.0) == 0.0)
+                values[i] = texture2D (samplers[i], texCoord).xy;
+            else
+                values[i] = texture2D (samplers[i - 1], texCoord).zw;
+            deflate (sheets, cs, values[i]);
+        }
+    }
+
+    if (sheets - computedRoots == 2) {
+        vec2 qroots[2];
+        quadratic_roots (cs, qroots);
+        gl_FragColor = vec4 (qroots[0], qroots[1]);
+    } else if (computedRoots < sheets) {
+        gl_FragColor.xy = laguerre (sheets - computedRoots, cs, vec2 (0.0, 0.0), 80);
+        if (computedRoots + 1 < sheets) {
+            deflate (sheets, cs, gl_FragColor.xy);
+            gl_FragColor.zw = laguerre (sheets - computedRoots - 1, cs, vec2 (0.0, 0.0), 80);
+        }
+    } else {
+        float delta = Delta (position, values);
+        gl_FragColor = vec4 (position, delta, 1.0);
+    }
 }

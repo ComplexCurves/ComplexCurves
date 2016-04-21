@@ -44,7 +44,6 @@ Initial.prototype.positionBuffer = null;
 Initial.prototype.render = function(stategl, surface, gl) {
     var texturesIn = surface.texturesIn,
         texturesOut = surface.texturesOut;
-    var webgl_draw_buffers = stategl["WEBGL_draw_buffers"];
     gl.useProgram(this.program);
     gl.enableVertexAttribArray(0);
     gl.bindBuffer(gl.ARRAY_BUFFER, surface.indexBuffer);
@@ -53,34 +52,49 @@ Initial.prototype.render = function(stategl, surface, gl) {
     gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
     gl.vertexAttribPointer(1, 2, gl.FLOAT, false, 0, 0);
     gl.bindFramebuffer(gl.FRAMEBUFFER, surface.framebuffer);
-    for (var i = 0; i < texturesOut.length; i++) {
+    gl.disable(gl.DEPTH_TEST);
+    gl.viewport(0, 0, 2048, 2048);
+
+    var computedRootsLoc = gl.getUniformLocation(this.program, 'computedRoots');
+    var sheets = surface.sheets;
+
+    for (var computedRoots = 0; computedRoots < sheets; computedRoots += 2) {
+        var i = Math.floor(computedRoots / 2) + 1;
         gl.bindTexture(gl.TEXTURE_2D, texturesOut[i]);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 2048, 2048, 0, gl.RGBA,
             gl.FLOAT, null);
-        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + i,
+        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0,
             gl.TEXTURE_2D, texturesOut[i], 0);
+        gl.uniform1i(computedRootsLoc, computedRoots);
+        gl.drawArrays(gl.POINTS, 0, surface.numIndices);
+        gl.flush();
+        gl.activeTexture(gl.TEXTURE0 + i);
+        gl.bindTexture(gl.TEXTURE_2D, texturesOut[i + 1]);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     }
-    webgl_draw_buffers.drawBuffersWEBGL([
-        webgl_draw_buffers.COLOR_ATTACHMENT0_WEBGL,
-        webgl_draw_buffers.COLOR_ATTACHMENT1_WEBGL,
-        webgl_draw_buffers.COLOR_ATTACHMENT2_WEBGL,
-        webgl_draw_buffers.COLOR_ATTACHMENT3_WEBGL,
-        webgl_draw_buffers.COLOR_ATTACHMENT4_WEBGL
-    ]);
-    gl.disable(gl.DEPTH_TEST);
-    gl.viewport(0, 0, 2048, 2048);
+
+    gl.bindTexture(gl.TEXTURE_2D, texturesOut[0]);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 2048, 2048, 0, gl.RGBA,
+        gl.FLOAT, null);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0,
+        gl.TEXTURE_2D, texturesOut[0], 0);
+    gl.uniform1i(computedRootsLoc, computedRoots);
     gl.drawArrays(gl.POINTS, 0, surface.numIndices);
     gl.flush();
 
-    webgl_draw_buffers.drawBuffersWEBGL([
-        webgl_draw_buffers.COLOR_ATTACHMENT0_WEBGL
-    ]);
-    for (i = 0; i < texturesOut.length; i++) {
-        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + i,
-            gl.TEXTURE_2D, null, 0);
+    for (var i = 0; i < texturesOut.length; i++) {
+        gl.activeTexture(gl.TEXTURE0 + i);
+        gl.bindTexture(gl.TEXTURE_2D, null);
     }
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0,
+        gl.TEXTURE_2D, null, 0);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
     gl.disableVertexAttribArray(1);
