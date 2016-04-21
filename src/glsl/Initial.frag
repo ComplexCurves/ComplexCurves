@@ -13,17 +13,18 @@ void main(void) {
     vec2 cs[N+1];
     f (position, cs);
 
-    for (int i = 0; i < N; i++) {
+    for (int i = 0; i < N; i += 2) {
         if (i < computedRoots) {
-            if (mod(float(i), 2.0) == 0.0)
-                values[i] = texture2D (samplers[i], texCoord).xy;
-            else
-                values[i] = texture2D (samplers[i - 1], texCoord).zw;
+            values[i] = texture2D (samplers[i], texCoord).xy;
             deflate (sheets - i, cs, values[i]);
+        }
+        if (i + 1 < computedRoots) {
+            values[i + 1] = texture2D (samplers[i], texCoord).zw;
+            deflate (sheets - (i + 1), cs, values[i + 1]);
         }
     }
 
-    if (sheets - computedRoots == 2) {
+    if (computedRoots == sheets - 2) {
         vec2 qroots[2];
         quadratic_roots (cs, qroots);
         gl_FragColor = vec4 (qroots[0], qroots[1]);
