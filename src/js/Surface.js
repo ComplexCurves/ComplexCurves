@@ -8,6 +8,10 @@ function Surface(stategl, polynomial, depth) {
     this.depth = depth;
     var gl = stategl.gl;
     var surface = this;
+    var p = surface.polynomial;
+    var vars = p.variableList();
+    var vy = vars.length === 0 ? "y" : vars[vars.length - 1];
+    surface.sheets = p.degree(vy);
     surface.commonShaderSrc = resources["Common.glsl"];
     surface.customShaderSrc = GLSL.polynomialShaderSource(polynomial);
     surface.texturesShaderSrc = resources["Textures.glsl"];
@@ -22,10 +26,6 @@ function Surface(stategl, polynomial, depth) {
         surface.subdivisionPre.render(stategl, surface, gl);
         surface.subdivision.render(stategl, surface, gl);
     }
-    var p = surface.polynomial;
-    var vars = p.variableList();
-    var vy = vars.length === 0 ? "y" : vars[vars.length - 1];
-    surface.sheets = p.degree(vy);
     surface.assembly = new Assembly(stategl, surface);
     surface.assembly.render(stategl, surface, gl);
     surface.mkProgram(stategl);
