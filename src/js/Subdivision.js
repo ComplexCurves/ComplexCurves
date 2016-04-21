@@ -129,7 +129,6 @@ Subdivision.prototype.render = function(stategl, surface, gl) {
             numIndices);
         primitivesWritten += numIndices;
     }
-    gl.flush();
 
     // cleanup
     for (i = 0; i < 5; i++)

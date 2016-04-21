@@ -39,7 +39,6 @@ SubdivisionPre.prototype.render = function(stategl, surface, gl) {
     gl.disable(gl.DEPTH_TEST);
     gl.viewport(0, 0, 2048, 2048);
     gl.drawArrays(gl.POINTS, 0, surface.numIndices);
-    gl.flush();
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D,
         null, 0);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
