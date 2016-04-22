@@ -27,20 +27,7 @@ Subdivision.prototype.render = function(stategl, surface, gl) {
     gl.useProgram(program);
 
     // read texture into array
-    var readBuffer = gl.createFramebuffer();
-    gl.bindFramebuffer(gl.FRAMEBUFFER, readBuffer);
-    gl.bindTexture(gl.TEXTURE_2D, texturesIn[0]);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D,
-        texturesIn[0], 0);
-    var pixels = new Float32Array(4 * 2048 * 2048);
-    gl.readPixels(0, 0, 2048, 2048, gl.RGBA, gl.FLOAT, pixels);
-    gl.bindTexture(gl.TEXTURE_2D, null);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D,
-        null, 0);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-    gl.deleteFramebuffer(readBuffer);
+    var pixels = stategl.readTexture(texturesIn[0]);
     // prepare subdivision patterns and buffers
     var subdivisionPattern = [
         // 1st pattern (no subdivision)
