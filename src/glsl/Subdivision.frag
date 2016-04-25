@@ -1,57 +1,77 @@
-#extension GL_EXT_draw_buffers : require
 #ifdef GL_FRAGMENT_PRECISION_HIGH
 precision highp float;
 #else
 precision mediump float;
 #endif
-uniform sampler2D samplers[1 + N/2];
+uniform int computedRoots;
+uniform sampler2D oldSamplers[1 + N/2];
+uniform sampler2D samplers[N/2];
 varying vec3 barycentric;
 varying vec2 texCoord[3];
+varying vec2 texCoordOut;
 
 void main(void) {
-    vec4 posDeltaX;
-    vec2 values[N];
-
     if (barycentric == vec3 (1.0, 0.0, 0.0)) {
-        posDeltaX = texture2D (samplers[0], texCoord[0]);
-        for (int j = 1; j < 1 + N/2; j++) {
-            vec4 s = texture2D (samplers[j], texCoord[0]);
-            values[2*j-2] = s.xy;
-            values[2*j-1] = s.zw;
+        if (computedRoots == sheets) {
+            gl_FragColor = texture2D (oldSamplers[0], texCoord[0]);
+        } else {
+            int i = computedRoots / 2 + 1;
+            for (int j = 1; j < 1 + N/2; j++)
+                if (j == i)
+                    gl_FragColor = texture2D (oldSamplers[j], texCoord[0]);
         }
     } else if (barycentric == vec3 (0.0, 1.0, 0.0)) {
-        posDeltaX = texture2D (samplers[0], texCoord[1]);
-        for (int j = 1; j < 1 + N/2; j++) {
-            vec4 s = texture2D (samplers[j], texCoord[1]);
-            values[2*j-2] = s.xy;
-            values[2*j-1] = s.zw;
+        if (computedRoots == sheets) {
+            gl_FragColor = texture2D (oldSamplers[0], texCoord[1]);
+        } else {
+            int i = computedRoots / 2 + 1;
+            for (int j = 1; j < 1 + N/2; j++)
+                if (j == i)
+                    gl_FragColor = texture2D (oldSamplers[j], texCoord[1]);
         }
     } else if (barycentric == vec3 (0.0, 0.0, 1.0)) {
-        posDeltaX = texture2D (samplers[0], texCoord[2]);
-        for (int j = 1; j < 1 + N/2; j++) {
-            vec4 s = texture2D (samplers[j], texCoord[2]);
-            values[2*j-2] = s.xy;
-            values[2*j-1] = s.zw;
+        if (computedRoots == sheets) {
+            gl_FragColor = texture2D (oldSamplers[0], texCoord[2]);
+        } else {
+            int i = computedRoots / 2 + 1;
+            for (int j = 1; j < 1 + N/2; j++)
+                if (j == i)
+                    gl_FragColor = texture2D (oldSamplers[j], texCoord[2]);
         }
     } else {
-        vec2 position = barycentric.x * texture2D (samplers[0], texCoord[0]).xy
-                      + barycentric.y * texture2D (samplers[0], texCoord[1]).xy
-                      + barycentric.z * texture2D (samplers[0], texCoord[2]).xy;
+        vec2 values[N];
+        vec2 position = barycentric.x * texture2D (oldSamplers[0], texCoord[0]).xy
+                      + barycentric.y * texture2D (oldSamplers[0], texCoord[1]).xy
+                      + barycentric.z * texture2D (oldSamplers[0], texCoord[2]).xy;
         vec2 cs[N+1];
         f (position, cs);
-        weierstrass (cs, values);
-        float delta = Delta (position, values);
-        posDeltaX = vec4 (position, delta, 1.0);
-    }
 
-    gl_FragData[0] = posDeltaX;
-    const vec2 zero = vec2 (0.0, 0.0);
-    gl_FragData[1].xy = sheets > 0 ? values[0] : zero;
-    gl_FragData[1].zw = sheets > 1 ? values[1] : zero;
-    gl_FragData[2].xy = sheets > 2 ? values[2] : zero;
-    gl_FragData[2].zw = sheets > 3 ? values[3] : zero;
-    gl_FragData[3].xy = sheets > 4 ? values[4] : zero;
-    gl_FragData[3].zw = sheets > 5 ? values[5] : zero;
-    gl_FragData[4].xy = sheets > 6 ? values[6] : zero;
-    gl_FragData[4].zw = sheets > 7 ? values[7] : zero;
+        for (int i = 0; i < N; i += 2) {
+            if (i < computedRoots) {
+                values[i] = texture2D (samplers[i], texCoordOut).xy;
+                deflate (sheets - i, cs, values[i]);
+            }
+            if (i + 1 < computedRoots) {
+                values[i + 1] = texture2D (samplers[i], texCoordOut).zw;
+                deflate (sheets - (i + 1), cs, values[i + 1]);
+            }
+        }
+
+        if (computedRoots == sheets - 2) {
+            vec2 qroots[2];
+            quadratic_roots (cs, qroots);
+            gl_FragColor = vec4 (qroots[0], qroots[1]);
+        } else if (computedRoots < sheets) {
+            gl_FragColor.xy = laguerre (sheets - computedRoots, cs, vec2 (0.0, 0.0), 80);
+            if (computedRoots + 1 < sheets) {
+                deflate (sheets - computedRoots, cs, gl_FragColor.xy);
+                gl_FragColor.zw = laguerre (sheets - computedRoots - 1, cs, vec2 (0.0, 0.0), 80);
+            } else {
+                gl_FragColor.zw = vec2 (0.0, 0.0);
+            }
+        } else {
+            float delta = Delta (position, values);
+            gl_FragColor = vec4 (position, delta, 1.0);
+        }
+    }
 }

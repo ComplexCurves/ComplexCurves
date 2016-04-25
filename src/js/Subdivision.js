@@ -66,24 +66,8 @@ Subdivision.prototype.render = function(stategl, surface, gl) {
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(subdivisionPattern),
         gl.STATIC_DRAW);
     gl.vertexAttribPointer(0, 4, gl.FLOAT, false, 0, 0);
-    // prepare output textures
     gl.bindFramebuffer(gl.FRAMEBUFFER, surface.framebuffer);
-    for (var i = 0; i < texturesOut.length; i++) {
-        gl.bindTexture(gl.TEXTURE_2D, texturesOut[i]);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 2048, 2048, 0, gl.RGBA,
-            gl.FLOAT, null);
-        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + i,
-            gl.TEXTURE_2D, texturesOut[i], 0);
-    }
-    webgl_draw_buffers.drawBuffersWEBGL([
-        webgl_draw_buffers.COLOR_ATTACHMENT0_WEBGL,
-        webgl_draw_buffers.COLOR_ATTACHMENT1_WEBGL,
-        webgl_draw_buffers.COLOR_ATTACHMENT2_WEBGL,
-        webgl_draw_buffers.COLOR_ATTACHMENT3_WEBGL,
-        webgl_draw_buffers.COLOR_ATTACHMENT4_WEBGL
-    ]);
+
     // prepare input textures
     var texIs = [];
     for (i = 0; i < texturesIn.length; i++) {
@@ -95,33 +79,60 @@ Subdivision.prototype.render = function(stategl, surface, gl) {
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
         texIs[i] = i;
     }
-    var samplersLocation = gl.getUniformLocation(program, 'samplers');
-    gl.uniform1iv(samplersLocation, texIs);
-    // identify and render subdivision patterns
+    var oldSamplersLocation = gl.getUniformLocation(program, 'oldSamplers');
+    gl.uniform1iv(oldSamplersLocation, texIs);
+
     gl.disable(gl.DEPTH_TEST);
     gl.viewport(0, 0, 2048, 2048);
     var indexOffsetInLocation = gl.getUniformLocation(program,
         'indexOffsetIn');
     var indexOffsetOutLocation = gl.getUniformLocation(program,
         'indexOffsetOut');
-    var patternIndex, numIndices;
-    var primitivesWritten = 0;
-    for (i = 0; i < numTriangles; i++) {
-        gl.uniform1f(indexOffsetInLocation, 3 * i);
-        gl.uniform1f(indexOffsetOutLocation, primitivesWritten);
-        patternIndex = 4 * pixels[12 * i + 3] + 2 * pixels[12 * i + 7] +
-            pixels[12 * i + 11];
-        numIndices = subdivisionPatternCount[patternIndex];
-        gl.drawArrays(gl.POINTS, subdivisionPatternFirst[patternIndex],
-            numIndices);
-        primitivesWritten += numIndices;
+
+    var computedRootsLoc = gl.getUniformLocation(this.program, 'computedRoots');
+    var sheets = surface.sheets;
+    texIs = []
+    var samplersLocation = gl.getUniformLocation(program, 'samplers');
+
+    for (var computedRoots = 0; computedRoots <= sheets + 1; computedRoots += 2) {
+        var i = computedRoots < sheets ? computedRoots / 2 + 1 : 0;
+        gl.bindTexture(gl.TEXTURE_2D, texturesOut[i]);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 2048, 2048, 0, gl.RGBA,
+            gl.FLOAT, null);
+        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0,
+            gl.TEXTURE_2D, texturesOut[i], 0);
+        gl.uniform1i(computedRootsLoc, computedRoots);
+
+        // identify and render subdivision patterns
+        var patternIndex, numIndices;
+        var primitivesWritten = 0;
+        for (var j = 0; j < numTriangles; j++) {
+            gl.uniform1f(indexOffsetInLocation, 3 * j);
+            gl.uniform1f(indexOffsetOutLocation, primitivesWritten);
+            patternIndex = 4 * pixels[12 * j + 3] + 2 * pixels[12 * j + 7] +
+                pixels[12 * j + 11];
+            numIndices = subdivisionPatternCount[patternIndex];
+            gl.drawArrays(gl.POINTS, subdivisionPatternFirst[patternIndex],
+                numIndices);
+            primitivesWritten += numIndices;
+        }
+
+        gl.activeTexture(gl.TEXTURE0 + texturesIn.length + i);
+        gl.bindTexture(gl.TEXTURE_2D, texturesOut[i + 1]);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+        texIs[i] = texturesIn.length + i;
+        gl.uniform1iv(samplersLocation, texIs);
     }
 
     // cleanup
-    for (i = 0; i < 5; i++)
-        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0 + i,
-            gl.TEXTURE_2D, null, 0);
-    for (i = 0; i < 5; i++) {
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0,
+        gl.TEXTURE_2D, null, 0);
+    for (var i = 0; i < texturesIn.length + texturesOut.length; i++) {
         gl.activeTexture(gl.TEXTURE0 + i);
         gl.bindTexture(gl.TEXTURE_2D, null);
     }
