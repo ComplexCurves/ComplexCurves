@@ -12,7 +12,7 @@ varying vec2 texCoordOut;
 
 void main(void) {
     if (barycentric == vec3 (1.0, 0.0, 0.0)) {
-        if (computedRoots == sheets) {
+        if (computedRoots >= sheets) {
             gl_FragColor = texture2D (oldSamplers[0], texCoord[0]);
         } else {
             int i = computedRoots / 2 + 1;
@@ -21,7 +21,7 @@ void main(void) {
                     gl_FragColor = texture2D (oldSamplers[j], texCoord[0]);
         }
     } else if (barycentric == vec3 (0.0, 1.0, 0.0)) {
-        if (computedRoots == sheets) {
+        if (computedRoots >= sheets) {
             gl_FragColor = texture2D (oldSamplers[0], texCoord[1]);
         } else {
             int i = computedRoots / 2 + 1;
@@ -30,7 +30,7 @@ void main(void) {
                     gl_FragColor = texture2D (oldSamplers[j], texCoord[1]);
         }
     } else if (barycentric == vec3 (0.0, 0.0, 1.0)) {
-        if (computedRoots == sheets) {
+        if (computedRoots >= sheets) {
             gl_FragColor = texture2D (oldSamplers[0], texCoord[2]);
         } else {
             int i = computedRoots / 2 + 1;

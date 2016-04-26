@@ -59,7 +59,7 @@ Initial.prototype.render = function(stategl, surface, gl) {
     var sheets = surface.sheets;
 
     for (var computedRoots = 0; computedRoots <= sheets + 1; computedRoots += 2) {
-        var i = computedRoots < sheets ? Math.floor(computedRoots / 2) + 1 : 0;
+        var i = computedRoots < sheets ? computedRoots / 2 + 1 : 0;
         gl.bindTexture(gl.TEXTURE_2D, texturesOut[i]);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
