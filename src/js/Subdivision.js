@@ -119,13 +119,13 @@ Subdivision.prototype.render = function(stategl, surface, gl) {
             primitivesWritten += numIndices;
         }
 
-        gl.activeTexture(gl.TEXTURE0 + texturesIn.length + i);
-        gl.bindTexture(gl.TEXTURE_2D, texturesOut[i + 1]);
+        gl.activeTexture(gl.TEXTURE0 + texturesIn.length + i - 1);
+        gl.bindTexture(gl.TEXTURE_2D, texturesOut[i]);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-        texIs[i] = texturesIn.length + i;
+        texIs[i] = texturesIn.length + i - 1;
         gl.uniform1iv(samplersLocation, texIs);
     }
 
