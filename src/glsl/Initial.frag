@@ -33,6 +33,8 @@ void main(void) {
         if (computedRoots + 1 < sheets) {
             deflate (sheets - computedRoots, cs, gl_FragColor.xy);
             gl_FragColor.zw = laguerre (sheets - computedRoots - 1, cs, vec2 (0.0, 0.0), 80);
+        } else {
+            gl_FragColor.zw = vec2 (0.0, 0.0);
         }
     } else {
         float delta = Delta (position, values);
