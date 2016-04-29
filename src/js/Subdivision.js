@@ -119,6 +119,9 @@ Subdivision.prototype.render = function(stategl, surface, gl) {
             primitivesWritten += numIndices;
         }
 
+        if (computedRoots >= sheets)
+            break;
+
         gl.activeTexture(gl.TEXTURE0 + texturesIn.length + i - 1);
         gl.bindTexture(gl.TEXTURE_2D, texturesOut[i]);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
