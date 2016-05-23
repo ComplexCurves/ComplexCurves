@@ -128,15 +128,17 @@ StateGL.prototype.mkRenderToTextureObjects = function() {
 StateGL.prototype.polynomial = null;
 
 /** @param {WebGLTexture} texture
- *  @param {number} length */
-StateGL.prototype.printTexture = function(texture, length) {
-    console.log(this.readTexture(texture, length));
+ *  @param {number} length
+ *  @param {number=} offset */
+StateGL.prototype.printTexture = function(texture, length, offset = 0) {
+    console.log(JSON.stringify(Array.from(this.readTexture(texture, length, offset))));
 };
 
 /** @param {WebGLTexture} texture
  *  @param {number=} length
+ *  @param {number=} offset
  *  @return {Float32Array|Uint8Array} */
-StateGL.prototype.readTexture = function(texture, length) {
+StateGL.prototype.readTexture = function(texture, length, offset = 0) {
     var gl = this.gl;
     var framebuffer = /** @type {WebGLFramebuffer} */
         (gl.getParameter(gl.FRAMEBUFFER_BINDING));
@@ -166,7 +168,7 @@ StateGL.prototype.readTexture = function(texture, length) {
     gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
     gl.deleteFramebuffer(readBuffer);
     if (length)
-        return new pixels.constructor(pixels.buffer, 0, length);
+        return new pixels.constructor(pixels.buffer, offset * pixels.BYTES_PER_ELEMENT, length);
     else
         return pixels;
 };
