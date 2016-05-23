@@ -149,13 +149,14 @@ void quadratic_roots (in vec2 cs[N+1], out vec2 qroots[2]) {
     }
 }
 
-void deflate (in int n, inout vec2 cs[N+1], in vec2 root) {
+void deflate (in int n, in int i, inout vec2 cs[N+1], in vec2 root) {
     vec2 fx[N+1];
     for (int j = 0; j < N + 1; j++)
         if (j < n + 1)
             fx[j] = cs[j];
     for (int j = N; j > 0; j--)
-        fx[j-1] = cs[j-1] + cm (fx[j], root);
+        if (j <= n - i)
+            fx[j-1] = cs[j-1] + cm (fx[j], root);
     for (int j = 1; j < N + 1; j++)
         if (j < n + 1)
             cs[j-1] = fx[j];
@@ -181,7 +182,7 @@ void roots (in int n, in vec2 cs[N+1], out vec2 roots[N])
     {
         roots[i] = laguerre (n - i, cs, vec2 (0.0, 0.0), 80);
         roots[i] = laguerre (n, cs_orig, roots[i], 1);
-        deflate (n - i, cs, roots[i]);
+        deflate (n, i, cs, roots[i]);
     }
     /* selection sort by real part */
     /*
