@@ -31,14 +31,14 @@ Matrix.mu = function(x) {
     var xs = x.values;
     var zero = xs[0][0].zero;
     var ms = [];
-    for (var i = 0; i < xs.length; i++) {
+    for (var i = 0, l = xs.length; i < l; i++) {
         ms[i] = [];
-        for (var j = 0; j < xs.length; j++) {
+        for (var j = 0; j < l; j++) {
             if (j < i) {
                 ms[i][j] = zero;
             } else if (j === i) {
                 var sum = zero;
-                for (var k = j + 1; k < xs.length; k++)
+                for (var k = j + 1; k < l; k++)
                     sum = sum.add(xs[k][k].neg());
                 ms[i][j] = sum;
             } else {
@@ -65,7 +65,7 @@ Matrix.mul = function(a, b) {
         cs[i] = [];
         for (var j = 0; j < cols; j++) {
             var sum = zero;
-            for (var k = 0; k < as[0].length; k++)
+            for (var k = 0, l = as[0].length; k < l; k++)
                 sum = sum.add(as[i][k].mul(bs[k][j]));
             cs[i][j] = sum;
         }

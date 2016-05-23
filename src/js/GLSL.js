@@ -4,19 +4,19 @@ var GLSL = {};
  *  @return {Array<string>} */
 GLSL.glslCoefficients = function(p) {
     var cs = [],
-        cs_, i;
+        cs_, i, l;
     if (p.isConstant())
         return [GLSL.glslComplex(p.constant())];
     else if (p.isUnivariate()) {
         cs_ = p.coefficientList_();
-        for (i = 0; i < cs_.length; i++)
+        for (i = 0, l = cs_.length ; i < l; i++)
             cs[i] = GLSL.glslComplex(cs_[i]);
     } else if (p.isBivariate()) {
         var vars = p.variableList();
         var vx = vars[0],
             vy = vars[1];
         cs_ = p.coefficientList(vy);
-        for (i = 0; i < cs_.length; i++)
+        for (i = 0, l = cs_.length; i < l; i++)
             cs[i] = GLSL.glslHorner(vx, GLSL.glslCoefficients(cs_[i]));
     }
     return cs;
@@ -56,7 +56,7 @@ GLSL.glslF = function(p, vx, vy) {
 GLSL.glslFx = function(p, vx, vy) {
     var cs = p.diff(vx).coefficientList(vy);
     var cs_ = [];
-    for (var i = 0; i < cs.length; i++)
+    for (var i = 0, l = cs.length; i < l; i++)
         cs_[i] = GLSL.glslHorner(vx, GLSL.glslCoefficients(cs[i]));
     var lines = ["vec2 fx (in vec2 " + vx + ", in vec2 " + vy + ")", "{",
         "    return " + GLSL.glslHorner(vy, cs_) + ";", "}"
@@ -71,7 +71,7 @@ GLSL.glslFx = function(p, vx, vy) {
 GLSL.glslFy = function(p, vx, vy) {
     var cs = p.diff(vy).coefficientList(vx);
     var cs_ = [];
-    for (var i = 0; i < cs.length; i++)
+    for (var i = 0, l = cs.length; i < l; i++)
         cs_[i] = GLSL.glslHorner(vy, GLSL.glslCoefficients(cs[i]));
     var lines = ["vec2 fy (in vec2 " + vx + ", in vec2 " + vy + ")", "{",
         "    return " + GLSL.glslHorner(vx, cs_) + ";", "}"
@@ -101,7 +101,7 @@ GLSL.glslHeader = function(p, vx, vy) {
  *  @return {string} */
 GLSL.glslHorner = function(v, cs) {
     var str = cs[0];
-    for (var i = 1; i < cs.length; i++) {
+    for (var i = 1, l = cs.length; i < l; i++) {
         if (str === "vec2 (1.0000000, 0.0000000)")
             str = v;
         else if (str === "vec2 (-1.0000000, 0.0000000)")
@@ -119,11 +119,11 @@ GLSL.glslHorner = function(v, cs) {
  *  @param {string} vy
  *  @return {string} */
 GLSL.glslM = function(p, vx, vy) {
-    var i, j;
+    var i, j, l, k;
     var cs = p.coefficientList(vy);
-    for (i = 0; i < cs.length; i++) {
+    for (i = 0, l = cs.length; i < l; i++) {
         var terms = cs[i].terms;
-        for (j = 0; j < terms.length; j++) {
+        for (j = 0, k = terms.length; j < k; j++) {
             var term = terms[j];
             terms[j] = new Term(Complex.real(term.coefficient.abs()),
                 term.monomial);
@@ -139,10 +139,10 @@ GLSL.glslM = function(p, vx, vy) {
         "    a[0] = length (" + GLSL.glslComplex(a0a0.constant()) +
         ");"
     ];
-    for (i = 0; i < leadRoots.length; i++)
+    for (i = 0, l = leadRoots.length; i < l; i++)
         lines.push("    a[0] *= distance (" + vx + ", " +
             GLSL.glslComplex(leadRoots[i]) + ") - rho;");
-    for (i = 1; i < cs.length; i++)
+    for (i = 1, l = cs.length; i < l; i++)
     // FIXME: 'r' must not conflict with variables of polynomial p
         lines.push("    a[" + i + "] = length (" + GLSL.glslHorner('r',
         GLSL.glslCoefficients(cs[i])) + ");");
@@ -164,17 +164,17 @@ GLSL.glslRho = function(p, vx, vy) {
         disc = p.discriminant(vy),
         leadRoots = Polynomial.roots(an.coefficientList_()),
         discRoots = Polynomial.roots(disc.coefficientList_()),
-        i, critical = [];
-    for (i = 0; i < leadRoots.length; i++)
+        i, l, critical = [];
+    for (i = 0, l = leadRoots.length; i < l; i++)
         if (isFinite(leadRoots[i].abs()))
             critical.push(leadRoots[i]);
-    for (i = 0; i < discRoots.length; i++)
+    for (i = 0, l = discRoots.length; i < l; i++)
         if (isFinite(discRoots[i].abs()))
             critical.push(discRoots[i]);
     var lines = ["float rho (in vec2 " + vx + ") {",
         "    float d = 100.0;"
     ];
-    for (i = 0; i < critical.length; i++)
+    for (i = 0, l = critical.length; i < l; i++)
         lines.push("    d = min (d, distance (" + vx + ", " +
             GLSL.glslComplex(critical[i]) + "));");
     lines = lines.concat(["    return 0.999 * d;", "}"]);

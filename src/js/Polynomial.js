@@ -33,7 +33,7 @@ Polynomial.complex = function(z) {
 Polynomial.prototype.coefficient = function(v, j) {
     var terms = this.terms;
     var ps = [];
-    for (var i = 0; i < terms.length; i++) {
+    for (var i = 0, l = terms.length; i < l; i++) {
         var term = terms[i];
         if ((term.monomial.value[v] || 0) === j) {
             var m = Monomial.clone(term.monomial);
@@ -64,7 +64,7 @@ Polynomial.prototype.coefficientList_ = function() {
     var v = l > 0 ? vars[0] : "x";
     var cs = this.coefficientList(v);
     var cs_ = [];
-    for (var i = 0; i < cs.length; i++)
+    for (var i = 0, k = cs.length; i < k; i++)
         cs_[i] = cs[i].constant();
     return cs_;
 };
@@ -74,7 +74,7 @@ Polynomial.prototype.coefficientList_ = function() {
 Polynomial.prototype.constant = function() {
     var c = Complex.zero;
     var terms = this.terms;
-    for (var i = 0; i < terms.length; i++) {
+    for (var i = 0, l = terms.length; i < l; i++) {
         var term = terms[i];
         var m = term.monomial.value;
         if (m === null || Object.keys(m).length === 0)
@@ -91,7 +91,7 @@ Polynomial.prototype.constant = function() {
 Polynomial.deflate = function(cs, x0) {
     // deflate (p:ps) x0 = init $ scanl (\y c -> c + x0 * y) p ps
     var fx = [cs[0]];
-    for (var i = 1; i < cs.length - 1; i++)
+    for (var i = 1, l = cs.length - 1; i < l; i++)
         fx[i] = Complex.add(cs[i], Complex.mul(fx[i - 1], x0));
     return fx;
 };
@@ -102,7 +102,7 @@ Polynomial.deflate = function(cs, x0) {
 Polynomial.prototype.degree = function(v) {
     var n = 0;
     var terms = this.terms;
-    for (var i = 0; i < terms.length; i++)
+    for (var i = 0, l = terms.length; i < l; i++)
         n = Math.max(n, terms[i].monomial.value[v] || 0);
     return n;
 };
@@ -112,7 +112,7 @@ Polynomial.prototype.degree = function(v) {
 Polynomial.prototype.diff = function(v) {
     var terms = this.terms;
     var ps = [];
-    for (var i = 0; i < terms.length; i++) {
+    for (var i = 0, l = terms.length; i < l; i++) {
         var m = terms[i].monomial;
         var e = m.value[v] || 0;
         if (e > 0) {
@@ -212,8 +212,8 @@ Polynomial.mul = function(p, q) {
     var ps = p.terms,
         qs = q.terms;
     var terms = [];
-    for (var i = 0; i < ps.length; i++)
-        for (var j = 0; j < qs.length; j++)
+    for (var i = 0, l = ps.length; i < l; i++)
+        for (var j = 0, k = qs.length; j < k; j++)
             terms.push(Term.mul(ps[i], qs[j]));
     return new Polynomial(Term.reduce(terms));
 };
@@ -228,7 +228,7 @@ Polynomial.prototype.mul = function(p) {
 Polynomial.prototype.neg = function() {
     var terms = this.terms;
     var ts = [];
-    for (var i = 0; i < terms.length; i++)
+    for (var i = 0, l = terms.length; i < l; i++)
         ts.push(Term.neg(terms[i]));
     return new Polynomial(ts);
 };
@@ -367,7 +367,7 @@ Polynomial.prototype.variableList = function() {
     var terms = this.terms;
     var vars = [];
     var hasVar = {};
-    for (var i = 0; i < terms.length; i++) {
+    for (var i = 0, l = terms.length; i < l; i++) {
         var m = terms[i].monomial.value;
         for (var key in m) {
             if (!hasVar[key]) {

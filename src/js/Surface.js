@@ -44,16 +44,17 @@ Surface.prototype.domainColouring = function(stategl, big = false) {
     var loc;
     var sheets = [];
     var pixels;
+    function renderSheet(sheet) {
+        gl.useProgram(program);
+        gl.bindBuffer(gl.ARRAY_BUFFER, stategl.rttArrayBuffer);
+        gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+        loc = gl.getUniformLocation(program, "sheet");
+        gl.uniform1i(loc, sheet);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        gl.drawArrays(gl.TRIANGLES, 0, 3);
+    }
     for (var sheet = 1; sheet <= this.sheets; sheet++) {
-        stategl.withRenderToTexture(function() {
-            gl.useProgram(program);
-            gl.bindBuffer(gl.ARRAY_BUFFER, stategl.rttArrayBuffer);
-            gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
-            loc = gl.getUniformLocation(program, "sheet");
-            gl.uniform1i(loc, sheet);
-            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-            gl.drawArrays(gl.TRIANGLES, 0, 3);
-        }, big);
+        stategl.withRenderToTexture(renderSheet.bind(null, sheet), big);
         var texture = big ? stategl.rttBigTexture : stategl.rttTexture;
         pixels = /** @type {Uint8Array} */
             (stategl.readTexture(texture));

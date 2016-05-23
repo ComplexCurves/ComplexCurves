@@ -34,13 +34,12 @@ export function SingularityExplorerFromEquation(canvas, equation, depth, lat = 0
  *  @param {boolean=} ortho
  *  @param {function()=} onload
  *  @return {SingularityExplorer} */
-export function SingularityExplorerFromFile(canvas, file, lat = 0, lon = 0, ortho = false, onload) {
+export function SingularityExplorerFromFile(canvas, file, lat = 0, lon = 0, ortho = false, onload = function () {}) {
     var singularityExplorer = new SingularityExplorer(canvas, lat, lon, ortho);
     var gl = singularityExplorer.stategl;
     gl.renderer = new CachedSurface(gl, file, function() {
         singularityExplorer.renderSurface();
-        if (onload)
-            onload();
+        onload();
     });
     return singularityExplorer;
 }

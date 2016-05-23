@@ -19,6 +19,7 @@ Subdivision.prototype.mkProgram = function(stategl, surface) {
  *  @param {Surface} surface
  *  @param {WebGLRenderingContext} gl */
 Subdivision.prototype.render = function(stategl, surface, gl) {
+    var i, l;
     var texturesIn = surface.texturesIn,
         texturesOut = surface.texturesOut;
     var numTriangles = surface.numIndices / 3;
@@ -70,7 +71,7 @@ Subdivision.prototype.render = function(stategl, surface, gl) {
 
     // prepare input textures
     var texIs = [];
-    for (i = 0; i < texturesIn.length; i++) {
+    for (i = 0, l = texturesIn.length; i < l; i++) {
         gl.activeTexture(gl.TEXTURE0 + i);
         gl.bindTexture(gl.TEXTURE_2D, texturesIn[i]);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
@@ -91,11 +92,14 @@ Subdivision.prototype.render = function(stategl, surface, gl) {
 
     var computedRootsLoc = gl.getUniformLocation(this.program, 'computedRoots');
     var sheets = surface.sheets;
-    texIs = []
+    texIs = [];
     var samplersLocation = gl.getUniformLocation(program, 'samplers');
+    var primitivesWritten;
 
     for (var computedRoots = 0; computedRoots <= sheets + 1; computedRoots += 2) {
-        var i = computedRoots < sheets ? computedRoots / 2 + 1 : 0;
+        i = computedRoots < sheets ? computedRoots / 2 + 1 : 0;
+        console.log("computedRoots: " + computedRoots + ", sheets: " + sheets + ", i: " + i);
+
         gl.bindTexture(gl.TEXTURE_2D, texturesOut[i]);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
@@ -107,7 +111,7 @@ Subdivision.prototype.render = function(stategl, surface, gl) {
 
         // identify and render subdivision patterns
         var patternIndex, numIndices;
-        var primitivesWritten = 0;
+        primitivesWritten = 0;
         for (var j = 0; j < numTriangles; j++) {
             gl.uniform1f(indexOffsetInLocation, 3 * j);
             gl.uniform1f(indexOffsetOutLocation, primitivesWritten);
@@ -135,7 +139,7 @@ Subdivision.prototype.render = function(stategl, surface, gl) {
     // cleanup
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0,
         gl.TEXTURE_2D, null, 0);
-    for (var i = 0; i < texturesIn.length + texturesOut.length; i++) {
+    for (i = 0, l = texturesIn.length + texturesOut.length; i < l; i++) {
         gl.activeTexture(gl.TEXTURE0 + i);
         gl.bindTexture(gl.TEXTURE_2D, null);
     }

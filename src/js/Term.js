@@ -53,7 +53,7 @@ Term.reduce = function(terms) {
             var c = q.coefficient;
             var m = q.monomial;
             var otherTerms = [];
-            for (var i = 0; i < qs.length; i++) {
+            for (var i = 0, l = qs.length; i < l; i++) {
                 if (Monomial.is(m, qs[i].monomial))
                     c = Complex.add(c, qs[i].coefficient);
                 else

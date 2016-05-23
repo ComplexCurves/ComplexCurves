@@ -36,7 +36,7 @@ Assembly.prototype.render = function(stategl, surface, gl) {
         textureOut, 0);
     gl.bindTexture(gl.TEXTURE_2D, null);
     var texIs = [];
-    for (var i = 0; i < texturesIn.length; i++) {
+    for (var i = 0, l = texturesIn.length; i < l; i++) {
         gl.activeTexture(gl.TEXTURE0 + i);
         gl.bindTexture(gl.TEXTURE_2D, texturesIn[i]);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);

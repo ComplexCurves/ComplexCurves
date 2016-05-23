@@ -57,9 +57,10 @@ Initial.prototype.render = function(stategl, surface, gl) {
 
     var computedRootsLoc = gl.getUniformLocation(this.program, 'computedRoots');
     var sheets = surface.sheets;
+    var i, l;
 
     for (var computedRoots = 0; computedRoots <= sheets + 1; computedRoots += 2) {
-        var i = computedRoots < sheets ? computedRoots / 2 + 1 : 0;
+        i = computedRoots < sheets ? computedRoots / 2 + 1 : 0;
         gl.bindTexture(gl.TEXTURE_2D, texturesOut[i]);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
@@ -77,7 +78,7 @@ Initial.prototype.render = function(stategl, surface, gl) {
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     }
 
-    for (var i = 0; i < texturesOut.length; i++) {
+    for (i = 0, l = texturesOut.length; i < l; i++) {
         gl.activeTexture(gl.TEXTURE0 + i);
         gl.bindTexture(gl.TEXTURE_2D, null);
     }
