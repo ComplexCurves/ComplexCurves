@@ -129,7 +129,8 @@ StateGL.prototype.polynomial = null;
 
 /** @param {WebGLTexture} texture
  *  @param {number} length
- *  @param {number=} offset */
+ *  @param {number=} offset
+ *  @suppress {checkTypes} */
 StateGL.prototype.printTexture = function(texture, length, offset = 0) {
     console.log(JSON.stringify(Array.from(this.readTexture(texture, length, offset))));
 };
