@@ -22,66 +22,6 @@ vec2 csqrt (in vec2 z)
     return r * vec2 (cos (phi), sin (phi));
 }
 
-vec2 laguerre (in int n, in vec2 cs[N+1], in vec2 x, in int maxiter)
-{
-    const int MAXITER = 80;
-    const float TOL = 2e-16;
-    float rand[10];
-    rand[0] = 1.0;
-    rand[1] = 0.3141;
-    rand[2] = 0.5926;
-    rand[3] = 0.5358;
-    rand[4] = 0.9793;
-    rand[5] = 0.2385;
-    rand[6] = 0.6264;
-    rand[7] = 0.3383;
-    rand[8] = 0.2795;
-    rand[9] = 0.0288;
-    float fn = float(n);
-    vec2 a, p, q, s, g, g2, h, r, d1, d2;
-    for (int iter = 1; iter <= MAXITER; iter++)
-    {
-        if (iter <= maxiter) {
-            s = vec2(0.0, 0.0);
-            q = vec2(0.0, 0.0);
-            for (int i = N; i >= 0; i--)
-                if (i == n)
-                    p = cs[i];
-
-            for (int i = N; i >= 0; i--)
-            {
-                if (i < n) {
-                    s = q + cm(s, x);
-                    q = p + cm(q, x);
-                    p = cs[i] + cm(p, x);
-                }
-            }
-
-            if (length (p) < EPS)
-                return x;
-
-            g = cd (q, p);
-            g2 = cm (g, g);
-            h = g2 - cd (2.0 * s, p);
-            r = csqrt (float (n - 1) * (fn * h - g2));
-            d1 = g + r;
-            d2 = g - r;
-            if (length (d2) > length (d1))
-                d1 = d2;
-            if (length (d1) > EPS)
-                a = fn * cinv (d1);
-            else
-                a = (length (x) + 1.0) * vec2 (cos (float (iter)), sin (float (iter)));
-            if (length (a) < TOL)
-                return x;
-            if (mod (float (iter), 20.0) == 0.0 && iter < maxiter - 19)
-                a *= rand[iter / 20];
-            x -= a;
-        }
-    }
-    return x;
-}
-
 vec2 horner (in int n, in vec2 cs[N+1], in vec2 x) {
     vec2 p;
     for (int i = N - 1; i >= 0; i--)
@@ -149,19 +89,6 @@ void quadratic_roots (in vec2 cs[N+1], out vec2 qroots[2]) {
     }
 }
 
-void deflate (in int n, in int i, inout vec2 cs[N+1], in vec2 root) {
-    vec2 fx[N+1];
-    for (int j = 0; j < N + 1; j++)
-        if (j < n + 1)
-            fx[j] = cs[j];
-    for (int j = N; j > 0; j--)
-        if (j <= n - i)
-            fx[j-1] = cs[j-1] + cm (fx[j], root);
-    for (int j = 1; j < N + 1; j++)
-        if (j < n + 1)
-            cs[j-1] = fx[j];
-}
-
 void roots (in int n, in vec2 cs[N+1], out vec2 roots[N])
 {
     if (n == 1) {
@@ -175,15 +102,7 @@ void roots (in int n, in vec2 cs[N+1], out vec2 roots[N])
         roots[1] = qroots[1];
         return;
     }
-    vec2 cs_orig[N+1];
-    for (int i = 0; i < N + 1; i++)
-        cs_orig[i] = cs[i];
-    for (int i = 0; i < N; i++)
-    {
-        roots[i] = laguerre (n - i, cs, vec2 (0.0, 0.0), 80);
-        roots[i] = laguerre (n, cs_orig, roots[i], 1);
-        deflate (n, i, cs, roots[i]);
-    }
+    weierstrass (cs, roots);
     /* selection sort by real part */
     /*
     for(int i = 0; i < n - 1; i++)

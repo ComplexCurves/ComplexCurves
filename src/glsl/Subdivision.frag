@@ -44,7 +44,7 @@ void main(void) {
                       + barycentric.z * texture2D (oldSamplers[0], texCoord[2]).xy;
         vec2 cs[N+1];
         f (position, cs);
-        weierstrass (cs, values);
+        roots (sheets, cs, values);
 
         if (computedRoots < sheets) {
             for (int i = 0; i < N; i += 2) {

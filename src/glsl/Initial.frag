@@ -11,7 +11,7 @@ void main(void) {
     vec2 values[N];
     vec2 cs[N+1];
     f (position, cs);
-    weierstrass (cs, values);
+    roots (sheets, cs, values);
 
     if (computedRoots < sheets) {
         for (int i = 0; i < N; i += 2) {
