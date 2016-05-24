@@ -49,8 +49,10 @@ void main(void) {
         if (computedRoots < sheets) {
             for (int i = 0; i < N; i += 2) {
                 if (i == computedRoots)
-                    gl_FragColor = vec4(values[i], computedRoots + 1 < sheets ?
-                        values[i + 1] : vec2 (0.0, 0.0));
+                    if (computedRoots + 1 < sheets)
+                        gl_FragColor = vec4(values[i], values[i + 1]);
+                    else
+                        gl_FragColor = vec4(values[i], vec2 (0.0, 0.0));
             }
         } else {
             float delta = Delta (position, values);
