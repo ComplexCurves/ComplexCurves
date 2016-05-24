@@ -96,7 +96,6 @@ Subdivision.prototype.render = function(stategl, surface, gl) {
 
     for (var computedRoots = 0; computedRoots <= sheets + 1; computedRoots += 2) {
         i = computedRoots < sheets ? computedRoots / 2 + 1 : 0;
-        console.log("computedRoots: " + computedRoots + ", sheets: " + sheets + ", i: " + i);
 
         gl.bindTexture(gl.TEXTURE_2D, texturesOut[i]);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
