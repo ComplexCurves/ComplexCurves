@@ -70,12 +70,6 @@ Initial.prototype.render = function(stategl, surface, gl) {
             gl.TEXTURE_2D, texturesOut[i], 0);
         gl.uniform1i(computedRootsLoc, computedRoots);
         gl.drawArrays(gl.POINTS, 0, surface.numIndices);
-        gl.activeTexture(gl.TEXTURE0 + i);
-        gl.bindTexture(gl.TEXTURE_2D, texturesOut[i + 1]);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     }
 
     for (i = 0, l = texturesOut.length; i < l; i++) {

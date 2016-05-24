@@ -93,7 +93,6 @@ Subdivision.prototype.render = function(stategl, surface, gl) {
     var computedRootsLoc = gl.getUniformLocation(this.program, 'computedRoots');
     var sheets = surface.sheets;
     texIs = [];
-    var samplersLocation = gl.getUniformLocation(program, 'samplers');
     var primitivesWritten;
 
     for (var computedRoots = 0; computedRoots <= sheets + 1; computedRoots += 2) {
@@ -125,21 +124,12 @@ Subdivision.prototype.render = function(stategl, surface, gl) {
 
         if (computedRoots >= sheets)
             break;
-
-        gl.activeTexture(gl.TEXTURE0 + texturesIn.length + i - 1);
-        gl.bindTexture(gl.TEXTURE_2D, texturesOut[i]);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-        texIs[i] = texturesIn.length + i - 1;
-        gl.uniform1iv(samplersLocation, texIs);
     }
 
     // cleanup
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0,
         gl.TEXTURE_2D, null, 0);
-    for (i = 0, l = texturesIn.length + texturesOut.length; i < l; i++) {
+    for (i = 0, l = texturesOut.length; i < l; i++) {
         gl.activeTexture(gl.TEXTURE0 + i);
         gl.bindTexture(gl.TEXTURE_2D, null);
     }
