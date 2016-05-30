@@ -1,4 +1,4 @@
-all: SingularityExplorer
+all: ComplexCurves
 
 beautify:
 	js-beautify --max-preserve-newlines 3 --end-with-newline -r -f src/js/*.js
@@ -8,9 +8,9 @@ clean:
 
 .PHONY: all beautify clean
 
-se_mods = API Assembly CachedSurface Complex Export GLSL Initial Matrix \
-	Mesh Misc Monomial Parser Polynomial PolynomialParser Quaternion \
-	SingularityExplorer Stage State3D StateGL Subdivision SubdivisionPre \
+se_mods = API Assembly CachedSurface Complex ComplexCurves Export GLSL Initial \
+	Matrix Mesh Misc Monomial Parser Polynomial PolynomialParser Quaternion \
+	Stage State3D StateGL Subdivision SubdivisionPre \
 	Surface Term Tokenizer
 se_srcs = build/resources.js $(se_mods:%=src/js/%.js)
 
@@ -22,13 +22,13 @@ se_closure_args = \
 	--language_in ECMASCRIPT6_STRICT \
 	--language_out ECMASCRIPT5_STRICT \
 	--dependency_mode LOOSE \
-	--create_source_map build/SingularityExplorer.js.map \
+	--create_source_map build/ComplexCurves.js.map \
 	--compilation_level $(se_closure_level) \
 	--warning_level $(se_closure_warnings) \
 	--source_map_format V3 \
 	--source_map_location_mapping "build/|" \
 	--source_map_location_mapping "src/js/|../src/js/" \
-	--output_wrapper_file src/js/SingularityExplorer.js.wrapper \
+	--output_wrapper_file src/js/ComplexCurves.js.wrapper \
 	--summary_detail_level 3 \
 	--js_output_file $@ \
 	$(se_extra_args) \
@@ -44,7 +44,7 @@ build/resources.js: $(wildcard src/glsl/*)
 		echo '`;' >> $@; \
 		done
 
-build/SingularityExplorer.js: compiler.jar $(se_srcs)
+build/ComplexCurves.js: compiler.jar $(se_srcs)
 	$(CLOSURE) $(se_closure_args)
 
 CLOSURE_VERSION=20160517
@@ -54,10 +54,10 @@ compiler.jar:
 	unzip compiler-$(CLOSURE_VERSION).zip compiler.jar
 	rm compiler-$(CLOSURE_VERSION).zip
 
-SingularityExplorer: build/SingularityExplorer.js
+ComplexCurves: build/ComplexCurves.js
 
-SingularityExplorer-dbg:
-	$(RM) build/SingularityExplorer.js
-	$(MAKE) se_extra_args='$(se_dbg_args)' se_closure_level='WHITESPACE_ONLY' build/SingularityExplorer.js
+ComplexCurves-dbg:
+	$(RM) build/ComplexCurves.js
+	$(MAKE) se_extra_args='$(se_dbg_args)' se_closure_level='WHITESPACE_ONLY' build/ComplexCurves.js
 
-.PHONY: SingularityExplorer
+.PHONY: ComplexCurves

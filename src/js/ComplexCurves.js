@@ -10,7 +10,7 @@ from 'src/js/PolynomialParser';
  * @param {boolean=} ortho
  * @constructor
  */
-export function SingularityExplorer(canvas, lat = 0, lon = 0, ortho = false) {
+export function ComplexCurves(canvas, lat = 0, lon = 0, ortho = false) {
     this.canvas = canvas;
     this.state3d = State3D.fromLatLong(lat, lon, ortho);
     this.stategl = new StateGL(canvas);
@@ -24,11 +24,11 @@ export function SingularityExplorer(canvas, lat = 0, lon = 0, ortho = false) {
  * @param {number=} lat
  * @param {number=} lon
  * @param {boolean=} ortho
- * @return {SingularityExplorer}
+ * @return {ComplexCurves}
  */
-export function SingularityExplorerFromEquation(canvas, equation, depth, lat = 0, lon = 0, ortho = false) {
+export function ComplexCurvesFromEquation(canvas, equation, depth, lat = 0, lon = 0, ortho = false) {
     var p = PolynomialParser.eval(PolynomialParser.parse(equation));
-    return SingularityExplorerFromPolynomial(canvas, p, depth, lat, lon, ortho);
+    return ComplexCurvesFromPolynomial(canvas, p, depth, lat, lon, ortho);
 }
 
 /**
@@ -38,16 +38,16 @@ export function SingularityExplorerFromEquation(canvas, equation, depth, lat = 0
  * @param {number=} lon
  * @param {boolean=} ortho
  * @param {function()=} onload
- * @return {SingularityExplorer}
+ * @return {ComplexCurves}
  */
-export function SingularityExplorerFromFile(canvas, file, lat = 0, lon = 0, ortho = false, onload = function() {}) {
-    var singularityExplorer = new SingularityExplorer(canvas, lat, lon, ortho);
-    var gl = singularityExplorer.stategl;
+export function ComplexCurvesFromFile(canvas, file, lat = 0, lon = 0, ortho = false, onload = function() {}) {
+    var complexCurves = new ComplexCurves(canvas, lat, lon, ortho);
+    var gl = complexCurves.stategl;
     gl.renderer = new CachedSurface(gl, file, function() {
-        singularityExplorer.renderSurface();
+        complexCurves.renderSurface();
         onload();
     });
-    return singularityExplorer;
+    return complexCurves;
 }
 
 /**
@@ -57,24 +57,24 @@ export function SingularityExplorerFromFile(canvas, file, lat = 0, lon = 0, orth
  * @param {number=} lat
  * @param {number=} lon
  * @param {boolean=} ortho
- * @return {SingularityExplorer}
+ * @return {ComplexCurves}
  */
-function SingularityExplorerFromPolynomial(canvas, polynomial, depth, lat = 0, lon = 0, ortho = false) {
-    var singularityExplorer = new SingularityExplorer(canvas, lat, lon, ortho);
-    var gl = singularityExplorer.stategl;
+function ComplexCurvesFromPolynomial(canvas, polynomial, depth, lat = 0, lon = 0, ortho = false) {
+    var complexCurves = new ComplexCurves(canvas, lat, lon, ortho);
+    var gl = complexCurves.stategl;
     gl.renderer = new Surface(gl, polynomial, depth);
-    singularityExplorer.renderSurface();
-    return singularityExplorer;
+    complexCurves.renderSurface();
+    return complexCurves;
 }
 
 /** @param {boolean=} big */
-SingularityExplorer.prototype.domainColouring = function(big = false) {
+ComplexCurves.prototype.domainColouring = function(big = false) {
     var gl = this.stategl;
     return gl.renderer.domainColouring(gl, big);
 };
 
 /** @param {string=} name */
-SingularityExplorer.prototype.exportBinary = function(name = "surface.bin") {
+ComplexCurves.prototype.exportBinary = function(name = "surface.bin") {
     var gl = this.stategl;
     gl.renderer.exportBinary(gl, name);
 };
@@ -83,11 +83,11 @@ SingularityExplorer.prototype.exportBinary = function(name = "surface.bin") {
  * @param {string=} name
  * @param {boolean=} big
  */
-SingularityExplorer.prototype.exportScreenshot = function(name = "surface.png", big = false) {
-    var singularityExplorer = this;
+ComplexCurves.prototype.exportScreenshot = function(name = "surface.png", big = false) {
+    var complexCurves = this;
     var stategl = this.stategl;
     stategl.withRenderToTexture(function() {
-        singularityExplorer.renderSurface();
+        complexCurves.renderSurface();
     }, big);
     var pixels = /** @type {Uint8Array} */
         (stategl.readTexture(big ? stategl.rttBigTexture : stategl.rttTexture));
@@ -98,13 +98,13 @@ SingularityExplorer.prototype.exportScreenshot = function(name = "surface.png", 
  * @param {string=} name
  * @param {boolean=} big
  */
-SingularityExplorer.prototype.exportSurface = function(name = "surface", big = true) {
+ComplexCurves.prototype.exportSurface = function(name = "surface", big = true) {
     var gl = this.stategl;
     gl.renderer.exportSurface(gl, name, big);
 };
 
 /** @param {number} keyCode */
-SingularityExplorer.prototype.keyDown = function(keyCode) {
+ComplexCurves.prototype.keyDown = function(keyCode) {
     switch (keyCode) {
         case 65: // 'a'
             this.toggleAntialiasing();
@@ -148,20 +148,20 @@ SingularityExplorer.prototype.keyDown = function(keyCode) {
     }
 };
 
-SingularityExplorer.prototype.registerEventHandlers = function() {
+ComplexCurves.prototype.registerEventHandlers = function() {
     var canvas = this.canvas,
         state3d = this.state3d,
         gl = this.stategl;
-    var singularityExplorer = this;
+    var complexCurves = this;
     this.keydownHandler = function(evt) {
-        singularityExplorer.keyDown(evt.keyCode); // TODO make portable
+        complexCurves.keyDown(evt.keyCode); // TODO make portable
     };
     this.mousedownHandler = function(evt) {
         evt.preventDefault();
         if (state3d.autorotate)
             return;
         state3d.mouseDown([evt.clientX, evt.clientY]);
-        singularityExplorer.renderSurface();
+        complexCurves.renderSurface();
     };
     this.mousemoveHandler = function(evt) {
         evt.preventDefault();
@@ -175,7 +175,7 @@ SingularityExplorer.prototype.registerEventHandlers = function() {
         evt.preventDefault();
         var touch = evt.touches[0];
         state3d.mouseDown([touch.clientX, touch.clientY]);
-        singularityExplorer.renderSurface();
+        complexCurves.renderSurface();
     };
     this.touchmoveHandler = function(evt) {
         evt.preventDefault();
@@ -189,7 +189,7 @@ SingularityExplorer.prototype.registerEventHandlers = function() {
     this.wheelHandler = function(evt) {
         evt.preventDefault();
         state3d.mouseWheel(evt.deltaY);
-        singularityExplorer.renderSurface();
+        complexCurves.renderSurface();
     };
     window.addEventListener('keydown', this.keydownHandler);
     canvas.addEventListener('mousedown', this.mousedownHandler);
@@ -201,20 +201,20 @@ SingularityExplorer.prototype.registerEventHandlers = function() {
     canvas.addEventListener('wheel', this.wheelHandler);
 };
 
-SingularityExplorer.prototype.renderSurface = function() {
+ComplexCurves.prototype.renderSurface = function() {
     var state3d = this.state3d,
         gl = this.stategl;
-    var singularityExplorer = this;
+    var complexCurves = this;
     gl.renderSurface(state3d);
     if (state3d.isRotating()) {
         state3d.updateRotation();
         requestAnimationFrame(function() {
-            singularityExplorer.renderSurface();
+            complexCurves.renderSurface();
         });
     }
 };
 
-SingularityExplorer.prototype.rotateFront = function() {
+ComplexCurves.prototype.rotateFront = function() {
     this.rotateLatLong(Math.PI / 2, 0);
 };
 
@@ -222,34 +222,34 @@ SingularityExplorer.prototype.rotateFront = function() {
  * @param {number} lat
  * @param {number} lon
  */
-SingularityExplorer.prototype.rotateLatLong = function(lat, lon) {
+ComplexCurves.prototype.rotateLatLong = function(lat, lon) {
     this.state3d.autorotate = false;
     this.state3d.target1 = Quaternion.fromLatLong(lat, lon);
     this.renderSurface();
 };
 
-SingularityExplorer.prototype.rotateRight = function() {
+ComplexCurves.prototype.rotateRight = function() {
     this.rotateLatLong(Math.PI / 2, Math.PI / 2);
 };
 
-SingularityExplorer.prototype.rotateTop = function() {
+ComplexCurves.prototype.rotateTop = function() {
     this.rotateLatLong(0, 0);
 };
 
 /** @param {boolean} fxaa */
-SingularityExplorer.prototype.setAntialiasing = function(fxaa) {
+ComplexCurves.prototype.setAntialiasing = function(fxaa) {
     this.stategl.setAntialiasing(fxaa);
     this.renderSurface();
 };
 
 /** @param {boolean} autorotate */
-SingularityExplorer.prototype.setAutorotate = function(autorotate) {
+ComplexCurves.prototype.setAutorotate = function(autorotate) {
     this.state3d.setAutorotate(autorotate);
     this.renderSurface();
 };
 
 /** @param {boolean} clipping */
-SingularityExplorer.prototype.setClipping = function(clipping) {
+ComplexCurves.prototype.setClipping = function(clipping) {
     this.stategl.setClipping(clipping);
     this.renderSurface();
 };
@@ -258,7 +258,7 @@ SingularityExplorer.prototype.setClipping = function(clipping) {
  * @param {number} lat
  * @param {number} lon
  */
-SingularityExplorer.prototype.setLatLong = function(lat, lon) {
+ComplexCurves.prototype.setLatLong = function(lat, lon) {
     var q = Quaternion.fromLatLong(lat, lon);
     this.state3d.autorotate = false;
     this.state3d.rotating = false;
@@ -267,43 +267,43 @@ SingularityExplorer.prototype.setLatLong = function(lat, lon) {
 };
 
 /** @param {boolean} ortho */
-SingularityExplorer.prototype.setOrtho = function(ortho) {
+ComplexCurves.prototype.setOrtho = function(ortho) {
     this.state3d.setOrtho(ortho);
     this.renderSurface();
 };
 
 /** @param {boolean} transparency */
-SingularityExplorer.prototype.setTransparency = function(transparency) {
+ComplexCurves.prototype.setTransparency = function(transparency) {
     this.stategl.setTransparency(transparency);
     this.renderSurface();
 };
 
-SingularityExplorer.prototype.toggleAntialiasing = function() {
+ComplexCurves.prototype.toggleAntialiasing = function() {
     this.stategl.toggleAntialiasing();
     this.renderSurface();
 };
 
-SingularityExplorer.prototype.toggleAutorotate = function() {
+ComplexCurves.prototype.toggleAutorotate = function() {
     this.state3d.toggleAutorotate();
     this.renderSurface();
 };
 
-SingularityExplorer.prototype.toggleClipping = function() {
+ComplexCurves.prototype.toggleClipping = function() {
     this.stategl.toggleClipping();
     this.renderSurface();
 };
 
-SingularityExplorer.prototype.toggleOrtho = function() {
+ComplexCurves.prototype.toggleOrtho = function() {
     this.state3d.toggleOrtho();
     this.renderSurface();
 };
 
-SingularityExplorer.prototype.toggleTransparency = function() {
+ComplexCurves.prototype.toggleTransparency = function() {
     this.stategl.toggleTransparency();
     this.renderSurface();
 };
 
-SingularityExplorer.prototype.unregisterEventHandlers = function() {
+ComplexCurves.prototype.unregisterEventHandlers = function() {
     var canvas = this.canvas;
     window.removeEventListener('keydown', this.keydownHandler);
     canvas.removeEventListener('mousedown', this.mousedownHandler);

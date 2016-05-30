@@ -1,37 +1,37 @@
 import {
-    SingularityExplorer,
-    SingularityExplorerFromEquation,
-    SingularityExplorerFromFile
+    ComplexCurves,
+    ComplexCurvesFromEquation,
+    ComplexCurvesFromFile
 }
-from 'src/js/SingularityExplorer';
+from 'src/js/ComplexCurves';
 
 import {
     PolynomialParser
 }
 from 'src/js/PolynomialParser';
 
-window['SingularityExplorer'] = SingularityExplorer;
-SingularityExplorer['fromEquation'] = SingularityExplorerFromEquation;
-SingularityExplorer['fromFile'] = SingularityExplorerFromFile;
-SingularityExplorer.prototype['domainColouring'] = SingularityExplorer.prototype.domainColouring;
-SingularityExplorer.prototype['exportBinary'] = SingularityExplorer.prototype.exportBinary;
-SingularityExplorer.prototype['exportScreenshot'] = SingularityExplorer.prototype.exportScreenshot;
-SingularityExplorer.prototype['rotateFront'] = SingularityExplorer.prototype.rotateFront;
-SingularityExplorer.prototype['rotateLatLong'] = SingularityExplorer.prototype.rotateLatLong;
-SingularityExplorer.prototype['rotateRight'] = SingularityExplorer.prototype.rotateRight;
-SingularityExplorer.prototype['rotateTop'] = SingularityExplorer.prototype.rotateTop;
-SingularityExplorer.prototype['setAntialiasing'] = SingularityExplorer.prototype.setAntialiasing;
-SingularityExplorer.prototype['setAutorotate'] = SingularityExplorer.prototype.setAutorotate;
-SingularityExplorer.prototype['setClipping'] = SingularityExplorer.prototype.setClipping;
-SingularityExplorer.prototype['setLatLong'] = SingularityExplorer.prototype.setLatLong;
-SingularityExplorer.prototype['setOrtho'] = SingularityExplorer.prototype.setOrtho;
-SingularityExplorer.prototype['setTransparency'] = SingularityExplorer.prototype.setTransparency;
-SingularityExplorer.prototype['toggleAntialiasing'] = SingularityExplorer.prototype.toggleAntialiasing;
-SingularityExplorer.prototype['toggleAutorotate'] = SingularityExplorer.prototype.toggleAutorotate;
-SingularityExplorer.prototype['toggleClipping'] = SingularityExplorer.prototype.toggleClipping;
-SingularityExplorer.prototype['toggleOrtho'] = SingularityExplorer.prototype.toggleOrtho;
-SingularityExplorer.prototype['toggleTransparency'] = SingularityExplorer.prototype.toggleTransparency;
-SingularityExplorer.prototype['unregisterEventHandlers'] = SingularityExplorer.prototype.unregisterEventHandlers;
+window['ComplexCurves'] = ComplexCurves;
+ComplexCurves['fromEquation'] = ComplexCurvesFromEquation;
+ComplexCurves['fromFile'] = ComplexCurvesFromFile;
+ComplexCurves.prototype['domainColouring'] = ComplexCurves.prototype.domainColouring;
+ComplexCurves.prototype['exportBinary'] = ComplexCurves.prototype.exportBinary;
+ComplexCurves.prototype['exportScreenshot'] = ComplexCurves.prototype.exportScreenshot;
+ComplexCurves.prototype['rotateFront'] = ComplexCurves.prototype.rotateFront;
+ComplexCurves.prototype['rotateLatLong'] = ComplexCurves.prototype.rotateLatLong;
+ComplexCurves.prototype['rotateRight'] = ComplexCurves.prototype.rotateRight;
+ComplexCurves.prototype['rotateTop'] = ComplexCurves.prototype.rotateTop;
+ComplexCurves.prototype['setAntialiasing'] = ComplexCurves.prototype.setAntialiasing;
+ComplexCurves.prototype['setAutorotate'] = ComplexCurves.prototype.setAutorotate;
+ComplexCurves.prototype['setClipping'] = ComplexCurves.prototype.setClipping;
+ComplexCurves.prototype['setLatLong'] = ComplexCurves.prototype.setLatLong;
+ComplexCurves.prototype['setOrtho'] = ComplexCurves.prototype.setOrtho;
+ComplexCurves.prototype['setTransparency'] = ComplexCurves.prototype.setTransparency;
+ComplexCurves.prototype['toggleAntialiasing'] = ComplexCurves.prototype.toggleAntialiasing;
+ComplexCurves.prototype['toggleAutorotate'] = ComplexCurves.prototype.toggleAutorotate;
+ComplexCurves.prototype['toggleClipping'] = ComplexCurves.prototype.toggleClipping;
+ComplexCurves.prototype['toggleOrtho'] = ComplexCurves.prototype.toggleOrtho;
+ComplexCurves.prototype['toggleTransparency'] = ComplexCurves.prototype.toggleTransparency;
+ComplexCurves.prototype['unregisterEventHandlers'] = ComplexCurves.prototype.unregisterEventHandlers;
 
 window['PolynomialParser'] = PolynomialParser;
 PolynomialParser['parse'] = PolynomialParser.parse;

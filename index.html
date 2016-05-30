@@ -7,7 +7,7 @@
 <script type="text/javascript" src="lib/jquery/jquery.min.js"></script>
 <link rel="stylesheet" type="text/css" href="lib/semantic-ui/semantic.min.css" />
 <script type="text/javascript" src="lib/semantic-ui/semantic.min.js"></script>
-<script type="text/javascript" src="build/SingularityExplorer.js"></script>
+<script type="text/javascript" src="build/ComplexCurves.js"></script>
 <style type="text/css">
 .ui.cards.results {
 	border: none;
@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", function() {
 			searchFullText: true,
 			source: examples,
             onResultsOpen: function () {
-                $('#SingularityExplorer').hide();
+                $('#ComplexCurves').hide();
                 allowHiddenResults = false;
             },
 			onResultsClose: function () {
@@ -76,17 +76,17 @@ document.addEventListener("DOMContentLoaded", function() {
                 var lon = 30 * piOver180;
                 if(example.cached) {
                     canvas.singularityExplorer =
-                        SingularityExplorer.fromFile(canvas,
+                        ComplexCurves.fromFile(canvas,
                             'http://complexcurves.org/models/' + example.id +
                             '.bin', lat, lon);
                 } else {
                     canvas.singularityExplorer =
-                        SingularityExplorer.fromEquation(canvas,
+                        ComplexCurves.fromEquation(canvas,
                             example.equation ||
                             $('.ui.search').search('get value'),
                             example.depth || 12, lat, lon);
                 }
-                $('#SingularityExplorer').show();
+                $('#ComplexCurves').show();
 				allowHiddenResults = true;
             },
             templates: {
@@ -195,7 +195,7 @@ document.addEventListener("DOMContentLoaded", function() {
         </div>
         <div class="ui four cards results"></div>
     </div>
-    <div id="SingularityExplorer" class="ui grid" style="display: none;">
+    <div id="ComplexCurves" class="ui grid" style="display: none;">
         <div class="ui twelve wide column">
             <div class="ui 1:1 embed">
                 <canvas width="800" height="800"></canvas>
