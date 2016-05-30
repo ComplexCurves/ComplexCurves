@@ -119,15 +119,12 @@ Subdivision.prototype.render = function(stategl, surface, gl) {
                 numIndices);
             primitivesWritten += numIndices;
         }
-
-        if (computedRoots >= sheets)
-            break;
     }
 
     // cleanup
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0,
         gl.TEXTURE_2D, null, 0);
-    for (i = 0, l = texturesOut.length; i < l; i++) {
+    for (i = 0, l = texturesIn.length; i < l; i++) {
         gl.activeTexture(gl.TEXTURE0 + i);
         gl.bindTexture(gl.TEXTURE_2D, null);
     }
