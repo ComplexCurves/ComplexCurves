@@ -1,5 +1,7 @@
-/** @param {HTMLCanvasElement} canvas
- *  @constructor */
+/**
+ * @param {HTMLCanvasElement} canvas
+ * @constructor
+ */
 function StateGL(canvas) {
     this.gl = /** @type WebGLRenderingContext */ (canvas.getContext('webgl', {
         preserveDrawingBuffer: true
@@ -30,8 +32,10 @@ StateGL.prototype.getExtension = function(name) {
     }
 };
 
-/** @param {string} shaderId
- *  @return {Array<string>} */
+/**
+ * @param {string} shaderId
+ * @return {Array<string>}
+ */
 StateGL.getShaderSources = function(shaderId) {
     return [resources[shaderId + '.vert'], resources[shaderId + '.frag']];
 };
@@ -44,8 +48,10 @@ StateGL.prototype.mkFXAAProgram = function() {
     this.fxaaProgram = this.mkProgram(sources);
 };
 
-/** @param {Array<string>} sources
- *  @return {WebGLProgram} */
+/**
+ * @param {Array<string>} sources
+ * @return {WebGLProgram}
+ */
 StateGL.prototype.mkProgram = function(sources) {
     var gl = this.gl;
     var vertexShaderSource = sources[0],
@@ -127,18 +133,22 @@ StateGL.prototype.mkRenderToTextureObjects = function() {
 /** @type {Polynomial} */
 StateGL.prototype.polynomial = null;
 
-/** @param {WebGLTexture} texture
- *  @param {number} length
- *  @param {number=} offset
- *  @suppress {checkTypes} */
+/**
+ * @param {WebGLTexture} texture
+ * @param {number} length
+ * @param {number=} offset
+ * @suppress {checkTypes}
+ */
 StateGL.prototype.printTexture = function(texture, length, offset = 0) {
     console.log(JSON.stringify(Array.from(this.readTexture(texture, length, offset))));
 };
 
-/** @param {WebGLTexture} texture
- *  @param {number=} length
- *  @param {number=} offset
- *  @return {Float32Array|Uint8Array} */
+/**
+ * @param {WebGLTexture} texture
+ * @param {number=} length
+ * @param {number=} offset
+ * @return {Float32Array|Uint8Array}
+ */
 StateGL.prototype.readTexture = function(texture, length, offset = 0) {
     var gl = this.gl;
     var framebuffer = /** @type {WebGLFramebuffer} */
@@ -222,9 +232,11 @@ StateGL.prototype.setTransparency = function(transparency) {
     this.transparency = transparency;
 };
 
-/** @param {WebGLTexture} texture
- *  @param {number=} length
- *  @return {string} */
+/**
+ * @param {WebGLTexture} texture
+ * @param {number=} length
+ * @return {string}
+ */
 StateGL.prototype.textureToURL = function(texture, length) {
     var pixels = this.readTexture(texture, length);
     return URL.createObjectURL(new Blob([pixels], {
@@ -289,8 +301,10 @@ StateGL.prototype.updateTransparency = function(transparency) {
     }
 };
 
-/** @param {string} i
- *  @param {Array<number>} ms */
+/**
+ * @param {string} i
+ * @param {Array<number>} ms
+ */
 StateGL.prototype.updateUniformMatrix = function(i, ms) {
     var gl = this.gl;
     var program = /** @type {WebGLProgram|null} */ (gl.getParameter(gl.CURRENT_PROGRAM));
@@ -329,8 +343,10 @@ StateGL.prototype.withOptionalFXAA = function(action) {
         action();
 };
 
-/** @param {function()} action
- *  @param {boolean=} big */
+/**
+ * @param {function()} action
+ * @param {boolean=} big
+ */
 StateGL.prototype.withRenderToTexture = function(action, big = false) {
     var gl = this.gl;
     if (big) {

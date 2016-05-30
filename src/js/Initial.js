@@ -1,7 +1,9 @@
-/** @constructor
- *  @param {StateGL} stategl
- *  @param {Surface} surface
- *  @implements {Stage} */
+/**
+ * @constructor
+ * @param {StateGL} stategl
+ * @param {Surface} surface
+ * @implements {Stage}
+ */
 function Initial(stategl, surface) {
     this.mkBuffers(stategl, surface, Mesh.tetrakis(2));
     this.mkProgram(stategl, surface);
@@ -10,9 +12,11 @@ function Initial(stategl, surface) {
 /** @type {WebGLBuffer} */
 Initial.prototype.indexBuffer = null;
 
-/** @param {StateGL} stategl
- *  @param {Surface} surface
- *  @param {Array<number>} positions */
+/**
+ * @param {StateGL} stategl
+ * @param {Surface} surface
+ * @param {Array<number>} positions
+ */
 Initial.prototype.mkBuffers = function(stategl, surface, positions) {
     var gl = stategl.gl;
     surface.numIndices = positions.length / 2;
@@ -26,8 +30,10 @@ Initial.prototype.mkBuffers = function(stategl, surface, positions) {
     surface.framebuffer = gl.createFramebuffer();
 };
 
-/** @param {StateGL} stategl
- *  @param {Surface} surface */
+/**
+ * @param {StateGL} stategl
+ * @param {Surface} surface
+ */
 Initial.prototype.mkProgram = function(stategl, surface) {
     var sources = StateGL.getShaderSources("Initial");
     sources[0] = surface.withTextures(sources[0]);
@@ -38,9 +44,11 @@ Initial.prototype.mkProgram = function(stategl, surface) {
 /** @type {WebGLBuffer} */
 Initial.prototype.positionBuffer = null;
 
-/** @param {StateGL} stategl
- *  @param {Surface} surface
- *  @param {WebGLRenderingContext} gl */
+/**
+ * @param {StateGL} stategl
+ * @param {Surface} surface
+ * @param {WebGLRenderingContext} gl
+ */
 Initial.prototype.render = function(stategl, surface, gl) {
     var texturesIn = surface.texturesIn,
         texturesOut = surface.texturesOut;

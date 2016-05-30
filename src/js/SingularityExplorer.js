@@ -3,11 +3,13 @@ import {
 }
 from 'src/js/PolynomialParser';
 
-/** @param {HTMLCanvasElement} canvas
- *  @param {number=} lat
- *  @param {number=} lon
- *  @param {boolean=} ortho
- *  @constructor */
+/**
+ * @param {HTMLCanvasElement} canvas
+ * @param {number=} lat
+ * @param {number=} lon
+ * @param {boolean=} ortho
+ * @constructor
+ */
 export function SingularityExplorer(canvas, lat = 0, lon = 0, ortho = false) {
     this.canvas = canvas;
     this.state3d = State3D.fromLatLong(lat, lon, ortho);
@@ -15,25 +17,29 @@ export function SingularityExplorer(canvas, lat = 0, lon = 0, ortho = false) {
     this.registerEventHandlers();
 }
 
-/** @param {HTMLCanvasElement} canvas
- *  @param {string} equation
- *  @param {number} depth
- *  @param {number=} lat
- *  @param {number=} lon
- *  @param {boolean=} ortho
- *  @return {SingularityExplorer} */
+/**
+ * @param {HTMLCanvasElement} canvas
+ * @param {string} equation
+ * @param {number} depth
+ * @param {number=} lat
+ * @param {number=} lon
+ * @param {boolean=} ortho
+ * @return {SingularityExplorer}
+ */
 export function SingularityExplorerFromEquation(canvas, equation, depth, lat = 0, lon = 0, ortho = false) {
     var p = PolynomialParser.eval(PolynomialParser.parse(equation));
     return SingularityExplorerFromPolynomial(canvas, p, depth, lat, lon, ortho);
 }
 
-/** @param {HTMLCanvasElement} canvas
- *  @param {string} file
- *  @param {number=} lat
- *  @param {number=} lon
- *  @param {boolean=} ortho
- *  @param {function()=} onload
- *  @return {SingularityExplorer} */
+/**
+ * @param {HTMLCanvasElement} canvas
+ * @param {string} file
+ * @param {number=} lat
+ * @param {number=} lon
+ * @param {boolean=} ortho
+ * @param {function()=} onload
+ * @return {SingularityExplorer}
+ */
 export function SingularityExplorerFromFile(canvas, file, lat = 0, lon = 0, ortho = false, onload = function() {}) {
     var singularityExplorer = new SingularityExplorer(canvas, lat, lon, ortho);
     var gl = singularityExplorer.stategl;
@@ -44,13 +50,15 @@ export function SingularityExplorerFromFile(canvas, file, lat = 0, lon = 0, orth
     return singularityExplorer;
 }
 
-/** @param {HTMLCanvasElement} canvas
- *  @param {Polynomial} polynomial
- *  @param {number} depth
- *  @param {number=} lat
- *  @param {number=} lon
- *  @param {boolean=} ortho
- *  @return {SingularityExplorer} */
+/**
+ * @param {HTMLCanvasElement} canvas
+ * @param {Polynomial} polynomial
+ * @param {number} depth
+ * @param {number=} lat
+ * @param {number=} lon
+ * @param {boolean=} ortho
+ * @return {SingularityExplorer}
+ */
 function SingularityExplorerFromPolynomial(canvas, polynomial, depth, lat = 0, lon = 0, ortho = false) {
     var singularityExplorer = new SingularityExplorer(canvas, lat, lon, ortho);
     var gl = singularityExplorer.stategl;
@@ -71,8 +79,10 @@ SingularityExplorer.prototype.exportBinary = function(name = "surface.bin") {
     gl.renderer.exportBinary(gl, name);
 };
 
-/** @param {string=} name
- *  @param {boolean=} big */
+/**
+ * @param {string=} name
+ * @param {boolean=} big
+ */
 SingularityExplorer.prototype.exportScreenshot = function(name = "surface.png", big = false) {
     var singularityExplorer = this;
     var stategl = this.stategl;
@@ -84,8 +94,10 @@ SingularityExplorer.prototype.exportScreenshot = function(name = "surface.png", 
     Export.download(name, Export.pixelsToImageDataURL(pixels));
 };
 
-/** @param {string=} name
- *  @param {boolean=} big */
+/**
+ * @param {string=} name
+ * @param {boolean=} big
+ */
 SingularityExplorer.prototype.exportSurface = function(name = "surface", big = true) {
     var gl = this.stategl;
     gl.renderer.exportSurface(gl, name, big);
@@ -206,8 +218,10 @@ SingularityExplorer.prototype.rotateFront = function() {
     this.rotateLatLong(Math.PI / 2, 0);
 };
 
-/** @param {number} lat
- *  @param {number} lon */
+/**
+ * @param {number} lat
+ * @param {number} lon
+ */
 SingularityExplorer.prototype.rotateLatLong = function(lat, lon) {
     this.state3d.autorotate = false;
     this.state3d.target1 = Quaternion.fromLatLong(lat, lon);
@@ -240,8 +254,10 @@ SingularityExplorer.prototype.setClipping = function(clipping) {
     this.renderSurface();
 };
 
-/** @param {number} lat
- *  @param {number} lon */
+/**
+ * @param {number} lat
+ * @param {number} lon
+ */
 SingularityExplorer.prototype.setLatLong = function(lat, lon) {
     var q = Quaternion.fromLatLong(lat, lon);
     this.state3d.autorotate = false;

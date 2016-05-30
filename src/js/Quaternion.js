@@ -1,8 +1,10 @@
-/** @param {number} w
- *  @param {number} x
- *  @param {number} y
- *  @param {number} z
- *  @constructor */
+/**
+ * @param {number} w
+ * @param {number} x
+ * @param {number} y
+ * @param {number} z
+ * @constructor
+ */
 function Quaternion(w, x, y, z) {
     this.w = w;
     this.x = x;
@@ -16,9 +18,11 @@ Quaternion.prototype.abs = function() {
     return Math.sqrt(q.w * q.w + q.x * q.x + q.y * q.y + q.z * q.z);
 };
 
-/** @param {number} lat
- *  @param {number} long
- *  @return {Quaternion} */
+/**
+ * @param {number} lat
+ * @param {number} long
+ * @return {Quaternion}
+ */
 Quaternion.fromLatLong = function(lat, long) {
     var theta = -lat / 2,
         phi = -long / 2,
@@ -27,10 +31,12 @@ Quaternion.fromLatLong = function(lat, long) {
     return Quaternion.mul(a, b);
 };
 
-/** @param {Quaternion} a
- *  @param {Quaternion} b
- *  @param {number} t
- *  @return {Quaternion} */
+/**
+ * @param {Quaternion} a
+ * @param {Quaternion} b
+ * @param {number} t
+ * @return {Quaternion}
+ */
 Quaternion.lerp = function(a, b, t) {
     return new Quaternion(
         Misc.lerp(a.w, b.w, t),
@@ -40,9 +46,11 @@ Quaternion.lerp = function(a, b, t) {
     );
 };
 
-/** @param {Quaternion} a
- *  @param {Quaternion} b
- *  @return {Quaternion} */
+/**
+ * @param {Quaternion} a
+ * @param {Quaternion} b
+ * @return {Quaternion}
+ */
 Quaternion.mul = function(a, b) {
     return new Quaternion(
         a.w * b.w - a.x * b.x - a.y * b.y - a.z * b.z,
@@ -52,10 +60,12 @@ Quaternion.mul = function(a, b) {
     );
 };
 
-/** @param {Quaternion} a
- *  @param {Quaternion} b
- *  @param {number} t
- *  @return {Quaternion} */
+/**
+ * @param {Quaternion} a
+ * @param {Quaternion} b
+ * @param {number} t
+ * @return {Quaternion}
+ */
 Quaternion.nlerp = function(a, b, t) {
     return Quaternion.lerp(a, b, t).normalize();
 };
@@ -67,8 +77,10 @@ Quaternion.prototype.normalize = function() {
     return new Quaternion(q.w / abs, q.x / abs, q.y / abs, q.z / abs);
 };
 
-/** rotation matrix from quaternion, in column-major order
- *  @return {Array<number>} */
+/**
+ * rotation matrix from quaternion, in column-major order
+ * @return {Array<number>}
+ */
 Quaternion.prototype.rotationMatrix = function() {
     var w = this.w,
         x = this.x,
@@ -82,9 +94,11 @@ Quaternion.prototype.rotationMatrix = function() {
     ];
 };
 
-/** @param {Quaternion} a
- *  @param {Quaternion} b
- *  @return {Quaternion} */
+/**
+ * @param {Quaternion} a
+ * @param {Quaternion} b
+ * @return {Quaternion}
+ */
 Quaternion.sub = function(a, b) {
     return new Quaternion(a.w - b.w, a.x - b.x, a.y - b.y, a.z - b.z);
 };

@@ -1,8 +1,10 @@
-/** @constructor
- *  @param {StateGL} stategl
- *  @param {string} file
- *  @param {function()} onload
- *  @implements {Stage} */
+/**
+ * @constructor
+ * @param {StateGL} stategl
+ * @param {string} file
+ * @param {function()} onload
+ * @implements {Stage}
+ */
 function CachedSurface(stategl, file, onload) {
     var cachedSurface = this;
     cachedSurface.loadModel(stategl, file, function() {
@@ -12,30 +14,38 @@ function CachedSurface(stategl, file, onload) {
     });
 }
 
-/** @param {StateGL} stategl
- *  @param {boolean=} big
- *  @return {Array<string>} */
+/**
+ * @param {StateGL} stategl
+ * @param {boolean=} big
+ * @return {Array<string>}
+ */
 CachedSurface.prototype.domainColouring = function(stategl, big = false) {
     // not supported
     return [];
 };
 
-/** @param {StateGL} stategl
- *  @param {string=} name */
+/**
+ * @param {StateGL} stategl
+ * @param {string=} name
+ */
 CachedSurface.prototype.exportBinary = function(stategl, name = "surface.bin") {
     Export.download(name, this.file);
 };
 
-/** @param {StateGL} stategl
- *  @param {string=} name
- *  @param {boolean=} big */
+/**
+ * @param {StateGL} stategl
+ * @param {string=} name
+ * @param {boolean=} big
+ */
 CachedSurface.prototype.exportSurface = function(stategl, name = "surface", big = true) {
     Export.exportSurface(stategl, new Float32Array(this.positions), name, big);
 };
 
-/** @param {StateGL} stategl
- *  @param {string} file
- *  @param {function()} onload */
+/**
+ * @param {StateGL} stategl
+ * @param {string} file
+ * @param {function()} onload
+ */
 CachedSurface.prototype.loadModel = function(stategl, file, onload) {
     var cachedSurface = this;
     cachedSurface.file = file;
@@ -49,8 +59,10 @@ CachedSurface.prototype.loadModel = function(stategl, file, onload) {
     req.send();
 };
 
-/** @param {StateGL} stategl
- *  @param {ArrayBuffer} positions */
+/**
+ * @param {StateGL} stategl
+ * @param {ArrayBuffer} positions
+ */
 CachedSurface.prototype.mkBuffer = function(stategl, positions) {
     var gl = stategl.gl;
     this.size = positions.byteLength / 16;
@@ -72,9 +84,11 @@ CachedSurface.prototype.positions = null;
 /** @type {WebGLBuffer} */
 CachedSurface.prototype.positionsBuffer = null;
 
-/** @param {StateGL} stategl
- *  @param {WebGLRenderingContext} gl
- *  @param {State3D} state3d */
+/**
+ * @param {StateGL} stategl
+ * @param {WebGLRenderingContext} gl
+ * @param {State3D} state3d
+ */
 CachedSurface.prototype.render = function(stategl, gl, state3d) {
     gl.useProgram(this.program);
     stategl.updateClipping();

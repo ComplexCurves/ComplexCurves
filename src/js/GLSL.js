@@ -1,7 +1,9 @@
 var GLSL = {};
 
-/** @param {Polynomial} p
- *  @return {Array<string>} */
+/**
+ * @param {Polynomial} p
+ * @return {Array<string>}
+ */
 GLSL.glslCoefficients = function(p) {
     var cs = [],
         cs_, i, l;
@@ -22,17 +24,21 @@ GLSL.glslCoefficients = function(p) {
     return cs;
 };
 
-/** @param {Complex} z
- *  @return {string} */
+/**
+ * @param {Complex} z
+ * @return {string}
+ */
 GLSL.glslComplex = function(z) {
     return "vec2 (" + z.re.toPrecision(8) + ", " + z.im.toPrecision(8) +
         ")";
 };
 
-/** @param {Polynomial} p
- *  @param {string} vx
- *  @param {string} vy
- *  @return {string} */
+/**
+ * @param {Polynomial} p
+ * @param {string} vx
+ * @param {string} vy
+ * @return {string}
+ */
 GLSL.glslF = function(p, vx, vy) {
     function pad(cs) {
         var n = GLSL.N - cs.length + 1;
@@ -49,10 +55,12 @@ GLSL.glslF = function(p, vx, vy) {
     return lines.join("\n");
 };
 
-/** @param {Polynomial} p
- *  @param {string} vx
- *  @param {string} vy
- *  @return {string} */
+/**
+ * @param {Polynomial} p
+ * @param {string} vx
+ * @param {string} vy
+ * @return {string}
+ */
 GLSL.glslFx = function(p, vx, vy) {
     var cs = p.diff(vx).coefficientList(vy);
     var cs_ = [];
@@ -64,10 +72,12 @@ GLSL.glslFx = function(p, vx, vy) {
     return lines.join("\n");
 };
 
-/** @param {Polynomial} p
- *  @param {string} vx
- *  @param {string} vy
- *  @return {string} */
+/**
+ * @param {Polynomial} p
+ * @param {string} vx
+ * @param {string} vy
+ * @return {string}
+ */
 GLSL.glslFy = function(p, vx, vy) {
     var cs = p.diff(vy).coefficientList(vx);
     var cs_ = [];
@@ -79,9 +89,11 @@ GLSL.glslFy = function(p, vx, vy) {
     return lines.join("\n");
 };
 
-/** @param {Polynomial} p
- *  @param {string} vy
- *  @return {string} */
+/**
+ * @param {Polynomial} p
+ * @param {string} vy
+ * @return {string}
+ */
 GLSL.glslHeader = function(p, vx, vy) {
     var lines = ["#ifdef GL_FRAGMENT_PRECISION_HIGH",
         "precision highp float;",
@@ -96,9 +108,11 @@ GLSL.glslHeader = function(p, vx, vy) {
     return lines.join("\n");
 };
 
-/** @param {string} v
- *  @param {Array<string>} cs
- *  @return {string} */
+/**
+ * @param {string} v
+ * @param {Array<string>} cs
+ * @return {string}
+ */
 GLSL.glslHorner = function(v, cs) {
     var str = cs[0];
     for (var i = 1, l = cs.length; i < l; i++) {
@@ -114,10 +128,12 @@ GLSL.glslHorner = function(v, cs) {
     return str;
 };
 
-/** @param {Polynomial} p
- *  @param {string} vx
- *  @param {string} vy
- *  @return {string} */
+/**
+ * @param {Polynomial} p
+ * @param {string} vx
+ * @param {string} vy
+ * @return {string}
+ */
 GLSL.glslM = function(p, vx, vy) {
     var i, j, l, k;
     var cs = p.coefficientList(vy);
@@ -155,10 +171,12 @@ GLSL.glslM = function(p, vx, vy) {
     return lines.join("\n");
 };
 
-/** @param {Polynomial} p
- *  @param {string} vx
- *  @param {string} vy
- *  @return {string} */
+/**
+ * @param {Polynomial} p
+ * @param {string} vx
+ * @param {string} vy
+ * @return {string}
+ */
 GLSL.glslRho = function(p, vx, vy) {
     var an = p.leading(vy),
         disc = p.discriminant(vy),
@@ -183,8 +201,10 @@ GLSL.glslRho = function(p, vx, vy) {
 
 GLSL.N = 8;
 
-/** @param {Polynomial} p
- *  @return {string} */
+/**
+ * @param {Polynomial} p
+ * @return {string}
+ */
 GLSL.polynomialShaderSource = function(p) {
     var vars = p.variableList();
     var vx = vars.length < 2 ? "x" : vars[0];

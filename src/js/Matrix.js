@@ -1,13 +1,17 @@
-/** @param {Array<Array<T>>} m
- *  @constructor
- *  @template T */
+/**
+ * @param {Array<Array<T>>} m
+ * @constructor
+ * @template T
+ */
 function Matrix(m) {
     this.values = m;
 }
 
-/** Richard S. Bird
- *  A simple division-free algorithm for computing determinants
- *  @return {T} */
+/**
+ * Richard S. Bird
+ * A simple division-free algorithm for computing determinants
+ * @return {T}
+ */
 Matrix.prototype.det = function() {
     var as = this.values;
     var n = as.length;
@@ -25,8 +29,10 @@ Matrix.prototype.det = function() {
     return d;
 };
 
-/** @param {Matrix} x
- *  @return {Matrix} */
+/**
+ * @param {Matrix} x
+ * @return {Matrix}
+ */
 Matrix.mu = function(x) {
     var xs = x.values;
     var zero = xs[0][0].zero;
@@ -49,9 +55,11 @@ Matrix.mu = function(x) {
     return new Matrix(ms);
 };
 
-/** @param {Matrix} a
- *  @param {Matrix} b
- *  @return {Matrix} */
+/**
+ * @param {Matrix} a
+ * @param {Matrix} b
+ * @return {Matrix}
+ */
 Matrix.mul = function(a, b) {
     var as = a.values,
         bs = b.values;

@@ -1,13 +1,17 @@
-/** @constructor
- *  @param {StateGL} stategl
- *  @param {Surface} surface
- *  @implements {Stage} */
+/**
+ * @constructor
+ * @param {StateGL} stategl
+ * @param {Surface} surface
+ * @implements {Stage}
+ */
 function Assembly(stategl, surface) {
     this.mkProgram(stategl, surface);
 }
 
-/** @param {StateGL} stategl
- *  @param {Surface} surface */
+/**
+ * @param {StateGL} stategl
+ * @param {Surface} surface
+ */
 Assembly.prototype.mkProgram = function(stategl, surface) {
     var sources = StateGL.getShaderSources("Assembly");
     sources[0] = surface.withTextures(sources[0]);
@@ -15,9 +19,11 @@ Assembly.prototype.mkProgram = function(stategl, surface) {
     this.program = stategl.mkProgram(sources);
 };
 
-/** @param {StateGL} stategl
- *  @param {Surface} surface
- *  @param {WebGLRenderingContext} gl */
+/**
+ * @param {StateGL} stategl
+ * @param {Surface} surface
+ * @param {WebGLRenderingContext} gl
+ */
 Assembly.prototype.render = function(stategl, surface, gl) {
     var texturesIn = surface.texturesIn,
         textureOut = surface.texturesOut[0];

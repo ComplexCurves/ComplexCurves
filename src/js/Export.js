@@ -1,7 +1,9 @@
 var Export = {};
 
-/** @param {string} name
- *  @param {string} url */
+/**
+ * @param {string} name
+ * @param {string} url
+ */
 Export.download = function(name, url) {
     var link = document.createElement("a");
     link.href = url;
@@ -12,10 +14,12 @@ Export.download = function(name, url) {
     document.body.removeChild(link);
 };
 
-/** @param {StateGL} stategl
- *  @param {Float32Array} pixels
- *  @param {string=} name
- *  @param {boolean=} big */
+/**
+ * @param {StateGL} stategl
+ * @param {Float32Array} pixels
+ * @param {string=} name
+ * @param {boolean=} big
+ */
 Export.exportSurface = function(stategl, pixels, name = "surface", big = true) {
     var d, i, j, k, u, v, x, y, z, w;
     var length, vertices, faces, uvs, indices, indices2,
@@ -112,8 +116,10 @@ Export.exportSurface = function(stategl, pixels, name = "surface", big = true) {
     Export.download(name + ".mtl", mtl);
 };
 
-/** @param {Uint8Array} pixels
- *  @return {string} */
+/**
+ * @param {Uint8Array} pixels
+ * @return {string}
+ */
 Export.pixelsToImageDataURL = function(pixels) {
     var size = Math.sqrt(pixels.length / 4);
     var canvas = document.createElement("canvas");

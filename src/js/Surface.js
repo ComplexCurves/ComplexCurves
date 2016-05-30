@@ -1,8 +1,10 @@
-/** @constructor
- *  @param {StateGL} stategl
- *  @param {Polynomial} polynomial
- *  @param {number} depth
- *  @implements {Stage} */
+/**
+ * @constructor
+ * @param {StateGL} stategl
+ * @param {Polynomial} polynomial
+ * @param {number} depth
+ * @implements {Stage}
+ */
 function Surface(stategl, polynomial, depth) {
     this.polynomial = polynomial;
     this.depth = depth;
@@ -32,9 +34,11 @@ function Surface(stategl, polynomial, depth) {
     gl.viewport(0, 0, canvas.width, canvas.height);
 }
 
-/** @param {StateGL} stategl
- *  @param {boolean=} big
- *  @return {Array<string>} */
+/**
+ * @param {StateGL} stategl
+ * @param {boolean=} big
+ * @return {Array<string>}
+ */
 Surface.prototype.domainColouring = function(stategl, big = false) {
     var gl = stategl.gl;
     var sources = StateGL.getShaderSources("DomainColouring");
@@ -63,16 +67,20 @@ Surface.prototype.domainColouring = function(stategl, big = false) {
     return sheets;
 };
 
-/** @param {StateGL} stategl
- *  @param {string=} name */
+/**
+ * @param {StateGL} stategl
+ * @param {string=} name
+ */
 Surface.prototype.exportBinary = function(stategl, name = "surface.bin") {
     var url = stategl.textureToURL(this.texturesIn[0], 4 * this.numIndices);
     Export.download(name, url);
 };
 
-/** @param {StateGL} stategl
- *  @param {string=} name
- *  @param {boolean=} big */
+/**
+ * @param {StateGL} stategl
+ * @param {string=} name
+ * @param {boolean=} big
+ */
 Surface.prototype.exportSurface = function(stategl, name = "surface", big = true) {
     var texture = this.texturesIn[0];
     var length = 4 * this.numIndices;
@@ -132,9 +140,11 @@ Surface.prototype.mkTextures = function(stategl) {
 /** @type {number} */
 Surface.prototype.numIndices = 0;
 
-/** @param {StateGL} stategl
- *  @param {WebGLRenderingContext} gl
- *  @param {State3D} state3d */
+/**
+ * @param {StateGL} stategl
+ * @param {WebGLRenderingContext} gl
+ * @param {State3D} state3d
+ */
 Surface.prototype.render = function(stategl, gl, state3d) {
     gl.useProgram(this.program);
     stategl.updateClipping();
@@ -158,14 +168,18 @@ Surface.prototype.render = function(stategl, gl, state3d) {
     stategl.updateTransparency(false);
 };
 
-/** @param {string} src
- *  @return {string} */
+/**
+ * @param {string} src
+ * @return {string}
+ */
 Surface.prototype.withTextures = function(src) {
     return [this.texturesShaderSrc, src].join("\n");
 };
 
-/** @param {string} src
- *  @return {string} */
+/**
+ * @param {string} src
+ * @return {string}
+ */
 Surface.prototype.withCustomAndCommon = function(src) {
     return [this.customShaderSrc, this.commonShaderSrc, src].join("\n");
 };

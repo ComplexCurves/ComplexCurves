@@ -42,10 +42,12 @@ State3D.prototype.isRotating = function() {
         Quaternion.sub(this.rotation, this.target1).abs() > 1e-6;
 };
 
-/** @param {number} theta
- *  @param {number} phi
- *  @param {boolean} ortho
- *  @return {State3D} */
+/**
+ * @param {number} theta
+ * @param {number} phi
+ * @param {boolean} ortho
+ * @return {State3D}
+ */
 State3D.fromLatLong = function(theta, phi, ortho) {
     var q = Quaternion.fromLatLong(theta, phi),
         st = new State3D();
@@ -66,10 +68,12 @@ State3D.bottomView = State3D.fromLatLong.bind(null, Math.PI, 0);
 State3D.leftView = State3D.fromLatLong.bind(null, Math.PI / 2, -Math.PI / 2);
 /** @type {function(boolean) : State3D} */
 State3D.rightView = State3D.fromLatLong.bind(null, Math.PI / 2, Math.PI / 2);
-/** @param {number} lat
- *  @param {number} lon
- *  @param {boolean} ortho
- *  @return {State3D} */
+/**
+ * @param {number} lat
+ * @param {number} lon
+ * @param {boolean} ortho
+ * @return {State3D}
+ */
 State3D.fromLatLongDegrees = function(lat, lon, ortho) {
     var piOver180 = Math.PI / 180;
     return State3D.fromLatLong(lat * piOver180, lon * piOver180, ortho);
@@ -95,8 +99,10 @@ State3D.prototype.mouseDown = function(xy) {
     this.target0 = this.target1;
 };
 
-/** @param {number} x
- *  @param {number} y */
+/**
+ * @param {number} x
+ * @param {number} y
+ */
 State3D.prototype.mouseMove = function(x, y) {
     if (!(this.rotating))
         return;
@@ -128,11 +134,13 @@ State3D.prototype.mouseWheel = function(direction) {
         this.zoomIn();
 };
 
-/** orthographic projection matrix, in column-major order
- *  @param {number} width
- *  @param {number} height
- *  @param {number} zoom
- *  @return {Array<number>} */
+/**
+ * orthographic projection matrix, in column-major order
+ * @param {number} width
+ * @param {number} height
+ * @param {number} zoom
+ * @return {Array<number>}
+ */
 State3D.orthographicProjectionMatrix = function(width, height, zoom) {
     var bottom = -7.5 * zoom,
         left = -7.5 * zoom,
@@ -149,11 +157,13 @@ State3D.orthographicProjectionMatrix = function(width, height, zoom) {
     ];
 };
 
-/** perspective projection matrix, in column-major order
- *  @param {number} width
- *  @param {number} height
- *  @param {number} zoom
- *  @return {Array<number>} */
+/**
+ * perspective projection matrix, in column-major order
+ * @param {number} width
+ * @param {number} height
+ * @param {number} zoom
+ * @return {Array<number>}
+ */
 State3D.perspectiveProjectionMatrix = function(width, height, zoom) {
     var zFar = 100,
         zNear = 1,
@@ -166,9 +176,11 @@ State3D.perspectiveProjectionMatrix = function(width, height, zoom) {
     ];
 };
 
-/** @param {number} w
- *  @param {number} h
- *  @return {Array<number>} */
+/**
+ * @param {number} w
+ * @param {number} h
+ * @return {Array<number>}
+ */
 State3D.prototype.projectionMatrix = function(w, h) {
     if (this.ortho)
         return State3D.orthographicProjectionMatrix(w, h, this.zoomFactor);

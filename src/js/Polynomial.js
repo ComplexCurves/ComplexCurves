@@ -1,5 +1,7 @@
-/** @param {Array<Term>} terms
- *  @constructor */
+/**
+ * @param {Array<Term>} terms
+ * @constructor
+ */
 function Polynomial(terms) {
     if (terms.length === 0)
         this.terms = [new Term(Complex.zero, new Monomial({}))];
@@ -7,29 +9,37 @@ function Polynomial(terms) {
         this.terms = Term.reduce(terms);
 }
 
-/** @param {Polynomial} p
- *  @param {Polynomial} q
- *  @return {Polynomial} */
+/**
+ * @param {Polynomial} p
+ * @param {Polynomial} q
+ * @return {Polynomial}
+ */
 Polynomial.add = function(p, q) {
     return new Polynomial(Term.reduce(p.terms.concat(q.terms)));
 };
 
-/** @param {Polynomial} p
- *  @return {Polynomial} */
+/**
+ * @param {Polynomial} p
+ * @return {Polynomial}
+ */
 Polynomial.prototype.add = function(p) {
     return Polynomial.add(this, p);
 };
 
-/** @param {Complex} z
- *  @return {Polynomial} */
+/**
+ * @param {Complex} z
+ * @return {Polynomial}
+ */
 Polynomial.complex = function(z) {
     return new Polynomial([new Term(z, new Monomial({}))]);
 };
 
-/** j-th coefficient of a Polynomial in a given variable
- *  @param {string} v
- *  @param {number} j
- *  @return {Polynomial} */
+/**
+ * j-th coefficient of a Polynomial in a given variable
+ * @param {string} v
+ * @param {number} j
+ * @return {Polynomial}
+ */
 Polynomial.prototype.coefficient = function(v, j) {
     var terms = this.terms;
     var ps = [];
@@ -44,10 +54,12 @@ Polynomial.prototype.coefficient = function(v, j) {
     return new Polynomial(ps);
 };
 
-/** list of coefficients of a given variable
- *  ordered from highest to lowest degree
- *  @param {string} v
- *  @return {Array<Polynomial>} */
+/**
+ * list of coefficients of a given variable
+ * ordered from highest to lowest degree
+ * @param {string} v
+ * @return {Array<Polynomial>}
+ */
 Polynomial.prototype.coefficientList = function(v) {
     var n = this.degree(v);
     var cs = [];
@@ -69,8 +81,10 @@ Polynomial.prototype.coefficientList_ = function() {
     return cs_;
 };
 
-/** constant term of Polynomial as number
- *  @return {Complex} */
+/**
+ * constant term of Polynomial as number
+ * @return {Complex}
+ */
 Polynomial.prototype.constant = function() {
     var c = Complex.zero;
     var terms = this.terms;
@@ -83,11 +97,13 @@ Polynomial.prototype.constant = function() {
     return c;
 };
 
-/** deflate a Polynomial coefficient list by a monomial x - x0
- *  using Horner's method
- *  @param {Array<Complex>} cs
- *  @param {Complex} x0
- *  @return {Array<Complex>} */
+/**
+ * deflate a Polynomial coefficient list by a monomial x - x0
+ * using Horner's method
+ * @param {Array<Complex>} cs
+ * @param {Complex} x0
+ * @return {Array<Complex>}
+ */
 Polynomial.deflate = function(cs, x0) {
     // deflate (p:ps) x0 = init $ scanl (\y c -> c + x0 * y) p ps
     var fx = [cs[0]];
@@ -96,9 +112,11 @@ Polynomial.deflate = function(cs, x0) {
     return fx;
 };
 
-/** determine the degree of a Polynomial in a given variable
- *  @param {string} v
- *  @return {number} */
+/**
+ * determine the degree of a Polynomial in a given variable
+ * @param {string} v
+ * @return {number}
+ */
 Polynomial.prototype.degree = function(v) {
     var n = 0;
     var terms = this.terms;
@@ -107,8 +125,10 @@ Polynomial.prototype.degree = function(v) {
     return n;
 };
 
-/** @param {string} v
- *  @return {Polynomial} */
+/**
+ * @param {string} v
+ * @return {Polynomial}
+ */
 Polynomial.prototype.diff = function(v) {
     var terms = this.terms;
     var ps = [];
@@ -125,9 +145,11 @@ Polynomial.prototype.diff = function(v) {
     return new Polynomial(ps);
 };
 
-/** discriminant of a Polynomial w.r.t. a given variable
- *  @param {string} v
- *  @return {Polynomial} */
+/**
+ * discriminant of a Polynomial w.r.t. a given variable
+ * @param {string} v
+ * @return {Polynomial}
+ */
 Polynomial.prototype.discriminant = function(v) {
     return Polynomial.resultant(v, this, this.diff(v));
 };
@@ -147,13 +169,15 @@ Polynomial.prototype.isUnivariate = function() {
     return this.variableList().length === 1;
 };
 
-/** approximate one root of a given Polynomial up to given tolerance
- *  using at most a given number of Laguerre iterations
- *  Polynomial must be given as coefficient list
- *  @param {Array<Complex>} cs
- *  @param {Complex} x
- *  @param {number} maxiter
- *  @return {Complex} */
+/**
+ * approximate one root of a given Polynomial up to given tolerance
+ * using at most a given number of Laguerre iterations
+ * Polynomial must be given as coefficient list
+ * @param {Array<Complex>} cs
+ * @param {Complex} x
+ * @param {number} maxiter
+ * @return {Complex}
+ */
 Polynomial.laguerre = function(cs, x, maxiter) {
     var n = cs.length - 1;
     var rand = [1.0, 0.3141, 0.5926, 0.5358, 0.9793, 0.2385, 0.6264, 0.3383,
@@ -198,16 +222,20 @@ Polynomial.laguerre = function(cs, x, maxiter) {
     return x;
 };
 
-/** leading coefficient of a Polynomial in a given variable
- *  @param {string} v
- *  @return {Polynomial} */
+/**
+ * leading coefficient of a Polynomial in a given variable
+ * @param {string} v
+ * @return {Polynomial}
+ */
 Polynomial.prototype.leading = function(v) {
     return this.coefficient(v, this.degree(v));
 };
 
-/** @param {Polynomial} p
- *  @param {Polynomial} q
- *  @return {Polynomial} */
+/**
+ * @param {Polynomial} p
+ * @param {Polynomial} q
+ * @return {Polynomial}
+ */
 Polynomial.mul = function(p, q) {
     var ps = p.terms,
         qs = q.terms;
@@ -218,8 +246,10 @@ Polynomial.mul = function(p, q) {
     return new Polynomial(Term.reduce(terms));
 };
 
-/** @param {Polynomial} p
- *  @return {Polynomial} */
+/**
+ * @param {Polynomial} p
+ * @return {Polynomial}
+ */
 Polynomial.prototype.mul = function(p) {
     return Polynomial.mul(this, p);
 };
@@ -233,9 +263,11 @@ Polynomial.prototype.neg = function() {
     return new Polynomial(ts);
 };
 
-/** @param {Polynomial} p
- *  @param {number} e
- *  @return {Polynomial} */
+/**
+ * @param {Polynomial} p
+ * @param {number} e
+ * @return {Polynomial}
+ */
 Polynomial.pow = function(p, e) {
     var res = Polynomial.real(1);
     if (!Number.isInteger(e))
@@ -246,14 +278,18 @@ Polynomial.pow = function(p, e) {
     return res;
 };
 
-/** @param {number} e
- *  @return {Polynomial} */
+/**
+ * @param {number} e
+ * @return {Polynomial}
+ */
 Polynomial.prototype.pow = function(e) {
     return Polynomial.pow(this, e);
 };
 
-/** @param {Array<Complex>} cs
- *  @return {Array<Complex>} */
+/**
+ * @param {Array<Complex>} cs
+ * @return {Array<Complex>}
+ */
 Polynomial.quadratic_roots = function(cs) {
     var a = cs[0],
         b = cs[1],
@@ -269,22 +305,28 @@ Polynomial.quadratic_roots = function(cs) {
     ];
 };
 
-/** @param {number} x
- *  @return {Polynomial} */
+/**
+ * @param {number} x
+ * @return {Polynomial}
+ */
 Polynomial.real = function(x) {
     return new Polynomial([new Term(Complex.real(x), new Monomial({}))]);
 };
 
-/** @param {string} v
- *  @param {Polynomial} p
- *  @param {Polynomial} q
- *  @return {Polynomial} */
+/**
+ * @param {string} v
+ * @param {Polynomial} p
+ * @param {Polynomial} q
+ * @return {Polynomial}
+ */
 Polynomial.resultant = function(v, p, q) {
     return Polynomial.sylvester(v, p, q).det();
 };
 
-/** @param {Array<Complex>} cs
- *  @return {Array<Complex>} */
+/**
+ * @param {Array<Complex>} cs
+ * @return {Array<Complex>}
+ */
 Polynomial.roots = function(cs) {
     var roots = [];
     var cs_orig = cs;
@@ -313,23 +355,29 @@ Polynomial.roots = function(cs) {
     return roots; // TODO sort?
 };
 
-/** @param {Polynomial} p
- *  @param {Polynomial} q
- *  @return {Polynomial} */
+/**
+ * @param {Polynomial} p
+ * @param {Polynomial} q
+ * @return {Polynomial}
+ */
 Polynomial.sub = function(p, q) {
     return Polynomial.add(p, q.neg());
 };
 
-/** @param {Polynomial} p
- *  @return {Polynomial} */
+/**
+ * @param {Polynomial} p
+ * @return {Polynomial}
+ */
 Polynomial.prototype.sub = function(p) {
     return Polynomial.sub(this, p);
 };
 
-/** @param {string} v
- *  @param {Polynomial} p
- *  @param {Polynomial} q
- *  @return {Matrix} */
+/**
+ * @param {string} v
+ * @param {Polynomial} p
+ * @param {Polynomial} q
+ * @return {Matrix}
+ */
 Polynomial.sylvester = function(v, p, q) {
     var m = p.degree(v);
     var n = q.degree(v);
@@ -354,8 +402,10 @@ Polynomial.sylvester = function(v, p, q) {
     return new Matrix(ms);
 };
 
-/** @param {string} v
- *  @return {Polynomial} */
+/**
+ * @param {string} v
+ * @return {Polynomial}
+ */
 Polynomial.variable = function(v) {
     var m = {};
     m[v] = 1;

@@ -1,11 +1,15 @@
-/** @param {Object<string,number>} monomial
- *  @constructor */
+/**
+ * @param {Object<string,number>} monomial
+ * @constructor
+ */
 function Monomial(monomial) {
     this.value = monomial;
 }
 
-/** @param {Monomial} m
- *  @return {Monomial} */
+/**
+ * @param {Monomial} m
+ * @return {Monomial}
+ */
 Monomial.clone = function(m) {
     var monomial = {};
     var ms = m.value;
@@ -14,9 +18,11 @@ Monomial.clone = function(m) {
     return new Monomial(monomial);
 };
 
-/** @param {Monomial} a
- *  @param {Monomial} b
- *  @return {boolean} */
+/**
+ * @param {Monomial} a
+ * @param {Monomial} b
+ * @return {boolean}
+ */
 Monomial.is = function(a, b) {
     var key;
     for (key in a.value)

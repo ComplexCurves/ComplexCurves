@@ -1,22 +1,28 @@
-/** @constructor
- *  @param {StateGL} stategl
- *  @param {Surface} surface
- *  @implements {Stage} */
+/**
+ * @constructor
+ * @param {StateGL} stategl
+ * @param {Surface} surface
+ * @implements {Stage}
+ */
 function SubdivisionPre(stategl, surface) {
     this.mkProgram(stategl, surface);
 }
 
-/** @param {StateGL} stategl
- *  @param {Surface} surface */
+/**
+ * @param {StateGL} stategl
+ * @param {Surface} surface
+ */
 SubdivisionPre.prototype.mkProgram = function(stategl, surface) {
     var sources = StateGL.getShaderSources("SubdivisionPre");
     sources[0] = surface.withTextures(sources[0]);
     this.program = stategl.mkProgram(sources);
 };
 
-/** @param {StateGL} stategl
- *  @param {Surface} surface
- *  @param {WebGLRenderingContext} gl */
+/**
+ * @param {StateGL} stategl
+ * @param {Surface} surface
+ * @param {WebGLRenderingContext} gl
+ */
 SubdivisionPre.prototype.render = function(stategl, surface, gl) {
     var textureIn = surface.texturesIn[0],
         textureOut = surface.texturesOut[0];

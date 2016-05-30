@@ -1,23 +1,29 @@
-/** @param {Complex} coefficient
- *  @param {Monomial} monomial
- *  @constructor */
+/**
+ * @param {Complex} coefficient
+ * @param {Monomial} monomial
+ * @constructor
+ */
 function Term(coefficient, monomial) {
     this.coefficient = coefficient;
     this.monomial = monomial;
 }
 
-/** @param {Term} a
- *  @param {Term} b
- *  @return {Term} */
+/**
+ * @param {Term} a
+ * @param {Term} b
+ * @return {Term}
+ */
 Term.add = function(a, b) {
     if (!Monomial.is(a.monomial, b.monomial))
         console.error('Monomials do not match');
     return new Term(Complex.add(a.coefficient, b.coefficient), a.monomial);
 };
 
-/** @param {Term} a
- *  @param {Term} b
- *  @return {Term} */
+/**
+ * @param {Term} a
+ * @param {Term} b
+ * @return {Term}
+ */
 Term.mul = function(a, b) {
     var monomial = {};
     var oa = a.monomial.value,
@@ -33,14 +39,18 @@ Term.mul = function(a, b) {
         new Monomial(monomial));
 };
 
-/** @param {Term} a
- *  @return {Term} */
+/**
+ * @param {Term} a
+ * @return {Term}
+ */
 Term.neg = function(a) {
     return new Term(a.coefficient.neg(), a.monomial);
 };
 
-/** @param {Array<Term>} terms
- *  @return {Array<Term>} */
+/**
+ * @param {Array<Term>} terms
+ * @return {Array<Term>}
+ */
 Term.reduce = function(terms) {
     function reduce_(ps, qs) {
         if (qs.length === 0)
