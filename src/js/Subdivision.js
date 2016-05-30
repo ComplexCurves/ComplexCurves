@@ -22,7 +22,6 @@ Subdivision.prototype.render = function(stategl, surface, gl) {
     var i, l;
     var texturesIn = surface.texturesIn,
         texturesOut = surface.texturesOut;
-    var numTriangles = surface.numIndices / 3;
     var program = this.program;
     gl.useProgram(program);
 
@@ -109,7 +108,7 @@ Subdivision.prototype.render = function(stategl, surface, gl) {
         // identify and render subdivision patterns
         var patternIndex, numIndices;
         primitivesWritten = 0;
-        for (var j = 0; j < numTriangles; j++) {
+        for (var j = 0, k = surface.numIndices / 3; j < k; j++) {
             gl.uniform1f(indexOffsetInLocation, 3 * j);
             gl.uniform1f(indexOffsetOutLocation, primitivesWritten);
             patternIndex = 4 * pixels[12 * j + 3] + 2 * pixels[12 * j + 7] +
