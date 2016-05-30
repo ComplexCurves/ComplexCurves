@@ -43,6 +43,7 @@ Surface.prototype.domainColouring = function(stategl, big = false) {
     var loc;
     var sheets = [];
     var pixels;
+
     function renderSheet(sheet) {
         gl.useProgram(program);
         gl.bindBuffer(gl.ARRAY_BUFFER, stategl.rttArrayBuffer);

@@ -9,7 +9,7 @@ GLSL.glslCoefficients = function(p) {
         return [GLSL.glslComplex(p.constant())];
     else if (p.isUnivariate()) {
         cs_ = p.coefficientList_();
-        for (i = 0, l = cs_.length ; i < l; i++)
+        for (i = 0, l = cs_.length; i < l; i++)
             cs[i] = GLSL.glslComplex(cs_[i]);
     } else if (p.isBivariate()) {
         var vars = p.variableList();

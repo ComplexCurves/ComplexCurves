@@ -19,7 +19,8 @@ Export.download = function(name, url) {
 Export.exportSurface = function(stategl, pixels, name = "surface", big = true) {
     var d, i, j, k, u, v, x, y, z, w;
     var length, vertices, faces, uvs, indices, indices2,
-        maxValue = -Infinity, minValue = Infinity;
+        maxValue = -Infinity,
+        minValue = Infinity;
     length = pixels.byteLength / pixels.BYTES_PER_ELEMENT / 4;
     vertices = [];
     for (i = 0; i < length * 4; i += 4) {
@@ -46,37 +47,39 @@ Export.exportSurface = function(stategl, pixels, name = "surface", big = true) {
     }
 
     /* deduplicate mesh data */
-    indices = vertices.map(function (v1, i) {
+    indices = vertices.map(function(v1, i) {
         var uv1 = uvs[i];
-        return vertices.findIndex(function (v2, j) {
+        return vertices.findIndex(function(v2, j) {
             var uv2 = uvs[j];
             return v1[0] === v2[0] && v1[1] === v2[1] && v1[2] === v2[2] &&
                 uv1[0] === uv2[0] && uv1[1] === uv2[1];
         });
     });
     indices2 = Array.from(new Set(indices));
-    vertices = indices2.map(function (i) {
+    vertices = indices2.map(function(i) {
         return vertices[i];
     });
-    uvs = indices2.map(function (i) {
+    uvs = indices2.map(function(i) {
         return uvs[i];
     });
-    faces = faces.map(function (f) {
-        return f.map(function (i) {
-            return indices2.findIndex(function (j) {
+    faces = faces.map(function(f) {
+        return f.map(function(i) {
+            return indices2.findIndex(function(j) {
                 return j === indices[i - 1];
             }) + 1;
         });
     });
 
-    vertices = vertices.map(function (v) {
+    vertices = vertices.map(function(v) {
         return "v " + v[0] + " " + v[1] + " " + v[2];
     });
-    uvs = uvs.map(function (uv) {
+    uvs = uvs.map(function(uv) {
         return "vt " + uv[0] + " " + uv[1];
     });
-    faces = faces.map(function (f) {
-        var i = f[0], j = f[1], k = f[2];
+    faces = faces.map(function(f) {
+        var i = f[0],
+            j = f[1],
+            k = f[2];
         return "f " + i + "/" + i + " " + j + "/" + j + " " + k + "/" + k;
     });
 
