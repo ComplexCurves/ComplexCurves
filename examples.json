@@ -19,7 +19,7 @@
         "image": "images/Conchoid.png",
         "title": "Conchoid",
         "equation": "(y+1)^2*(x^2+y^2)-2^2*y^2",
-        "depth": 10
+        "depth": 9
     },
     {
         "id": "Ellipse",
@@ -33,7 +33,8 @@
         "cached": false,
         "image": "images/FigureEight.png",
         "title": "Figure eight",
-        "equation": "y^4-y^2+x^2"
+        "equation": "y^4-y^2+x^2",
+        "depth": 11
     },
     {
         "id": "Folium",
@@ -62,7 +63,7 @@
         "image": "images/Nephroid.png",
         "title": "Nephroid",
         "equation": "(x^2+y^2-4)^3-108*y^2",
-        "depth": 10
+        "depth": 7
     },
     {
         "id": "Parabola",
@@ -105,7 +106,7 @@
         "image": "images/Tricuspoid.png",
         "title": "Tricuspoid",
         "equation": "y^4+2*x^2*y^2+x^4+24*x*y^2-8*x^3+18*y^2+18*x^2-27",
-        "depth": 9
+        "depth": 7
     },
     {
         "id": "Trifolium",
@@ -133,7 +134,8 @@
         "cached": false,
         "image": "images/WattCurve.png",
         "title": "Watt curve",
-        "equation": "(x^2+y^2)*(x^2+y^2-2^2-2.5^2+1.5^2)^2+4*2^2*y^2*(x^2+y^2-2.5^2)"
+        "equation": "(x^2+y^2)*(x^2+y^2-2^2-2.5^2+1.5^2)^2+4*2^2*y^2*(x^2+y^2-2.5^2)",
+        "depth": 8
     },
     {
         "id": "WattCurveReducible",
@@ -141,6 +143,6 @@
         "image": "images/WattCurveReducible.png",
         "title": "Watt curve (reducible)",
         "equation": "(x^2+y^2-9)*(x^4+2*x^2*y^2+y^4-9*x^2+7*y^2)",
-        "depth": 11
+        "depth": 8
     }
 ]
