@@ -19,6 +19,12 @@ Term.add = function(a, b) {
     return new Term(Complex.add(a.coefficient, b.coefficient), a.monomial);
 };
 
+/** @type {Complex} */
+Term.prototype.coefficient;
+
+/** @type {Monomial} */
+Term.prototype.monomial;
+
 /**
  * @param {Term} a
  * @param {Term} b
@@ -52,6 +58,11 @@ Term.neg = function(a) {
  * @return {Array<Term>}
  */
 Term.reduce = function(terms) {
+    /**
+     * @param {Array<Term>} ps
+     * @param {Array<Term>} qs
+     * @return {Array<Term>}
+     */
     function reduce_(ps, qs) {
         if (qs.length === 0)
             return ps;

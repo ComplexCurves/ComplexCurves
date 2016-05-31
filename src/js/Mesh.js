@@ -5,7 +5,7 @@ var Mesh = {};
  * @return {Array<number>}
  */
 Mesh.tetrakis = function(n) {
-    var mesh = [];
+    var /** Array<number> */ mesh = [];
     for (var x = -5 * n; x < 5 * n; x++) {
         for (var y = -5 * n; y < 5 * n; y++) {
             if ((x + y) % 2 === 0) {

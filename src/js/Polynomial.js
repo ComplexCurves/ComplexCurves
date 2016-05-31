@@ -4,7 +4,7 @@
  */
 function Polynomial(terms) {
     if (terms.length === 0)
-        this.terms = [new Term(Complex.zero, new Monomial({}))];
+        this.terms = [new Term(Complex.zero(), new Monomial({}))];
     else
         this.terms = Term.reduce(terms);
 }
@@ -68,6 +68,11 @@ Polynomial.prototype.coefficientList = function(v) {
     return cs;
 };
 
+/**
+ * list of coefficients of a univariate polynomial
+ * ordered from highest to lowest degree
+ * @return {Array<Complex>}
+ */
 Polynomial.prototype.coefficientList_ = function() {
     var vars = this.variableList();
     var l = vars.length;
@@ -86,7 +91,7 @@ Polynomial.prototype.coefficientList_ = function() {
  * @return {Complex}
  */
 Polynomial.prototype.constant = function() {
-    var c = Complex.zero;
+    var c = Complex.zero();
     var terms = this.terms;
     for (var i = 0, l = terms.length; i < l; i++) {
         var term = terms[i];
@@ -186,8 +191,8 @@ Polynomial.laguerre = function(cs, x, maxiter) {
     var a, p, q, s, g, g2, h, r, d1, d2;
     var tol = 1e-14;
     for (var iter = 1; iter <= maxiter; iter++) {
-        s = Complex.zero;
-        q = Complex.zero;
+        s = Complex.zero();
+        q = Complex.zero();
         p = cs[0];
 
         for (var i = 1; i <= n; i++) {
@@ -295,7 +300,7 @@ Polynomial.quadratic_roots = function(cs) {
         b = cs[1],
         c = cs[2];
     if (c.re === 0 && c.im === 0)
-        return [Complex.zero, Complex.div(b, a).neg()];
+        return [Complex.zero(), Complex.div(b, a).neg()];
     var r = Complex.sqrt(Complex.sub(Complex.mul(b, b),
         Complex.mul(Complex.real(4), Complex.mul(a, c))));
     if (b.re >= 0)
@@ -320,7 +325,8 @@ Polynomial.real = function(x) {
  * @return {Polynomial}
  */
 Polynomial.resultant = function(v, p, q) {
-    return Polynomial.sylvester(v, p, q).det();
+    var syl = /** @type {Matrix<Polynomial>} */ (Polynomial.sylvester(v, p, q));
+    return syl.det();
 };
 
 /**
@@ -344,7 +350,7 @@ Polynomial.roots = function(cs) {
         roots = Polynomial.quadratic_roots(cs);
     else {
         for (var i = 0; i < n - 2; i++) {
-            roots[i] = Polynomial.laguerre(cs, Complex.zero, 200);
+            roots[i] = Polynomial.laguerre(cs, Complex.zero(), 200);
             roots[i] = Polynomial.laguerre(cs_orig, roots[i], 1);
             cs = Polynomial.deflate(cs, roots[i]);
         }
@@ -385,13 +391,22 @@ Polynomial.sylvester = function(v, p, q) {
     var q_ = q.coefficientList(v);
     var ms = [];
 
+    /**
+     * @param {number} n
+     * @return {Array<Polynomial>}
+     */
     function zeros(n) {
         var zs = [];
         for (var i = 0; i < n; i++)
-            zs[i] = Polynomial.zero;
+            zs[i] = Polynomial.zero();
         return zs;
     }
 
+    /**
+     * @param {Array<Polynomial>} f
+     * @param {number} i
+     * @return {Array<Polynomial>}
+     */
     function shift(f, i) {
         return zeros(i).concat(f).concat(zeros(m + n - f.length - i));
     }
@@ -401,6 +416,9 @@ Polynomial.sylvester = function(v, p, q) {
         ms.push(shift(q_, j));
     return new Matrix(ms);
 };
+
+/** @type {Array<Term>} */
+Polynomial.prototype.terms;
 
 /**
  * @param {string} v
@@ -417,7 +435,7 @@ Polynomial.prototype.variableList = function() {
     var terms = this.terms;
     var vars = [];
     var hasVar = {};
-    for (var i = 0, l = terms.length; i < l; i++) {
+     for (var i = 0, l = terms.length; i < l; i++) {
         var m = terms[i].monomial.value;
         for (var key in m) {
             if (!hasVar[key]) {
@@ -426,11 +444,14 @@ Polynomial.prototype.variableList = function() {
             }
         }
     }
-    return vars.sort();
+    vars.sort();
+    return vars;
 };
 
-/** @type {Polynomial} */
-Polynomial.zero = new Polynomial([]);
+/** @return {Polynomial} */
+Polynomial.zero = function () {
+    return new Polynomial([]);
+};
 
-/** @type {Polynomial} */
+/** @return {Polynomial} */
 Polynomial.prototype.zero = Polynomial.zero;

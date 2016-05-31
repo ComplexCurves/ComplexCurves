@@ -1,7 +1,6 @@
 /**
- * @param {Array<Array<T>>} m
+ * @param {Array<Array<Polynomial>>} m
  * @constructor
- * @template T
  */
 function Matrix(m) {
     this.values = m;
@@ -10,7 +9,7 @@ function Matrix(m) {
 /**
  * Richard S. Bird
  * A simple division-free algorithm for computing determinants
- * @return {T}
+ * @return {Polynomial}
  */
 Matrix.prototype.det = function() {
     var as = this.values;
@@ -24,9 +23,7 @@ Matrix.prototype.det = function() {
     for (var j = 1; j < n; j++)
         a = Matrix.mul(Matrix.mu(a), this);
     var d = a.values[0][0];
-    if (n % 2 === 0)
-        d = d.neg();
-    return d;
+    return n % 2 === 0 ? d.neg() : d;
 };
 
 /**
@@ -35,7 +32,7 @@ Matrix.prototype.det = function() {
  */
 Matrix.mu = function(x) {
     var xs = x.values;
-    var zero = xs[0][0].zero;
+    var zero = xs[0][0].zero();
     var ms = [];
     for (var i = 0, l = xs.length; i < l; i++) {
         ms[i] = [];
@@ -68,7 +65,7 @@ Matrix.mul = function(a, b) {
     var cs = [];
     var rows = as.length,
         cols = bs[0].length,
-        zero = as[0][0].zero;
+        zero = as[0][0].zero();
     for (var i = 0; i < rows; i++) {
         cs[i] = [];
         for (var j = 0; j < cols; j++) {
@@ -80,3 +77,6 @@ Matrix.mul = function(a, b) {
     }
     return new Matrix(cs);
 };
+
+/** @type {Array<Array<Polynomial>>} */
+Matrix.prototype.values;

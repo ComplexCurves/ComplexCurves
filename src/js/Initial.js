@@ -44,6 +44,9 @@ Initial.prototype.mkProgram = function(stategl, surface) {
 /** @type {WebGLBuffer} */
 Initial.prototype.positionBuffer = null;
 
+/** @type {WebGLProgram} */
+Initial.prototype.program;
+
 /**
  * @param {StateGL} stategl
  * @param {Surface} surface

@@ -12,6 +12,9 @@ function StateGL(canvas) {
     this.mkFXAAProgram();
 }
 
+/** @type {number} */
+StateGL.prototype.bigTextureSize;
+
 /** @type {boolean} */
 StateGL.prototype.clipping = false;
 
@@ -178,13 +181,14 @@ StateGL.prototype.readTexture = function(texture, length, offset = 0) {
         null, 0);
     gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
     gl.deleteFramebuffer(readBuffer);
-    if (length)
-        return new pixels.constructor(pixels.buffer, offset * pixels.BYTES_PER_ELEMENT, length);
-    else
+    if (length) {
+        return pixels.subarray(offset, offset + length);
+    } else {
         return pixels;
+    }
 };
 
-/** @type {Stage} */
+/** @type {CachedSurface|Surface} */
 StateGL.prototype.renderer = null;
 
 /** @param {State3D} st */
@@ -280,10 +284,10 @@ StateGL.prototype.updateModelViewProjectionMatrices = function(st) {
 
 /** @param {State3D} st */
 StateGL.prototype.updateProjectionMatrix = function(st) {
-    var gl = this.gl,
-        vp = gl.getParameter(gl.VIEWPORT),
-        w = vp[2],
-        h = vp[3];
+    var gl = this.gl;
+    var vp = gl.getParameter(gl.VIEWPORT);
+    var w = /** @type {number} */ (vp[2]);
+    var h = /** @type {number} */ (vp[3]);
     this.updateUniformMatrix("p", st.projectionMatrix(w, h));
 };
 

@@ -18,6 +18,9 @@ SubdivisionPre.prototype.mkProgram = function(stategl, surface) {
     this.program = stategl.mkProgram(sources);
 };
 
+/** @type {WebGLProgram} */
+SubdivisionPre.prototype.program;
+
 /**
  * @param {StateGL} stategl
  * @param {Surface} surface

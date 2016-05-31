@@ -34,6 +34,12 @@ function Surface(stategl, polynomial, depth) {
     gl.viewport(0, 0, canvas.width, canvas.height);
 }
 
+/** @type {string} */
+Surface.prototype.commonShaderSrc;
+
+/** @type {string} */
+Surface.prototype.customShaderSrc;
+
 /**
  * @param {StateGL} stategl
  * @param {boolean=} big
@@ -48,6 +54,7 @@ Surface.prototype.domainColouring = function(stategl, big = false) {
     var sheets = [];
     var pixels;
 
+    /** @param {number} sheet */
     function renderSheet(sheet) {
         gl.useProgram(program);
         gl.bindBuffer(gl.ARRAY_BUFFER, stategl.rttArrayBuffer);
@@ -102,6 +109,9 @@ Surface.prototype.fillIndexBuffer = function(stategl) {
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(indices), gl.STATIC_DRAW);
 };
 
+/** @type {WebGLFramebuffer} */
+Surface.prototype.framebuffer;
+
 /** @type {WebGLBuffer} */
 Surface.prototype.indexBuffer = null;
 
@@ -140,6 +150,9 @@ Surface.prototype.mkTextures = function(stategl) {
 /** @type {number} */
 Surface.prototype.numIndices = 0;
 
+/** @type {WebGLProgram} */
+Surface.prototype.program;
+
 /**
  * @param {StateGL} stategl
  * @param {WebGLRenderingContext} gl
@@ -167,6 +180,18 @@ Surface.prototype.render = function(stategl, gl, state3d) {
     gl.drawArrays(gl.TRIANGLES, 0, this.numIndices);
     stategl.updateTransparency(false);
 };
+
+/** @type {number} */
+Surface.prototype.sheets;
+
+/** @type {Array<WebGLTexture>} */
+Surface.prototype.texturesIn;
+
+/** @type {Array<WebGLTexture>} */
+Surface.prototype.texturesOut;
+
+/** @type {string} */
+Surface.prototype.texturesShaderSrc;
 
 /**
  * @param {string} src

@@ -22,11 +22,9 @@ Export.download = function(name, url) {
  */
 Export.exportSurface = function(stategl, pixels, name = "surface", big = true) {
     var d, i, j, k, u, v, x, y, z, w;
-    var length, vertices, faces, uvs, indices, indices2,
-        maxValue = -Infinity,
-        minValue = Infinity;
+    var length, indices, maxValue = -Infinity, minValue = Infinity;
     length = pixels.byteLength / pixels.BYTES_PER_ELEMENT / 4;
-    vertices = [];
+    var /** Array<Array<number>> */ vertices = [];
     for (i = 0; i < length * 4; i += 4) {
         x = pixels[i];
         y = pixels[i + 1];
@@ -37,13 +35,13 @@ Export.exportSurface = function(stategl, pixels, name = "surface", big = true) {
         maxValue = Math.max(maxValue, Math.max(z, w));
     }
     d = maxValue - minValue;
-    uvs = [];
+    var /** Array<Array<number>> */ uvs = [];
     for (i = 2; i < length * 4; i += 4) {
         u = (pixels[i] - minValue) / d;
         v = (pixels[i + 1] - minValue) / d;
         uvs.push([u, v]);
     }
-    faces = [];
+    var /** Array<Array<number>> */ faces = [];
     for (i = 1; i <= length; i += 3) {
         j = i + 1;
         k = i + 2;
@@ -59,9 +57,9 @@ Export.exportSurface = function(stategl, pixels, name = "surface", big = true) {
                 uv1[0] === uv2[0] && uv1[1] === uv2[1];
         });
     });
-    indices2 = Array.from(new Set(indices));
-    vertices = indices2.map(function(i) {
-        return vertices[i];
+    var /** @type {Array<number>} */ indices2 = Array.from(new Set(indices));
+    vertices = indices2.map(function(ii) {
+        return vertices[ii];
     });
     uvs = indices2.map(function(i) {
         return uvs[i];
@@ -74,13 +72,13 @@ Export.exportSurface = function(stategl, pixels, name = "surface", big = true) {
         });
     });
 
-    vertices = vertices.map(function(v) {
+    var vertexStrings = vertices.map(/** @param {Array<number>} v */ function(v) {
         return "v " + v[0] + " " + v[1] + " " + v[2];
     });
-    uvs = uvs.map(function(uv) {
+    var uvStrings = uvs.map(/** @param {Array<number>} uv */ function(uv) {
         return "vt " + uv[0] + " " + uv[1];
     });
-    faces = faces.map(function(f) {
+    var faceStrings = faces.map(/** @param {Array<number>} f */ function(f) {
         var i = f[0],
             j = f[1],
             k = f[2];
@@ -88,7 +86,7 @@ Export.exportSurface = function(stategl, pixels, name = "surface", big = true) {
     });
 
     var obj = ["mtllib " + name + ".mtl", "usemtl surface", "s 1"];
-    obj = obj.concat(vertices, uvs, faces);
+    obj = obj.concat(vertexStrings, uvStrings, faceStrings);
     obj = "data:text/plain," + encodeURIComponent(obj.join("\n"));
     Export.download(name + ".obj", obj);
 
@@ -122,17 +120,21 @@ Export.exportSurface = function(stategl, pixels, name = "surface", big = true) {
  */
 Export.pixelsToImageDataURL = function(pixels) {
     var size = Math.sqrt(pixels.length / 4);
-    var canvas = document.createElement("canvas");
+    var canvas =
+        /** @type {HTMLCanvasElement} */ (document.createElement("canvas"));
     canvas.width = size;
     canvas.height = size;
-    var context = canvas.getContext("2d");
+    var context =
+        /** @type {CanvasRenderingContext2D} */ (canvas.getContext("2d"));
     var imageData = context.createImageData(canvas.width, canvas.height);
     imageData.data.set(pixels);
     context.putImageData(imageData, 0, 0);
-    var canvasFlip = document.createElement("canvas");
+    var canvasFlip =
+        /** @type {HTMLCanvasElement} */ (document.createElement("canvas"));
     canvasFlip.width = size;
     canvasFlip.height = size;
-    var contextFlip = canvasFlip.getContext("2d");
+    var contextFlip =
+        /** @type {CanvasRenderingContext2D} */ (canvasFlip.getContext("2d"));
     contextFlip.translate(0, canvasFlip.height - 1);
     contextFlip.scale(1, -1);
     contextFlip.drawImage(canvas, 0, 0);

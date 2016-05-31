@@ -19,6 +19,9 @@ Subdivision.prototype.mkProgram = function(stategl, surface) {
     this.program = stategl.mkProgram(sources);
 };
 
+/** @type {WebGLProgram} */
+Subdivision.prototype.program;
+
 /**
  * @param {StateGL} stategl
  * @param {Surface} surface
@@ -32,7 +35,8 @@ Subdivision.prototype.render = function(stategl, surface, gl) {
     gl.useProgram(program);
 
     // read texture into array
-    var pixels = stategl.readTexture(texturesIn[0]);
+    var pixels =
+        /** @type {Float32Array} */ (stategl.readTexture(texturesIn[0]));
     // prepare subdivision patterns and buffers
     var subdivisionPattern = [
         // 1st pattern (no subdivision)
@@ -97,7 +101,7 @@ Subdivision.prototype.render = function(stategl, surface, gl) {
     var computedRootsLoc = gl.getUniformLocation(this.program, 'computedRoots');
     var sheets = surface.sheets;
     texIs = [];
-    var primitivesWritten;
+    var /** number */ primitivesWritten = 0;
 
     for (var computedRoots = 0; computedRoots <= sheets + 1; computedRoots += 2) {
         i = computedRoots < sheets ? computedRoots / 2 + 1 : 0;
@@ -112,14 +116,13 @@ Subdivision.prototype.render = function(stategl, surface, gl) {
         gl.uniform1i(computedRootsLoc, computedRoots);
 
         // identify and render subdivision patterns
-        var patternIndex, numIndices;
         primitivesWritten = 0;
         for (var j = 0, k = surface.numIndices / 3; j < k; j++) {
             gl.uniform1f(indexOffsetInLocation, 3 * j);
             gl.uniform1f(indexOffsetOutLocation, primitivesWritten);
-            patternIndex = 4 * pixels[12 * j + 3] + 2 * pixels[12 * j + 7] +
-                pixels[12 * j + 11];
-            numIndices = subdivisionPatternCount[patternIndex];
+            var /** number */ patternIndex = 4 * pixels[12 * j + 3] +
+                2 * pixels[12 * j + 7] + pixels[12 * j + 11];
+            var /** number */ numIndices = subdivisionPatternCount[patternIndex];
             gl.drawArrays(gl.POINTS, subdivisionPatternFirst[patternIndex],
                 numIndices);
             primitivesWritten += numIndices;

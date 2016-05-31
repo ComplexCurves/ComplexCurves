@@ -10,8 +10,7 @@ clean:
 
 se_mods = API Assembly CachedSurface Complex ComplexCurves Export GLSL Initial \
 	Matrix Mesh Misc Monomial Parser Polynomial PolynomialParser Quaternion \
-	Stage State3D StateGL Subdivision SubdivisionPre \
-	Surface Term Tokenizer
+	Stage State3D StateGL Subdivision SubdivisionPre Surface Term Tokenizer
 se_srcs = build/resources.js $(se_mods:%=src/js/%.js)
 
 JAVA=java
@@ -25,6 +24,7 @@ se_closure_args = \
 	--create_source_map build/ComplexCurves.js.map \
 	--compilation_level $(se_closure_level) \
 	--warning_level $(se_closure_warnings) \
+ 	--jscomp_warning=reportUnknownTypes \
 	--source_map_format V3 \
 	--source_map_location_mapping "build/|" \
 	--source_map_location_mapping "src/js/|../src/js/" \

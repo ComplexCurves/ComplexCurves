@@ -41,6 +41,9 @@ CachedSurface.prototype.exportSurface = function(stategl, name = "surface", big 
     Export.exportSurface(stategl, new Float32Array(this.positions), name, big);
 };
 
+/** @type {string} */
+CachedSurface.prototype.file;
+
 /**
  * @param {StateGL} stategl
  * @param {string} file
@@ -83,6 +86,9 @@ CachedSurface.prototype.positions = null;
 
 /** @type {WebGLBuffer} */
 CachedSurface.prototype.positionsBuffer = null;
+
+/** @type {WebGLProgram} */
+CachedSurface.prototype.program;
 
 /**
  * @param {StateGL} stategl

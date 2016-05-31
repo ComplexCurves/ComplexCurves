@@ -40,14 +40,7 @@ GLSL.glslComplex = function(z) {
  * @return {string}
  */
 GLSL.glslF = function(p, vx, vy) {
-    function pad(cs) {
-        var n = GLSL.N - cs.length + 1;
-        var zero = GLSL.glslComplex(Complex.zero);
-        for (var i = 0; i < n; i++)
-            cs.push(zero);
-        return cs;
-    }
-    var cs = pad(GLSL.glslCoefficients(p).reverse());
+    var cs = GLSL.pad(GLSL.glslCoefficients(p).reverse());
     var lines = ["void f (in vec2 " + vx + ", out vec2 cs[N+1])", "{"];
     for (var i = 0; i <= GLSL.N; i++)
         lines.push("cs[" + i + "] = " + cs[i] + ";");
@@ -199,7 +192,20 @@ GLSL.glslRho = function(p, vx, vy) {
     return lines.join("\n");
 };
 
+/** @type {number} */
 GLSL.N = 8;
+
+/**
+ * @param {Array<string>} cs
+ * @return {Array<string>}
+ */
+GLSL.pad = function(cs) {
+    var n = GLSL.N - cs.length + 1;
+    var zero = GLSL.glslComplex(Complex.zero());
+    for (var i = 0; i < n; i++)
+        cs.push(zero);
+    return cs;
+};
 
 /**
  * @param {Polynomial} p

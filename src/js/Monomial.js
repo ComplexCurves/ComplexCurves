@@ -1,5 +1,5 @@
 /**
- * @param {Object<string,number>} monomial
+ * @param {!Object<string,number>} monomial
  * @constructor
  */
 function Monomial(monomial) {

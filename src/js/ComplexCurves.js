@@ -67,7 +67,9 @@ function ComplexCurvesFromPolynomial(canvas, polynomial, depth, lat = 0, lon = 0
     return complexCurves;
 }
 
-/** @param {boolean=} big */
+/**
+ * @param {boolean=} big
+ * @return {Array<string>} */
 ComplexCurves.prototype.domainColouring = function(big = false) {
     var gl = this.stategl;
     return gl.renderer.domainColouring(gl, big);
@@ -153,9 +155,11 @@ ComplexCurves.prototype.registerEventHandlers = function() {
         state3d = this.state3d,
         gl = this.stategl;
     var complexCurves = this;
+    /** @type {function(!Event) : undefined} */
     this.keydownHandler = function(evt) {
         complexCurves.keyDown(evt.keyCode); // TODO make portable
     };
+    /** @type {function(!Event) : undefined} */
     this.mousedownHandler = function(evt) {
         evt.preventDefault();
         if (state3d.autorotate)
@@ -163,32 +167,38 @@ ComplexCurves.prototype.registerEventHandlers = function() {
         state3d.mouseDown([evt.clientX, evt.clientY]);
         complexCurves.renderSurface();
     };
+    /** @type {function(!Event) : undefined} */
     this.mousemoveHandler = function(evt) {
         evt.preventDefault();
         state3d.mouseMove(evt.clientX, evt.clientY);
     };
+    /** @type {function(!Event) : undefined} */
     this.mouseupHandler = function(evt) {
         evt.preventDefault();
         state3d.mouseUp();
     };
+    /** @type {function(!Event) : undefined} */
     this.touchstartHandler = function(evt) {
         evt.preventDefault();
-        var touch = evt.touches[0];
+        var touch = /** @type {TouchEvent} */ (evt).touches[0];
         state3d.mouseDown([touch.clientX, touch.clientY]);
         complexCurves.renderSurface();
     };
+    /** @type {function(!Event) : undefined} */
     this.touchmoveHandler = function(evt) {
         evt.preventDefault();
-        var touch = evt.touches[0];
+        var touch = /** @type {TouchEvent} */ (evt).touches[0];
         state3d.mouseMove(touch.clientX, touch.clientY);
     };
+    /** @type {function(!Event) : undefined} */
     this.touchendHandler = function(evt) {
         evt.preventDefault();
         state3d.mouseUp();
     };
+    /** @type {function(!Event) : undefined} */
     this.wheelHandler = function(evt) {
         evt.preventDefault();
-        state3d.mouseWheel(evt.deltaY);
+        state3d.mouseWheel(/** @type {WheelEvent} */ (evt).deltaY);
         complexCurves.renderSurface();
     };
     window.addEventListener('keydown', this.keydownHandler);

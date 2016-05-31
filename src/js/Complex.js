@@ -47,6 +47,9 @@ Complex.div = function(a, b) {
     return new Complex(re / abs2, im / abs2);
 };
 
+/** @type {number} */
+Complex.prototype.im;
+
 /** @type {Complex} */
 Complex.infinity = new Complex(Infinity, Infinity);
 
@@ -92,6 +95,9 @@ Complex.prototype.neg = function() {
 /** @type {Complex} */
 Complex.one = new Complex(1, 0);
 
+/** @type {number} */
+Complex.prototype.re;
+
 /**
  * @param {number} re
  * @return {Complex}
@@ -106,7 +112,7 @@ Complex.real = function(re) {
  */
 Complex.sqrt = function(z) {
     if (Complex.isZero(z))
-        return Complex.zero;
+        return Complex.zero();
     var r = z.abs();
     var s = Math.sign(z.im) || 1;
     return new Complex(Math.sqrt((r + z.re) * 0.5), s * Math.sqrt((r - z.re) *
@@ -122,7 +128,10 @@ Complex.sub = function(a, b) {
     return new Complex(a.re - b.re, a.im - b.im);
 };
 
-/** @type {Complex} */
-Complex.zero = new Complex(0, 0);
+/** @return {Complex} */
+Complex.zero = function () {
+    return new Complex(0, 0);
+};
 
+/** @return {Complex} */
 Complex.prototype.zero = Complex.zero;
