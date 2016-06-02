@@ -224,6 +224,14 @@ ComplexCurves.prototype.renderSurface = function() {
     }
 };
 
+ComplexCurves.prototype.rotateBack = function() {
+    this.rotateLatLong(Math.PI / 2, Math.PI);
+};
+
+ComplexCurves.prototype.rotateBottom = function() {
+    this.rotateLatLong(Math.PI, 0);
+};
+
 ComplexCurves.prototype.rotateFront = function() {
     this.rotateLatLong(Math.PI / 2, 0);
 };
@@ -236,6 +244,10 @@ ComplexCurves.prototype.rotateLatLong = function(lat, lon) {
     this.state3d.autorotate = false;
     this.state3d.target1 = Quaternion.fromLatLong(lat, lon);
     this.renderSurface();
+};
+
+ComplexCurves.prototype.rotateLeft = function() {
+    this.rotateLatLong(Math.PI / 2, -Math.PI / 2);
 };
 
 ComplexCurves.prototype.rotateRight = function() {
