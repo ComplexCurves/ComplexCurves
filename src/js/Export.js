@@ -1,6 +1,46 @@
 var Export = {};
 
 /**
+ * @param {Polynomial} p
+ * @param {StateGL} stategl
+ * @param {boolean=} big
+ * @return {Array<string>}
+ */
+Export.domainColouring = function(p, stategl, big = false) {
+    var gl = stategl.gl;
+    var sources = StateGL.getShaderSources("DomainColouring");
+    var customShaderSrc = GLSL.polynomialShaderSource(p);
+    var commonShaderSrc = /** @type {string} */ (resources["Common.glsl"]);
+    sources[1] = [customShaderSrc, commonShaderSrc, sources[1]].join("\n");
+    var program = stategl.mkProgram(sources);
+    var loc;
+    var vars = p.variableList();
+    var vy = vars.length === 0 ? "y" : vars[vars.length - 1];
+    var numSheets = p.degree(vy);
+    var sheets = [];
+    var pixels;
+
+    /** @param {number} sheet */
+    function renderSheet(sheet) {
+        gl.useProgram(program);
+        gl.bindBuffer(gl.ARRAY_BUFFER, stategl.rttArrayBuffer);
+        gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
+        loc = gl.getUniformLocation(program, "sheet");
+        gl.uniform1i(loc, sheet);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        gl.drawArrays(gl.TRIANGLES, 0, 3);
+    }
+    for (var sheet = 1; sheet <= numSheets; sheet++) {
+        stategl.withRenderToTexture(renderSheet.bind(null, sheet), big);
+        var texture = big ? stategl.rttBigTexture : stategl.rttTexture;
+        pixels = /** @type {Uint8Array} */
+            (stategl.readTexture(texture));
+        sheets[sheet - 1] = Export.pixelsToImageDataURL(pixels);
+    }
+    return sheets;
+};
+
+/**
  * @param {string} name
  * @param {string} url
  */
@@ -12,6 +52,18 @@ Export.download = function(name, url) {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+};
+
+/**
+ * @param {Polynomial} p
+ * @param {StateGL} stategl
+ * @param {string=} name
+ * @param {boolean=} big
+ */
+Export.exportDomainColouring = function(p, stategl, name = "sheet", big = true) {
+    var sheets = Export.domainColouring(p, stategl, big);
+    for(var i = 0, l = sheets.length; i < l; i++)
+        Export.download(name + (i + 1) + ".png", sheets[i]);
 };
 
 /**
