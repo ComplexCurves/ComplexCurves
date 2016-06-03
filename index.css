@@ -1,0 +1,32 @@
+.ui.cards.results {
+	border: none;
+	border-radius: unset;
+	box-shadow: unset;
+	display: flex;
+}
+.ui.cards.results > .card {
+	display: flex;
+	padding: 0;
+}
+.ui.cards.results > .card > .content{
+	margin: 0 !important;
+}
+.ui.cards.results > .card > .image{
+	width: unset;
+	height: unset;
+}
+.ui.embed[class*="1:1"] {
+    position: relative;
+    background-color: #002b36 !important;
+    margin: 0;
+    width: 100%;
+    height: 0;
+    padding-bottom: 100%;
+}
+canvas {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
