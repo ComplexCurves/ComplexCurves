@@ -48,7 +48,7 @@ Complex.div = function(a, b) {
 };
 
 /** @type {number} */
-Complex.prototype.im;
+Complex.prototype.im = 0;
 
 /** @type {Complex} */
 Complex.infinity = new Complex(Infinity, Infinity);
@@ -96,7 +96,7 @@ Complex.prototype.neg = function() {
 Complex.one = new Complex(1, 0);
 
 /** @type {number} */
-Complex.prototype.re;
+Complex.prototype.re = 0;
 
 /**
  * @param {number} re

@@ -79,4 +79,4 @@ Matrix.mul = function(a, b) {
 };
 
 /** @type {Array<Array<Polynomial>>} */
-Matrix.prototype.values;
+Matrix.prototype.values = null;

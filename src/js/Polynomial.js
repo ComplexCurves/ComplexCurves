@@ -418,7 +418,7 @@ Polynomial.sylvester = function(v, p, q) {
 };
 
 /** @type {Array<Term>} */
-Polynomial.prototype.terms;
+Polynomial.prototype.terms = null;
 
 /**
  * @param {string} v

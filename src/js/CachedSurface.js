@@ -51,7 +51,7 @@ CachedSurface.prototype.exportSurface = function(stategl, name = "surface", big 
 };
 
 /** @type {string} */
-CachedSurface.prototype.file;
+CachedSurface.prototype.file = "";
 
 /**
  * @param {StateGL} stategl
@@ -97,7 +97,7 @@ CachedSurface.prototype.positions = null;
 CachedSurface.prototype.positionsBuffer = null;
 
 /** @type {WebGLProgram} */
-CachedSurface.prototype.program;
+CachedSurface.prototype.program = null;
 
 /**
  * @param {StateGL} stategl

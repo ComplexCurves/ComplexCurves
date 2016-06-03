@@ -19,7 +19,7 @@ SubdivisionPre.prototype.mkProgram = function(stategl, surface) {
 };
 
 /** @type {WebGLProgram} */
-SubdivisionPre.prototype.program;
+SubdivisionPre.prototype.program = null;
 
 /**
  * @param {StateGL} stategl

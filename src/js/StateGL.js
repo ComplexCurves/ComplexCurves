@@ -13,7 +13,7 @@ function StateGL(canvas) {
 }
 
 /** @type {number} */
-StateGL.prototype.bigTextureSize;
+StateGL.prototype.bigTextureSize = 8192;
 
 /** @type {boolean} */
 StateGL.prototype.clipping = false;

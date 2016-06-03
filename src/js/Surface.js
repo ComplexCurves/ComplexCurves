@@ -35,10 +35,10 @@ function Surface(stategl, polynomial, depth) {
 }
 
 /** @type {string} */
-Surface.prototype.commonShaderSrc;
+Surface.prototype.commonShaderSrc = "";
 
 /** @type {string} */
-Surface.prototype.customShaderSrc;
+Surface.prototype.customShaderSrc = "";
 
 /**
  * @param {StateGL} stategl
@@ -94,7 +94,7 @@ Surface.prototype.fillIndexBuffer = function(stategl) {
 };
 
 /** @type {WebGLFramebuffer} */
-Surface.prototype.framebuffer;
+Surface.prototype.framebuffer = null;
 
 /** @type {WebGLBuffer} */
 Surface.prototype.indexBuffer = null;
@@ -135,7 +135,7 @@ Surface.prototype.mkTextures = function(stategl) {
 Surface.prototype.numIndices = 0;
 
 /** @type {WebGLProgram} */
-Surface.prototype.program;
+Surface.prototype.program = null;
 
 /**
  * @param {StateGL} stategl
@@ -166,16 +166,16 @@ Surface.prototype.render = function(stategl, gl, state3d) {
 };
 
 /** @type {number} */
-Surface.prototype.sheets;
+Surface.prototype.sheets = 0;
 
 /** @type {Array<WebGLTexture>} */
-Surface.prototype.texturesIn;
+Surface.prototype.texturesIn = [];
 
 /** @type {Array<WebGLTexture>} */
-Surface.prototype.texturesOut;
+Surface.prototype.texturesOut = [];
 
 /** @type {string} */
-Surface.prototype.texturesShaderSrc;
+Surface.prototype.texturesShaderSrc = "";
 
 /**
  * @param {string} src

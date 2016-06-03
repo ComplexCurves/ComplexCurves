@@ -20,10 +20,10 @@ Term.add = function(a, b) {
 };
 
 /** @type {Complex} */
-Term.prototype.coefficient;
+Term.prototype.coefficient = null;
 
 /** @type {Monomial} */
-Term.prototype.monomial;
+Term.prototype.monomial = null;
 
 /**
  * @param {Term} a

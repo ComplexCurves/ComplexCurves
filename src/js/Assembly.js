@@ -20,7 +20,7 @@ Assembly.prototype.mkProgram = function(stategl, surface) {
 };
 
 /** @type {WebGLProgram} */
-Assembly.prototype.program;
+Assembly.prototype.program = null;
 
 /**
  * @param {StateGL} stategl
