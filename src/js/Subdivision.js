@@ -36,7 +36,8 @@ Subdivision.prototype.render = function(stategl, surface, gl) {
 
     // read texture into array
     var pixels =
-        /** @type {Float32Array} */ (stategl.readTexture(texturesIn[0]));
+        /** @type {Float32Array} */
+        (stategl.readTexture(texturesIn[0]));
     // prepare subdivision patterns and buffers
     var subdivisionPattern = [
         // 1st pattern (no subdivision)

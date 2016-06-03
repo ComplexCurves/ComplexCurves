@@ -435,7 +435,7 @@ Polynomial.prototype.variableList = function() {
     var terms = this.terms;
     var vars = [];
     var hasVar = {};
-     for (var i = 0, l = terms.length; i < l; i++) {
+    for (var i = 0, l = terms.length; i < l; i++) {
         var m = terms[i].monomial.value;
         for (var key in m) {
             if (!hasVar[key]) {
@@ -449,7 +449,7 @@ Polynomial.prototype.variableList = function() {
 };
 
 /** @return {Polynomial} */
-Polynomial.zero = function () {
+Polynomial.zero = function() {
     return new Polynomial([]);
 };
 

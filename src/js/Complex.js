@@ -129,7 +129,7 @@ Complex.sub = function(a, b) {
 };
 
 /** @return {Complex} */
-Complex.zero = function () {
+Complex.zero = function() {
     return new Complex(0, 0);
 };
 

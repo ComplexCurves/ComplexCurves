@@ -207,7 +207,7 @@ ComplexCurves.prototype.registerEventHandlers = function() {
     /** @type {function(!Event) : undefined} */
     this.wheelHandler = function(evt) {
         evt.preventDefault();
-        state3d.mouseWheel(/** @type {WheelEvent} */ (evt).deltaY);
+        state3d.mouseWheel( /** @type {WheelEvent} */ (evt).deltaY);
         complexCurves.renderSurface();
     };
     window.addEventListener('keydown', this.keydownHandler);

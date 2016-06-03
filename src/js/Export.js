@@ -62,7 +62,7 @@ Export.download = function(name, url) {
  */
 Export.exportDomainColouring = function(p, stategl, name = "sheet", big = true) {
     var sheets = Export.domainColouring(p, stategl, big);
-    for(var i = 0, l = sheets.length; i < l; i++)
+    for (var i = 0, l = sheets.length; i < l; i++)
         Export.download(name + (i + 1) + ".png", sheets[i]);
 };
 
@@ -74,7 +74,8 @@ Export.exportDomainColouring = function(p, stategl, name = "sheet", big = true) 
  */
 Export.exportSurface = function(stategl, pixels, name = "surface", big = true) {
     var d, i, j, k, u, v, x, y, z, w;
-    var length, indices, maxValue = -Infinity, minValue = Infinity;
+    var length, indices, maxValue = -Infinity,
+        minValue = Infinity;
     length = pixels.byteLength / pixels.BYTES_PER_ELEMENT / 4;
     var /** Array<Array<number>> */ vertices = [];
     for (i = 0; i < length * 4; i += 4) {
@@ -124,13 +125,13 @@ Export.exportSurface = function(stategl, pixels, name = "surface", big = true) {
         });
     });
 
-    var vertexStrings = vertices.map(/** @param {Array<number>} v */ function(v) {
+    var vertexStrings = vertices.map( /** @param {Array<number>} v */ function(v) {
         return "v " + v[0] + " " + v[1] + " " + v[2];
     });
-    var uvStrings = uvs.map(/** @param {Array<number>} uv */ function(uv) {
+    var uvStrings = uvs.map( /** @param {Array<number>} uv */ function(uv) {
         return "vt " + uv[0] + " " + uv[1];
     });
-    var faceStrings = faces.map(/** @param {Array<number>} f */ function(f) {
+    var faceStrings = faces.map( /** @param {Array<number>} f */ function(f) {
         var i = f[0],
             j = f[1],
             k = f[2];
@@ -173,20 +174,24 @@ Export.exportSurface = function(stategl, pixels, name = "surface", big = true) {
 Export.pixelsToImageDataURL = function(pixels) {
     var size = Math.sqrt(pixels.length / 4);
     var canvas =
-        /** @type {HTMLCanvasElement} */ (document.createElement("canvas"));
+        /** @type {HTMLCanvasElement} */
+        (document.createElement("canvas"));
     canvas.width = size;
     canvas.height = size;
     var context =
-        /** @type {CanvasRenderingContext2D} */ (canvas.getContext("2d"));
+        /** @type {CanvasRenderingContext2D} */
+        (canvas.getContext("2d"));
     var imageData = context.createImageData(canvas.width, canvas.height);
     imageData.data.set(pixels);
     context.putImageData(imageData, 0, 0);
     var canvasFlip =
-        /** @type {HTMLCanvasElement} */ (document.createElement("canvas"));
+        /** @type {HTMLCanvasElement} */
+        (document.createElement("canvas"));
     canvasFlip.width = size;
     canvasFlip.height = size;
     var contextFlip =
-        /** @type {CanvasRenderingContext2D} */ (canvasFlip.getContext("2d"));
+        /** @type {CanvasRenderingContext2D} */
+        (canvasFlip.getContext("2d"));
     contextFlip.translate(0, canvasFlip.height - 1);
     contextFlip.scale(1, -1);
     contextFlip.drawImage(canvas, 0, 0);
