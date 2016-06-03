@@ -85,6 +85,15 @@ ComplexCurves.prototype.exportBinary = function(name = "surface.bin") {
  * @param {string=} name
  * @param {boolean=} big
  */
+ComplexCurves.prototype.exportDomainColouring = function(name = "sheet", big = true) {
+    var gl = this.stategl;
+    gl.renderer.exportDomainColouring(gl, name, big);
+};
+
+/**
+ * @param {string=} name
+ * @param {boolean=} big
+ */
 ComplexCurves.prototype.exportScreenshot = function(name = "surface.png", big = false) {
     var complexCurves = this;
     var stategl = this.stategl;

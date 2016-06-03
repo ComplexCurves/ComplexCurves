@@ -15,6 +15,7 @@ ComplexCurves['fromEquation'] = ComplexCurvesFromEquation;
 ComplexCurves['fromFile'] = ComplexCurvesFromFile;
 ComplexCurves.prototype['domainColouring'] = ComplexCurves.prototype.domainColouring;
 ComplexCurves.prototype['exportBinary'] = ComplexCurves.prototype.exportBinary;
+ComplexCurves.prototype['exportDomainColouring'] = ComplexCurves.prototype.exportDomainColouring;
 ComplexCurves.prototype['exportScreenshot'] = ComplexCurves.prototype.exportScreenshot;
 ComplexCurves.prototype['exportSurface'] = ComplexCurves.prototype.exportSurface;
 ComplexCurves.prototype['rotateBack'] = ComplexCurves.prototype.rotateBack;

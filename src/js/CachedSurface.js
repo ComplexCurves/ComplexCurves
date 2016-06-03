@@ -34,6 +34,15 @@ CachedSurface.prototype.exportBinary = function(stategl, name = "surface.bin") {
 
 /**
  * @param {StateGL} stategl
+ * @param {string} name
+ * @param {boolean=} big
+ */
+CachedSurface.prototype.exportDomainColouring = function(stategl, name = "sheet", big = true) {
+    // not supported
+};
+
+/**
+ * @param {StateGL} stategl
  * @param {string=} name
  * @param {boolean=} big
  */
