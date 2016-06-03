@@ -69,22 +69,21 @@ document.addEventListener("DOMContentLoaded", function() {
                     $('.ui.search').search('show results');
 			},
             onSelect: function (example) {
-                if(canvas.singularityExplorer)
-                    canvas.singularityExplorer.unregisterEventHandlers();
+                if(canvas.complexCurves)
+                    canvas.complexCurves.unregisterEventHandlers();
                 var piOver180 = Math.PI / 180;
                 var lat = 75 * piOver180;
                 var lon = 30 * piOver180;
                 if(example.cached) {
-                    canvas.singularityExplorer =
+                    canvas.complexCurves =
                         ComplexCurves.fromFile(canvas,
                             'http://complexcurves.org/models/' + example.id +
                             '.bin', lat, lon);
                 } else {
-                    canvas.singularityExplorer =
-                        ComplexCurves.fromEquation(canvas,
-                            example.equation ||
-                            $('.ui.search').search('get value'),
-                            example.depth || 12, lat, lon);
+                    canvas.complexCurves = ComplexCurves.fromEquation(canvas,
+                        example.equation ||
+                        $('.ui.search').search('get value'),
+                        example.depth || 12, lat, lon);
                 }
                 $('#ComplexCurves').show();
 				allowHiddenResults = true;
