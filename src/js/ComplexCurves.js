@@ -116,60 +116,11 @@ ComplexCurves.prototype.exportSurface = function(name = "surface", big = true) {
     gl.renderer.exportSurface(gl, name, big);
 };
 
-/** @param {number} keyCode */
-ComplexCurves.prototype.keyDown = function(keyCode) {
-    switch (keyCode) {
-        case 65: // 'a'
-            this.toggleAntialiasing();
-            break;
-        case 66: // 'b'
-            this.exportBinary();
-            break;
-        case 67: // 'c'
-            this.toggleClipping();
-            break;
-        case 69: // 'e'
-            this.exportSurface();
-            break;
-        case 79: // 'o'
-            this.toggleOrtho();
-            break;
-        case 82: // 'r'
-            this.toggleAutorotate();
-            break;
-        case 83: // 's'
-            this.exportScreenshot();
-            break;
-        case 84: // 't'
-            this.toggleTransparency();
-            break;
-        case 49: // '1'
-            this.rotateFront();
-            break;
-        case 51: // '3'
-            this.rotateRight();
-            break;
-        case 53: // '5'
-            this.toggleOrtho();
-            break;
-        case 55: // '7'
-            this.rotateTop();
-            break;
-        case 48: // '0'
-            this.rotateLatLong(5 / 12 * Math.PI, Math.PI / 6);
-            break;
-    }
-};
-
 ComplexCurves.prototype.registerEventHandlers = function() {
     var canvas = this.canvas,
         state3d = this.state3d,
         gl = this.stategl;
     var complexCurves = this;
-    /** @type {function(!Event) : undefined} */
-    this.keydownHandler = function(evt) {
-        complexCurves.keyDown(evt.keyCode); // TODO make portable
-    };
     /** @type {function(!Event) : undefined} */
     this.mousedownHandler = function(evt) {
         evt.preventDefault();
@@ -212,7 +163,6 @@ ComplexCurves.prototype.registerEventHandlers = function() {
         state3d.mouseWheel( /** @type {WheelEvent} */ (evt).deltaY);
         complexCurves.renderSurface();
     };
-    window.addEventListener('keydown', this.keydownHandler);
     canvas.addEventListener('mousedown', this.mousedownHandler);
     canvas.addEventListener('mousemove', this.mousemoveHandler);
     canvas.addEventListener('mouseup', this.mouseupHandler);
@@ -338,7 +288,6 @@ ComplexCurves.prototype.toggleTransparency = function() {
 
 ComplexCurves.prototype.unregisterEventHandlers = function() {
     var canvas = this.canvas;
-    window.removeEventListener('keydown', this.keydownHandler);
     canvas.removeEventListener('mousedown', this.mousedownHandler);
     canvas.removeEventListener('mousemove', this.mousemoveHandler);
     canvas.removeEventListener('mouseup', this.mouseupHandler);
