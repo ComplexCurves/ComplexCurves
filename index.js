@@ -48,8 +48,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     var
                         html = '';
                     var value = $('.ui.search').search('get value');
-                    try {
-                        PolynomialParser.parse(value);
+                    if (PolynomialParser.parse(value)) {
                         html = $('.ui.search').search('generate results', {
                             "results": [{
                                 "id": "Custom",
@@ -61,7 +60,7 @@ document.addEventListener("DOMContentLoaded", function() {
                         });
                         $('.ui.search').search('add results', html);
                         return;
-                    } catch (Error) {}
+                    }
                     if (message !== undefined && type !== undefined) {
                         html += '' + '<div class="message ' + type + '">';
                         // message type
