@@ -2,10 +2,11 @@ document.addEventListener("DOMContentLoaded", function() {
     var allowHiddenResults = false;
     var canvas = document.querySelector("canvas");
     var examples;
-    function makeSearchClearable () {
+
+    function makeSearchClearable() {
         var icon = $('.ui.search i');
         icon.attr('class', 'remove link icon');
-        icon.on('click', function () {
+        icon.on('click', function() {
             document.querySelector('.prompt').value = '';
             icon.attr('class', 'search icon').on('click', null);
             $('.ui.search .prompt').focus();
@@ -83,11 +84,12 @@ document.addEventListener("DOMContentLoaded", function() {
                         // message type
                         if (type == 'empty') {
                             html += '' +
-                            '<div class="header">' + 'No Results' + '</div>' +
-                            '<div class="description">' + message + '</div>';
+                                '<div class="header">' + 'No Results' +
+                                '</div>' + '<div class="description">' +
+                                message + '</div>';
                         } else {
                             html += ' <div class="description">' + message +
-                            '</div>';
+                                '</div>';
                         }
                         html += '</div>';
                     }
@@ -102,27 +104,27 @@ document.addEventListener("DOMContentLoaded", function() {
                         $.each(response[fields.results], function(index, result) {
                             if (result[fields.url]) {
                                 html += '<a class="ui card result" href="' +
-                                result[fields.url] + '">';
+                                    result[fields.url] + '">';
                             } else {
                                 html += '<a class="ui card result">';
                             }
                             if (result[fields.image] !== undefined) {
                                 html += '' + '<div class="ui medium image">' +
-                                ' <img src="' + result[fields.image] + '">' +
-                                '</div>';
+                                    ' <img src="' + result[fields.image] +
+                                    '">' + '</div>';
                             }
                             html += '<div class="content">';
                             if (result[fields.price] !== undefined) {
                                 html += '<div class="price">' +
-                                result[fields.price] + '</div>';
+                                    result[fields.price] + '</div>';
                             }
                             if (result[fields.title] !== undefined) {
                                 html += '<div class="title">' +
-                                result[fields.title] + '</div>';
+                                    result[fields.title] + '</div>';
                             }
                             if (result[fields.description] !== undefined) {
                                 html += '<div class="description">' +
-                                result[fields.description] + '</div>';
+                                    result[fields.description] + '</div>';
                             }
                             html += '' + '</div>';
                             html += '</a>';
@@ -130,9 +132,10 @@ document.addEventListener("DOMContentLoaded", function() {
 
                         if (response[fields.action]) {
                             html += '' + '<a href="' +
-                            response[fields.action][fields.actionURL] +
-                            '" class="action">' +
-                            response[fields.action][fields.actionText] + '</a>';
+                                response[fields.action][fields.actionURL] +
+                                '" class="action">' +
+                                response[fields.action][fields.actionText] +
+                                '</a>';
                         }
                         return html;
                     }
@@ -144,7 +147,7 @@ document.addEventListener("DOMContentLoaded", function() {
         $('.ui.search').search('show results');
     };
     req.send();
-    $('.ui.dropdown').dropdown().on('change', function (evt) {
+    $('.ui.dropdown').dropdown().on('change', function(evt) {
         var text = evt.target.value;
         var phi = 5 / 12 * Math.PI;
         var theta = Math.PI / 6;
@@ -192,13 +195,13 @@ document.addEventListener("DOMContentLoaded", function() {
             canvas.complexCurves.setTransparency($(this).context.checked);
         }
     });
-    $('#surfaceButton').on('click', function () {
+    $('#surfaceButton').on('click', function() {
         canvas.complexCurves.exportSurface();
     });
-    $('#screenshotButton').on('click', function () {
+    $('#screenshotButton').on('click', function() {
         canvas.complexCurves.exportScreenshot();
     });
-    $('#domainColouringButton').on('click', function () {
+    $('#domainColouringButton').on('click', function() {
         canvas.complexCurves.exportDomainColouring();
     });
 });
