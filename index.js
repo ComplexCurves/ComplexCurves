@@ -54,9 +54,9 @@ document.addEventListener("DOMContentLoaded", function() {
                             "results": [{
                                 "id": "Custom",
                                 "cached": false,
-                                "title": "Custom equation",
+                                "title": value,
                                 "equation": value,
-                                "description": value
+                                "description": "Custom equation"
                             }]
                         });
                         $('.ui.search').search('add results', html);
