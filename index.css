@@ -23,6 +23,9 @@
     height: 0;
     padding-bottom: 100%;
 }
+.ui.fluid.search {
+    margin: 1.75em 0;
+}
 canvas {
     position: absolute;
     left: 0;
