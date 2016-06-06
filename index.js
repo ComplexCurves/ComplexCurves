@@ -43,6 +43,19 @@ document.addEventListener("DOMContentLoaded", function() {
                 $('#ComplexCurves').show();
                 allowHiddenResults = true;
             },
+            onSearchQuery: function(query) {
+                var icon = $('.ui.search i');
+                if (query === '') {
+                    icon.attr('class', 'search icon');
+                } else {
+                    icon.attr('class', 'remove link icon');
+                    icon.on('click', function () {
+                        document.querySelector('.prompt').value = '';
+                        icon.attr('class', 'search icon').on('click', null);
+                        $('.ui.search .prompt').focus();
+                    });
+                }
+            },
             templates: {
                 message: function(message, type) {
                     var
