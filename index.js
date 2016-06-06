@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     canvas.complexCurves =
                         ComplexCurves.fromFile(canvas,
                             'http://complexcurves.org/models/' + example.id +
-                            '.bin', lat, lon);
+                            '.bin', example.equation, lat, lon);
                 } else {
                     canvas.complexCurves = ComplexCurves.fromEquation(canvas,
                         example.equation ||

@@ -2,11 +2,13 @@
  * @constructor
  * @param {StateGL} stategl
  * @param {string} file
+ * @param {Polynomial=} p
  * @param {function()} onload
  * @implements {Stage}
  */
-function CachedSurface(stategl, file, onload) {
+function CachedSurface(stategl, file, p = null,  onload = function () {}) {
     var cachedSurface = this;
+    cachedSurface.polynomial = p;
     cachedSurface.loadModel(stategl, file, function() {
         cachedSurface.mkBuffer(stategl, cachedSurface.positions);
         cachedSurface.mkProgram(stategl);
@@ -20,8 +22,10 @@ function CachedSurface(stategl, file, onload) {
  * @return {Array<string>}
  */
 CachedSurface.prototype.domainColouring = function(stategl, big = false) {
-    // not supported
-    return [];
+    if (this.polynomial)
+        return Export.domainColouring(this.polynomial, stategl, big);
+    else
+        return [];
 };
 
 /**
@@ -38,7 +42,8 @@ CachedSurface.prototype.exportBinary = function(stategl, name = "surface.bin") {
  * @param {boolean=} big
  */
 CachedSurface.prototype.exportDomainColouring = function(stategl, name = "sheet", big = true) {
-    // not supported
+    if (this.polynomial)
+        Export.exportDomainColouring(this.polynomial, stategl, name, big);
 };
 
 /**
@@ -89,6 +94,9 @@ CachedSurface.prototype.mkProgram = function(stategl) {
     var sources = StateGL.getShaderSources("CachedSurface");
     this.program = stategl.mkProgram(sources);
 };
+
+/** @type {Polynomial} */
+CachedSurface.prototype.polynomial = null;
 
 /** @type {ArrayBuffer} */
 CachedSurface.prototype.positions = null;

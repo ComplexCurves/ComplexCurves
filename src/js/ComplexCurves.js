@@ -34,16 +34,18 @@ export function ComplexCurvesFromEquation(canvas, equation, depth, lat = 0, lon 
 /**
  * @param {HTMLCanvasElement} canvas
  * @param {string} file
+ * @param {string=} equation
  * @param {number=} lat
  * @param {number=} lon
  * @param {boolean=} ortho
  * @param {function()=} onload
  * @return {ComplexCurves}
  */
-export function ComplexCurvesFromFile(canvas, file, lat = 0, lon = 0, ortho = false, onload = function() {}) {
+export function ComplexCurvesFromFile(canvas, file, equation = "", lat = 0, lon = 0, ortho = false, onload = function() {}) {
+    var p = PolynomialParser.eval(PolynomialParser.parse(equation));
     var complexCurves = new ComplexCurves(canvas, lat, lon, ortho);
     var gl = complexCurves.stategl;
-    gl.renderer = new CachedSurface(gl, file, function() {
+    gl.renderer = new CachedSurface(gl, file, p, function() {
         complexCurves.renderSurface();
         onload();
     });
