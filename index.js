@@ -2,6 +2,15 @@ document.addEventListener("DOMContentLoaded", function() {
     var allowHiddenResults = false;
     var canvas = document.querySelector("canvas");
     var examples;
+    function makeSearchClearable () {
+        var icon = $('.ui.search i');
+        icon.attr('class', 'remove link icon');
+        icon.on('click', function () {
+            document.querySelector('.prompt').value = '';
+            icon.attr('class', 'search icon').on('click', null);
+            $('.ui.search .prompt').focus();
+        });
+    }
     var req = new XMLHttpRequest();
     req.open("GET", "examples.json");
     req.responseType = "json";
@@ -42,19 +51,14 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
                 $('#ComplexCurves').show();
                 allowHiddenResults = true;
+                makeSearchClearable();
             },
             onSearchQuery: function(query) {
                 var icon = $('.ui.search i');
                 if (query === '') {
                     icon.attr('class', 'search icon');
-                } else {
-                    icon.attr('class', 'remove link icon');
-                    icon.on('click', function () {
-                        document.querySelector('.prompt').value = '';
-                        icon.attr('class', 'search icon').on('click', null);
-                        $('.ui.search .prompt').focus();
-                    });
-                }
+                } else
+                    makeSearchClearable();
             },
             templates: {
                 message: function(message, type) {
@@ -142,67 +146,59 @@ document.addEventListener("DOMContentLoaded", function() {
     req.send();
     $('.ui.dropdown').dropdown().on('change', function (evt) {
         var text = evt.target.value;
-        var complexCurves = document.querySelector('canvas').complexCurves;
         var phi = 5 / 12 * Math.PI;
         var theta = Math.PI / 6;
         switch (text) {
             case 'Default':
-                complexCurves.rotateLatLong(phi, theta);
+                canvas.complexCurves.rotateLatLong(phi, theta);
                 break;
             case 'Front':
-                complexCurves.rotateFront();
+                canvas.complexCurves.rotateFront();
                 break;
             case 'Back':
-                complexCurves.rotateBack();
+                canvas.complexCurves.rotateBack();
                 break;
             case 'Left':
-                complexCurves.rotateLeft();
+                canvas.complexCurves.rotateLeft();
                 break;
             case 'Right':
-                complexCurves.rotateRight();
+                canvas.complexCurves.rotateRight();
                 break;
             case 'Top':
-                complexCurves.rotateTop();
+                canvas.complexCurves.rotateTop();
                 break;
             case 'Bottom':
-                complexCurves.rotateBottom();
+                canvas.complexCurves.rotateBottom();
                 break;
         }
     });
     $('#autorotateCheckbox').checkbox({
         onChange: function() {
-            var complexCurves = document.querySelector('canvas').complexCurves;
-            complexCurves.setAutorotate($(this).context.checked);
+            canvas.complexCurves.setAutorotate($(this).context.checked);
         }
     });
     $('#clippingCheckbox').checkbox({
         onChange: function() {
-            var complexCurves = document.querySelector('canvas').complexCurves;
-            complexCurves.setClipping($(this).context.checked);
+            canvas.complexCurves.setClipping($(this).context.checked);
         }
     });
     $('#orthoCheckbox').checkbox({
         onChange: function() {
-            var complexCurves = document.querySelector('canvas').complexCurves;
-            complexCurves.setOrtho($(this).context.checked);
+            canvas.complexCurves.setOrtho($(this).context.checked);
         }
     });
     $('#transparencyCheckbox').checkbox({
         onChange: function() {
-            var complexCurves = document.querySelector('canvas').complexCurves;
-            complexCurves.setTransparency($(this).context.checked);
+            canvas.complexCurves.setTransparency($(this).context.checked);
         }
     });
     $('#surfaceButton').on('click', function () {
-        var complexCurves = document.querySelector('canvas').complexCurves;
-        complexCurves.exportSurface();
+        canvas.complexCurves.exportSurface();
     });
     $('#screenshotButton').on('click', function () {
-        var complexCurves = document.querySelector('canvas').complexCurves;
-        complexCurves.exportScreenshot();
+        canvas.complexCurves.exportScreenshot();
     });
     $('#domainColouringButton').on('click', function () {
-        var complexCurves = document.querySelector('canvas').complexCurves;
-        complexCurves.exportDomainColouring();
+        canvas.complexCurves.exportDomainColouring();
     });
 });
