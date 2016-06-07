@@ -151,57 +151,30 @@ document.addEventListener("DOMContentLoaded", function() {
         var text = evt.target.value;
         var phi = 5 / 12 * Math.PI;
         var theta = Math.PI / 6;
-        switch (text) {
-            case 'Default':
-                canvas.complexCurves.rotateLatLong(phi, theta);
-                break;
-            case 'Front':
-                canvas.complexCurves.rotateFront();
-                break;
-            case 'Back':
-                canvas.complexCurves.rotateBack();
-                break;
-            case 'Left':
-                canvas.complexCurves.rotateLeft();
-                break;
-            case 'Right':
-                canvas.complexCurves.rotateRight();
-                break;
-            case 'Top':
-                canvas.complexCurves.rotateTop();
-                break;
-            case 'Bottom':
-                canvas.complexCurves.rotateBottom();
-                break;
-        }
+        if (text === 'Default')
+            canvas.complexCurves.rotateLatLong(phi, theta);
+        else
+            canvas.complexCurves['rotate' + text]();
     });
-    $('#autorotateCheckbox').checkbox({
-        onChange: function() {
-            canvas.complexCurves.setAutorotate($(this).context.checked);
-        }
-    });
-    $('#clippingCheckbox').checkbox({
-        onChange: function() {
-            canvas.complexCurves.setClipping($(this).context.checked);
-        }
-    });
-    $('#orthoCheckbox').checkbox({
-        onChange: function() {
-            canvas.complexCurves.setOrtho($(this).context.checked);
-        }
-    });
-    $('#transparencyCheckbox').checkbox({
-        onChange: function() {
-            canvas.complexCurves.setTransparency($(this).context.checked);
-        }
-    });
-    $('#surfaceButton').on('click', function() {
-        canvas.complexCurves.exportSurface();
-    });
-    $('#screenshotButton').on('click', function() {
-        canvas.complexCurves.exportScreenshot();
-    });
-    $('#domainColouringButton').on('click', function() {
-        canvas.complexCurves.exportDomainColouring();
-    });
+
+    function registerToggleAction(id, action) {
+        $(id).checkbox({
+            onChange: function() {
+                canvas.complexCurves[action]($(this).context.checked);
+            }
+        });
+    }
+
+    function registerExportButton(id, action) {
+        $(id).on('click', function() {
+            canvas.complexCurves[action]();
+        });
+    }
+    registerToggleAction('#autorotateCheckbox', 'setAutorotate');
+    registerToggleAction('#clippingCheckbox', 'setClipping');
+    registerToggleAction('#orthoCheckbox', 'setOrtho');
+    registerToggleAction('#transparencyCheckbox', 'setTransparency');
+    registerExportButton('#surfaceButton', 'exportSurface');
+    registerExportButton('#screenshotButton', 'exportScreenshot');
+    registerExportButton('#domainColouringButton', 'exportDomainColouring');
 });
