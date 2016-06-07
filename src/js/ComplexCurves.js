@@ -203,6 +203,7 @@ ComplexCurves.prototype.rotateFront = function() {
  */
 ComplexCurves.prototype.rotateLatLong = function(lat, lon) {
     this.state3d.autorotate = false;
+    this.state3d.target1 = this.state3d.target0 = this.state3d.rotation;
     this.state3d.target1 = Quaternion.fromLatLong(lat, lon);
     this.renderSurface();
 };
