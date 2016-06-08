@@ -57,6 +57,11 @@ document.addEventListener("DOMContentLoaded", function() {
         }
         allowHiddenResults = true;
         $('.ui.search').search('hide results');
+        $('.ui.dropdown').dropdown('set selected', 'Default');
+        $('#autorotateCheckbox').checkbox('uncheck');
+        $('#clippingCheckbox').checkbox('uncheck');
+        $('#orthoCheckbox').checkbox('uncheck');
+        $('#transparencyCheckbox').checkbox('uncheck');
         $('#ComplexCurves').show();
         currentExample = example ||
             customExample($('.ui.search').search('get value'));
