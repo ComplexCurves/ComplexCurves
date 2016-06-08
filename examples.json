@@ -1,21 +1,21 @@
 [
     {
         "id": "Circle",
-        "cached": false,
+        "cached": true,
         "image": "images/Circle.png",
         "title": "Circle",
         "equation": "x^2+y^2-1"
     },
     {
         "id": "Cissoid",
-        "cached": false,
+        "cached": true,
         "image": "images/Cissoid.png",
         "title": "Cissoid",
         "equation": "x*(x^2+y^2)-(1-x)^3"
     },
     {
         "id": "Conchoid",
-        "cached": false,
+        "cached": true,
         "image": "images/Conchoid.png",
         "title": "Conchoid",
         "equation": "(y+1)^2*(x^2+y^2)-2^2*y^2",
@@ -23,14 +23,14 @@
     },
     {
         "id": "Ellipse",
-        "cached": false,
+        "cached": true,
         "image": "images/Ellipse.png",
         "title": "Ellipse",
         "equation": "x^2+4*y^2-4"
     },
     {
         "id": "FigureEight",
-        "cached": false,
+        "cached": true,
         "image": "images/FigureEight.png",
         "title": "Figure eight",
         "equation": "y^4-y^2+x^2",
@@ -38,28 +38,28 @@
     },
     {
         "id": "Folium",
-        "cached": false,
+        "cached": true,
         "image": "images/Folium.png",
         "title": "Folium of Descartes",
         "equation": "x^3+y^3-3*x*y"
     },
     {
         "id": "Hyperbola",
-        "cached": false,
+        "cached": true,
         "image": "images/Hyperbola.png",
         "title": "Hyperbola",
         "equation": "x^2-y^2-1"
     },
     {
         "id": "Limacon",
-        "cached": false,
+        "cached": true,
         "image": "images/Limacon.png",
         "title": "Limaçon",
         "equation": "4*(x^2+y^2-3*x)^2-9*(x^2+y^2)"
     },
     {
         "id": "Nephroid",
-        "cached": false,
+        "cached": true,
         "image": "images/Nephroid.png",
         "title": "Nephroid",
         "equation": "(x^2+y^2-4)^3-108*y^2",
@@ -67,42 +67,42 @@
     },
     {
         "id": "Parabola",
-        "cached": false,
+        "cached": true,
         "image": "images/Parabola.png",
         "title": "Parabola",
         "equation": "y^2-x"
     },
     {
         "id": "PearShapedQuartic",
-        "cached": false,
+        "cached": true,
         "image": "images/PearShapedQuartic.png",
         "title": "Pear-shaped quartic",
         "equation": "y^4-2*y^3+1^2*x^2"
     },
     {
         "id": "RightStrophoid",
-        "cached": false,
+        "cached": true,
         "image": "images/RightStrophoid.png",
         "title": "Right strophoid",
         "equation": "x^3+x*y^2+y^2-x^2"
     },
     {
         "id": "SemicubicalParabola",
-        "cached": false,
+        "cached": true,
         "image": "images/SemicubicalParabola.png",
         "title": "Semicubical parabola",
         "equation": "y^3-x^2"
     },
     {
         "id": "SquareRoot",
-        "cached": false,
+        "cached": true,
         "image": "images/SquareRoot.png",
         "title": "Square root",
         "equation": "y^2-x"
     },
     {
         "id": "Tricuspoid",
-        "cached": false,
+        "cached": true,
         "image": "images/Tricuspoid.png",
         "title": "Tricuspoid",
         "equation": "y^4+2*x^2*y^2+x^4+24*x*y^2-8*x^3+18*y^2+18*x^2-27",
@@ -110,28 +110,28 @@
     },
     {
         "id": "Trifolium",
-        "cached": false,
+        "cached": true,
         "image": "images/Trifolium.png",
         "title": "Trifolium",
         "equation": "y^4+2*x^2*y^2+x^4-3*x*y^2+x^3"
     },
     {
         "id": "TrisectrixOfMaclaurin",
-        "cached": false,
+        "cached": true,
         "image": "images/TrisectrixOfMaclaurin.png",
         "title": "Trisectrix of Maclaurin",
         "equation": "x*y^2+x^3+y^2-3*x^2"
     },
     {
         "id": "TschirnhausCubic",
-        "cached": false,
+        "cached": true,
         "image": "images/TschirnhausCubic.png",
         "title": "Tschirnhaus cubic",
         "equation": "-x^3+3*y^2+2*x^2-x"
     },
     {
         "id": "WattCurve",
-        "cached": false,
+        "cached": true,
         "image": "images/WattCurve.png",
         "title": "Watt curve",
         "equation": "(x^2+y^2)*(x^2+y^2-2^2-2.5^2+1.5^2)^2+4*2^2*y^2*(x^2+y^2-2.5^2)",
@@ -139,7 +139,7 @@
     },
     {
         "id": "WattCurveReducible",
-        "cached": false,
+        "cached": true,
         "image": "images/WattCurveReducible.png",
         "title": "Watt curve (reducible)",
         "equation": "(x^2+y^2-9)*(x^4+2*x^2*y^2+y^4-9*x^2+7*y^2)",
