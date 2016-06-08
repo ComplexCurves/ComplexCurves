@@ -112,6 +112,39 @@ document.addEventListener("DOMContentLoaded", function() {
             $('.ui.search .prompt').focus();
         });
     }
+    $('.ui.dropdown').dropdown().on('change', function(evt) {
+        var text = evt.target.value;
+        var phi = 5 / 12 * Math.PI;
+        var theta = Math.PI / 6;
+        if (text === 'Default')
+            canvas.complexCurves.rotateLatLong(phi, theta);
+        else
+            canvas.complexCurves['rotate' + text]();
+    });
+
+    function registerToggleAction(id, action) {
+        $(id).checkbox({
+            onChange: function() {
+                canvas.complexCurves[action]($(this).context.checked);
+                updateHash();
+                return true;
+            }
+        });
+    }
+
+    function registerExportButton(id, action) {
+        $(id).on('click', function() {
+            canvas.complexCurves[action]();
+        });
+    }
+    registerToggleAction('#autorotateCheckbox', 'setAutorotate');
+    registerToggleAction('#clippingCheckbox', 'setClipping');
+    registerToggleAction('#orthoCheckbox', 'setOrtho');
+    registerToggleAction('#transparencyCheckbox', 'setTransparency');
+    registerExportButton('#surfaceButton', 'exportSurface');
+    registerExportButton('#screenshotButton', 'exportScreenshot');
+    registerExportButton('#domainColouringButton', 'exportDomainColouring');
+
     var req = new XMLHttpRequest();
     req.open("GET", "examples.json");
     req.responseType = "json";
@@ -221,38 +254,8 @@ document.addEventListener("DOMContentLoaded", function() {
         });
         $('.ui.search').search('search local', '');
         $('.ui.search').search('show results');
+
+        updateState();
     };
     req.send();
-    $('.ui.dropdown').dropdown().on('change', function(evt) {
-        var text = evt.target.value;
-        var phi = 5 / 12 * Math.PI;
-        var theta = Math.PI / 6;
-        if (text === 'Default')
-            canvas.complexCurves.rotateLatLong(phi, theta);
-        else
-            canvas.complexCurves['rotate' + text]();
-    });
-
-    function registerToggleAction(id, action) {
-        $(id).checkbox({
-            onChange: function() {
-                canvas.complexCurves[action]($(this).context.checked);
-                updateHash();
-                return true;
-            }
-        });
-    }
-
-    function registerExportButton(id, action) {
-        $(id).on('click', function() {
-            canvas.complexCurves[action]();
-        });
-    }
-    registerToggleAction('#autorotateCheckbox', 'setAutorotate');
-    registerToggleAction('#clippingCheckbox', 'setClipping');
-    registerToggleAction('#orthoCheckbox', 'setOrtho');
-    registerToggleAction('#transparencyCheckbox', 'setTransparency');
-    registerExportButton('#surfaceButton', 'exportSurface');
-    registerExportButton('#screenshotButton', 'exportScreenshot');
-    registerExportButton('#domainColouringButton', 'exportDomainColouring');
 });
