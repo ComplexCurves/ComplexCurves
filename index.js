@@ -2,6 +2,106 @@ document.addEventListener("DOMContentLoaded", function() {
     var allowHiddenResults = false;
     var canvas = document.querySelector("canvas");
     var examples;
+    var currentExample = null;
+
+    function customExample(equation) {
+        return {
+            "id": "Custom",
+            "cached": false,
+            "title": equation,
+            "equation": equation,
+            "description": "Custom equation"
+        };
+    }
+
+    function updateHash() {
+        if (currentExample === null) {
+            window.location.hash = '';
+            return;
+        }
+        var id = encodeURIComponent(currentExample.id);
+        var options = [];
+        if (id === 'Custom')
+            options.push('equation=' +
+                encodeURIComponent(currentExample.equation));
+        if (!currentExample.cached && id !== 'Custom')
+            options.push('cached=0');
+        if ($('#autorotateCheckbox').checkbox('is checked'))
+            options.push('autorotate=1');
+        if ($('#clippingCheckbox').checkbox('is checked'))
+            options.push('clip=1');
+        if ($('#orthoCheckbox').checkbox('is checked'))
+            options.push('ortho=1');
+        if ($('#transparencyCheckbox').checkbox('is checked'))
+            options.push('transparency=1');
+        var hash = id + (options.length === 0 ? '' : '?' + options.join('&'));
+        window.location.hash = hash;
+    }
+
+    function selectExample(example) {
+        if (canvas.complexCurves)
+            canvas.complexCurves.unregisterEventHandlers();
+        var piOver180 = Math.PI / 180;
+        var lat = 75 * piOver180;
+        var lon = 30 * piOver180;
+        if (example.cached) {
+            canvas.complexCurves =
+                ComplexCurves.fromFile(canvas,
+                    'http://complexcurves.org/models/' + example.id + '.bin',
+                    example.equation, lat, lon);
+        } else {
+            canvas.complexCurves = ComplexCurves.fromEquation(canvas,
+                example.equation ||
+                $('.ui.search').search('get value'),
+                example.depth || 12, lat, lon);
+        }
+        allowHiddenResults = true;
+        $('.ui.search').search('hide results');
+        $('#ComplexCurves').show();
+        currentExample = example ||
+            customExample($('.ui.search').search('get value'));
+        $('.ui.search').search('set value', currentExample.id === 'Custom' ?
+            currentExample.equation : currentExample.id);
+        makeSearchClearable();
+        updateHash();
+    }
+
+    function updateState() {
+        var splitHash = window.location.hash.split('?');
+        var id = splitHash[0].slice(1);
+        var options = {};
+        (splitHash[1] || '').split('&').forEach(function (option) {
+            var split = option.split('=');
+            options[split[0]] = split[1];
+        });
+        if (id === 'Custom') {
+            var equation = decodeURIComponent(options.equation);
+            if (options.equation && currentExample.equation !== equation)
+                selectExample(customExample(equation));
+        } else if (currentExample === null || currentExample.id !== id) {
+            var example = examples.filter(function (ex) {
+                return ex.id === id;
+            })[0];
+            if (example) {
+                example.cached = options.cached !== '0';
+                selectExample(example);
+            }
+        }
+        var clip = !(options.clip !== '1');
+        if (clip !== $('#clippingCheckbox').checkbox('is checked'))
+            $('#clippingCheckbox').checkbox('toggle');
+        var ortho = !(options.ortho !== '1');
+        if (ortho !== $('#orthoCheckbox').checkbox('is checked'))
+            $('#orthoCheckbox').checkbox('toggle');
+        var transparency = !(options.transparency !== '1');
+        if (transparency !== $('#transparencyCheckbox').checkbox('is checked'))
+            $('#transparencyCheckbox').checkbox('toggle');
+        var autorotate = !(options.autorotate !== '1');
+        if (autorotate !== $('#autorotateCheckbox').checkbox('is checked'))
+            $('#autorotateCheckbox').checkbox('toggle');
+    }
+
+    window.addEventListener('hashchange', updateState);
 
     function makeSearchClearable() {
         var icon = $('.ui.search i');
@@ -26,6 +126,8 @@ document.addEventListener("DOMContentLoaded", function() {
             searchFullText: true,
             source: examples,
             onResultsOpen: function() {
+                currentExample = null;
+                updateHash();
                 $('#ComplexCurves').hide();
                 allowHiddenResults = false;
             },
@@ -33,27 +135,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 if (!allowHiddenResults)
                     $('.ui.search').search('show results');
             },
-            onSelect: function(example) {
-                if (canvas.complexCurves)
-                    canvas.complexCurves.unregisterEventHandlers();
-                var piOver180 = Math.PI / 180;
-                var lat = 75 * piOver180;
-                var lon = 30 * piOver180;
-                if (example.cached) {
-                    canvas.complexCurves =
-                        ComplexCurves.fromFile(canvas,
-                            'http://complexcurves.org/models/' + example.id +
-                            '.bin', example.equation, lat, lon);
-                } else {
-                    canvas.complexCurves = ComplexCurves.fromEquation(canvas,
-                        example.equation ||
-                        $('.ui.search').search('get value'),
-                        example.depth || 12, lat, lon);
-                }
-                $('#ComplexCurves').show();
-                allowHiddenResults = true;
-                makeSearchClearable();
-            },
+            onSelect: selectExample,
             onSearchQuery: function(query) {
                 var icon = $('.ui.search i');
                 if (query === '') {
@@ -68,13 +150,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     var value = $('.ui.search').search('get value');
                     if (PolynomialParser.parse(value)) {
                         html = $('.ui.search').search('generate results', {
-                            "results": [{
-                                "id": "Custom",
-                                "cached": false,
-                                "title": value,
-                                "equation": value,
-                                "description": "Custom equation"
-                            }]
+                            "results": [customExample(value)]
                         });
                         $('.ui.search').search('add results', html);
                         return;
@@ -161,6 +237,8 @@ document.addEventListener("DOMContentLoaded", function() {
         $(id).checkbox({
             onChange: function() {
                 canvas.complexCurves[action]($(this).context.checked);
+                updateHash();
+                return true;
             }
         });
     }
