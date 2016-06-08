@@ -4,6 +4,15 @@ document.addEventListener("DOMContentLoaded", function() {
     var examples;
     var currentExample = null;
 
+    function changeView(text) {
+        var phi = 5 / 12 * Math.PI;
+        var theta = Math.PI / 6;
+        if (text === 'Default')
+            canvas.complexCurves.rotateLatLong(phi, theta);
+        else
+            canvas.complexCurves['rotate' + text]();
+    };
+
     function customExample(equation) {
         return {
             "id": "Custom",
@@ -26,6 +35,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 encodeURIComponent(currentExample.equation));
         if (!currentExample.cached && id !== 'Custom')
             options.push('cached=0');
+        var view = $('#viewDropdown').dropdown('get value')[0];
+        if (view !== 'Default')
+            options.push('view=' + view);
         if ($('#autorotateCheckbox').checkbox('is checked'))
             options.push('autorotate=1');
         if ($('#clippingCheckbox').checkbox('is checked'))
@@ -57,7 +69,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
         allowHiddenResults = true;
         $('.ui.search').search('hide results');
-        $('.ui.dropdown').dropdown('set selected', 'Default');
+        $('#viewDropdown').dropdown('set selected', 'Default');
         $('#autorotateCheckbox').checkbox('uncheck');
         $('#clippingCheckbox').checkbox('uncheck');
         $('#orthoCheckbox').checkbox('uncheck');
@@ -75,7 +87,7 @@ document.addEventListener("DOMContentLoaded", function() {
         var splitHash = window.location.hash.split('?');
         var id = splitHash[0].slice(1);
         var options = {};
-        (splitHash[1] || '').split('&').forEach(function (option) {
+        (splitHash[1] || '').split('&').forEach(function(option) {
             var split = option.split('=');
             options[split[0]] = split[1];
         });
@@ -84,7 +96,7 @@ document.addEventListener("DOMContentLoaded", function() {
             if (options.equation && currentExample.equation !== equation)
                 selectExample(customExample(equation));
         } else if (currentExample === null || currentExample.id !== id) {
-            var example = examples.filter(function (ex) {
+            var example = examples.filter(function(ex) {
                 return ex.id === id;
             })[0];
             if (example) {
@@ -92,6 +104,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 selectExample(example);
             }
         }
+        var view = options.view || 'Default';
+        if (view !== $('#viewDropdown').dropdown('get value')[0])
+            $('#viewDropdown').dropdown('set value', view);
         var clip = !(options.clip !== '1');
         if (clip !== $('#clippingCheckbox').checkbox('is checked'))
             $('#clippingCheckbox').checkbox('toggle');
@@ -117,14 +132,10 @@ document.addEventListener("DOMContentLoaded", function() {
             $('.ui.search .prompt').focus();
         });
     }
-    $('.ui.dropdown').dropdown().on('change', function(evt) {
-        var text = evt.target.value;
-        var phi = 5 / 12 * Math.PI;
-        var theta = Math.PI / 6;
-        if (text === 'Default')
-            canvas.complexCurves.rotateLatLong(phi, theta);
-        else
-            canvas.complexCurves['rotate' + text]();
+    $('#viewDropdown').dropdown().on('change', function(evt) {
+        var view = evt.target.value;
+        changeView(view);
+        updateHash();
     });
 
     function registerToggleAction(id, action) {
