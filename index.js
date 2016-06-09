@@ -67,6 +67,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 $('.ui.search').search('get value'),
                 example.depth || 12, lat, lon);
         }
+        if (example.zoom !== undefined)
+            canvas.complexCurves.setZoom(example.zoom);
         allowHiddenResults = true;
         $('.ui.search').search('hide results');
         $('#viewDropdown').dropdown('set selected', 'Default');
