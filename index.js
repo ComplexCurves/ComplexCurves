@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function() {
             canvas.complexCurves.rotateLatLong(phi, theta);
         else
             canvas.complexCurves['rotate' + text]();
-    };
+    }
 
     function customExample(equation) {
         return {
@@ -109,16 +109,16 @@ document.addEventListener("DOMContentLoaded", function() {
         var view = options.view || 'Default';
         if (view !== $('#viewDropdown').dropdown('get value')[0])
             $('#viewDropdown').dropdown('set value', view);
-        var clip = !(options.clip !== '1');
+        var clip = options.clip === '1';
         if (clip !== $('#clippingCheckbox').checkbox('is checked'))
             $('#clippingCheckbox').checkbox('toggle');
-        var ortho = !(options.ortho !== '1');
+        var ortho = options.ortho === '1';
         if (ortho !== $('#orthoCheckbox').checkbox('is checked'))
             $('#orthoCheckbox').checkbox('toggle');
-        var transparency = !(options.transparency !== '1');
+        var transparency = options.transparency === '1';
         if (transparency !== $('#transparencyCheckbox').checkbox('is checked'))
             $('#transparencyCheckbox').checkbox('toggle');
-        var autorotate = !(options.autorotate !== '1');
+        var autorotate = options.autorotate === '1';
         if (autorotate !== $('#autorotateCheckbox').checkbox('is checked'))
             $('#autorotateCheckbox').checkbox('toggle');
     }
