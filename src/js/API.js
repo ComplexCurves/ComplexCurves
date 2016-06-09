@@ -31,6 +31,7 @@ ComplexCurves.prototype['setClipping'] = ComplexCurves.prototype.setClipping;
 ComplexCurves.prototype['setLatLong'] = ComplexCurves.prototype.setLatLong;
 ComplexCurves.prototype['setOrtho'] = ComplexCurves.prototype.setOrtho;
 ComplexCurves.prototype['setTransparency'] = ComplexCurves.prototype.setTransparency;
+ComplexCurves.prototype['setZoom'] = ComplexCurves.prototype.setZoom;
 ComplexCurves.prototype['toggleAntialiasing'] = ComplexCurves.prototype.toggleAntialiasing;
 ComplexCurves.prototype['toggleAutorotate'] = ComplexCurves.prototype.toggleAutorotate;
 ComplexCurves.prototype['toggleClipping'] = ComplexCurves.prototype.toggleClipping;

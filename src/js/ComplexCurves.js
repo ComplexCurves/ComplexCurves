@@ -262,6 +262,12 @@ ComplexCurves.prototype.setTransparency = function(transparency) {
     this.renderSurface();
 };
 
+/** @param {number} zoomLevel */
+ComplexCurves.prototype.setZoom = function(zoomLevel) {
+    this.state3d.updateZoom(zoomLevel || 1);
+    this.renderSurface();
+};
+
 ComplexCurves.prototype.toggleAntialiasing = function() {
     this.stategl.toggleAntialiasing();
     this.renderSurface();
