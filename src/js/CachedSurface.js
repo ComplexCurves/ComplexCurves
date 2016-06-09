@@ -6,7 +6,7 @@
  * @param {function()} onload
  * @implements {Stage}
  */
-function CachedSurface(stategl, file, p = null,  onload = function () {}) {
+function CachedSurface(stategl, file, p = null, onload = function() {}) {
     var cachedSurface = this;
     cachedSurface.polynomial = p;
     cachedSurface.loadModel(stategl, file, function() {
