@@ -3,6 +3,9 @@ all: ComplexCurves
 beautify:
 	js-beautify --max-preserve-newlines 3 --end-with-newline -r -f src/js/*.js
 
+jshint:
+	jshint index.js src/js/*.js
+
 clean:
 	$(RM) -r build
 
