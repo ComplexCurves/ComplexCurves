@@ -19,10 +19,32 @@
 </a>
 <div class="main ui container">
     <div class="ui fluid search">
-        <div class="ui icon input">
-            <input class="prompt" placeholder="Name or equation of curve"
-            type="search">
-            <i class="search icon"></i>
+        <div class="ui centered grid">
+            <div class="ten wide center aligned column">
+                <a href="#"><h1 class="ui image header">
+                    <img class="image" style="margin-right: -0.5em" src="images/Folium.png" />
+                    <div class="content">Complex Curves</div>
+                </h1></a>
+                <div class="ui raised padded segment">
+                    <form class="ui large form">
+                        <h3 class="field">
+                            Visualize complex plane algebraic curves
+                        </h3>
+                        <div class="field">
+                            <div class="ui icon input">
+                                <input class="prompt"
+                                placeholder="Name or equation of curve"
+                                type="search">
+                                <i class="search icon"></i>
+                            </div>
+                        </div>
+                        <div class="field">
+                        for example <a href="#Folium" style="margin: 0 0.2em; font-weight: bold">Folium</a> or 
+                        <a href="#Custom?equation=y%5E3-3*x*y%2Bx%5E3" style="margin: 0 0.2em; font-weight: bold">y^3 - 3 * x * y + x^3</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
         <div class="ui four cards results"></div>
     </div>
