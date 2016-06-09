@@ -88,6 +88,10 @@ document.addEventListener("DOMContentLoaded", function() {
     function updateState() {
         var splitHash = window.location.hash.split('?');
         var id = splitHash[0].slice(1);
+        if (id === '') {
+            clearSearch();
+            return;
+        }
         var options = {};
         (splitHash[1] || '').split('&').forEach(function(option) {
             var split = option.split('=');
@@ -125,15 +129,18 @@ document.addEventListener("DOMContentLoaded", function() {
 
     window.addEventListener('hashchange', updateState);
 
+    function clearSearch() {
+        document.querySelector('.prompt').value = '';
+        $('.ui.search i').attr('class', 'search icon').on('click', null);
+        $('.ui.search .prompt').focus();
+    }
+
     function makeSearchClearable() {
         var icon = $('.ui.search i');
         icon.attr('class', 'remove link icon');
-        icon.on('click', function() {
-            document.querySelector('.prompt').value = '';
-            icon.attr('class', 'search icon').on('click', null);
-            $('.ui.search .prompt').focus();
-        });
+        icon.on('click', clearSearch);
     }
+
     $('#viewDropdown').dropdown().on('change', function(evt) {
         var view = evt.target.value;
         changeView(view);
