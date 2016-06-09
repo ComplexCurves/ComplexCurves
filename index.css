@@ -8,12 +8,16 @@
 	display: flex;
 	padding: 0;
 }
-.ui.cards.results > .card > .content{
+.ui.cards.results > .result > .content {
 	margin: 0 !important;
 }
-.ui.cards.results > .card > .image{
-	width: unset;
-	height: unset;
+.ui.cards.results > .result > .image {
+	height: auto;
+	width: auto;
+}
+.ui.cards.results > .result > .image img {
+    height: initial;
+    width: initial;
 }
 .ui.embed[class*="1:1"] {
     position: relative;
