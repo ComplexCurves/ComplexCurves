@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", function() {
     var canvas = document.querySelector("canvas");
     var examples;
     var currentExample = null;
+    var searchClearable = false;
 
     function changeView(text) {
         var phi = 5 / 12 * Math.PI;
@@ -81,7 +82,7 @@ document.addEventListener("DOMContentLoaded", function() {
             customExample($('.ui.search').search('get value'));
         $('.ui.search').search('set value', currentExample.id === 'Custom' ?
             currentExample.equation : currentExample.id);
-        makeSearchClearable();
+        makeSearchClearable(false);
         updateHash();
     }
 
@@ -99,7 +100,8 @@ document.addEventListener("DOMContentLoaded", function() {
         });
         if (id === 'Custom') {
             var equation = decodeURIComponent(options.equation);
-            if (options.equation && currentExample.equation !== equation)
+            if (options.equation && (!currentExample ||
+                currentExample.equation !== equation))
                 selectExample(customExample(equation));
         } else if (currentExample === null || currentExample.id !== id) {
             var example = examples.filter(function(ex) {
@@ -130,15 +132,66 @@ document.addEventListener("DOMContentLoaded", function() {
     window.addEventListener('hashchange', updateState);
 
     function clearSearch() {
-        document.querySelector('.prompt').value = '';
-        $('.ui.search i').attr('class', 'search icon').on('click', null);
-        $('.ui.search .prompt').focus();
+        if(!searchClearable)
+            return;
+        var searchInput = $('#searchInput').detach();
+        $('#smallSearch').replaceWith(
+        '<div id="largeSearch" class="ui centered grid">' +
+            '<div class="ten wide center aligned column">' +
+                '<a href="#"><h1 class="ui image header">' +
+                    '<img class="image" style="margin-right: -0.5em"' +
+                    ' src="images/Folium.png" />' +
+                    '<div class="content">Complex Curves</div>' +
+                '</h1></a>' +
+                '<div class="ui raised padded segment">' +
+                    '<form class="ui large form">' +
+                        '<h3>Visualize complex plane algebraic curves</h3>' +
+                        '<div class="field">' +
+                            '<div id="searchField" class="ui icon input">' +
+                                '<i class="search icon"></i>' +
+                            '</div>' +
+                        '</div>' +
+                        '<div>for example <a href="#Folium" style="margin:' +
+                        ' 0 0.2em; font-weight: bold">Folium</a> or <a' +
+                        ' href="#Custom?equation=y%5E3-3*x*y%2Bx%5E3"' +
+                        ' style="margin: 0 0.2em; font-weight: bold">y^3 -' +
+                        ' 3 * x * y + x^3</a></div>' +
+                    '</form>' +
+                '</div>' +
+            '</div>' +
+        '</div>'
+        );
+        searchInput.val('');
+        searchInput.prependTo('#searchField');
+        searchClearable = false;
+        searchInput.focus();
     }
 
-    function makeSearchClearable() {
-        var icon = $('.ui.search i');
-        icon.attr('class', 'remove link icon');
-        icon.on('click', clearSearch);
+    function makeSearchClearable(focus = false) {
+        if(searchClearable)
+            return;
+        var searchInput = $('#searchInput').detach();
+        $('#largeSearch').replaceWith(
+        '<div id="smallSearch" class="ui small borderless stackable menu">' +
+            '<a class="item" href="#"><h3 class="ui image header">' +
+                '<img class="image" style="margin-right: -0.5em"' +
+                ' src="images/Folium.png" />' +
+                '<div class="content">Complex Curves</div>' +
+            '</h3></a>' +
+            '<form class="ui vertically fitted large form item">' +
+                '<div class="field">' +
+                    '<div id="searchField" class="ui icon input">' +
+                        '<i class="remove link icon"></i>' +
+                    '</div>' +
+                '</div>' +
+            '</form>' +
+        '</div>'
+        );
+        searchInput.prependTo('#searchField');
+        $('.remove.link.icon').on('click', clearSearch);
+        searchClearable = true;
+        if (focus)
+            searchInput.focus();
     }
 
     $('#viewDropdown').dropdown().on('change', function(evt) {
@@ -184,8 +237,6 @@ document.addEventListener("DOMContentLoaded", function() {
             searchFullText: true,
             source: examples,
             onResultsOpen: function() {
-                currentExample = null;
-                updateHash();
                 $('#ComplexCurves').hide();
                 allowHiddenResults = false;
             },
@@ -195,11 +246,10 @@ document.addEventListener("DOMContentLoaded", function() {
             },
             onSelect: selectExample,
             onSearchQuery: function(query) {
-                var icon = $('.ui.search i');
                 if (query === '') {
-                    icon.attr('class', 'search icon');
+                    clearSearch();
                 } else
-                    makeSearchClearable();
+                    makeSearchClearable(true);
             },
             templates: {
                 message: function(message, type) {
