@@ -202,7 +202,7 @@ document.addEventListener("DOMContentLoaded", function() {
     function registerToggleAction(id, action) {
         $(id).checkbox({
             onChange: function() {
-                canvas.complexCurves[action]($(this).context.checked);
+                canvas.complexCurves[action]($(this).prop('checked'));
                 updateHash();
                 return true;
             }

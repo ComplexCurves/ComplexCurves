@@ -2,6 +2,10 @@
   "name": "complexcurves",
   "version": "0.1.0",
   "description": "A JavaScript library for visualization of complex plane algebraic curves",
+  "dependencies": {
+    "jquery": "^3.0.0",
+    "semantic-ui-css": "^2.1.8"
+  },
   "devDendencies": {
     "js-beautify": "^1.6.3",
     "jshint": "^2.9.2"
