@@ -10,6 +10,9 @@ a.item:hover {
 .ui.menu input {
     width: 20em !important;
 }
+.ui.header .content {
+    padding-left: 0 !important;
+}
 .ui.cards.results {
 	border: none;
 	border-radius: unset;
@@ -41,6 +44,10 @@ a.item:hover {
 }
 .ui.fluid.search {
     margin: 1.75em 0;
+}
+.field a {
+    font-weight: bold;
+    margin: 0 0.2em;
 }
 canvas {
     position: absolute;

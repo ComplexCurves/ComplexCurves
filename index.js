@@ -139,7 +139,7 @@ document.addEventListener("DOMContentLoaded", function() {
         '<div id="largeSearch" class="ui centered grid">' +
             '<div class="ten wide center aligned column">' +
                 '<a href="#"><h1 class="ui image header">' +
-                    '<img class="image" style="margin-right: -0.5em"' +
+                    '<img class="image"' +
                     ' src="images/Folium.png" alt="Folium" />' +
                     '<span class="content">Complex Curves</span>' +
                 '</h1></a>' +
@@ -151,10 +151,9 @@ document.addEventListener("DOMContentLoaded", function() {
                                 '<i class="search icon"></i>' +
                             '</div>' +
                         '</div>' +
-                        '<div>for example <a href="#Folium" style="margin:' +
-                        ' 0 0.2em; font-weight: bold">Folium</a> or <a' +
-                        ' href="#Custom?equation=y%5E3-3*x*y%2Bx%5E3"' +
-                        ' style="margin: 0 0.2em; font-weight: bold">y^3 -' +
+                        '<div class="field">for example <a href="#Folium">' +
+                        'Folium</a> or <a href="#Custom?' +
+                        'equation=y%5E3-3*x*y%2Bx%5E3">y^3 -' +
                         ' 3 * x * y + x^3</a></div>' +
                     '</form>' +
                 '</div>' +
@@ -174,7 +173,7 @@ document.addEventListener("DOMContentLoaded", function() {
         $('#largeSearch').replaceWith(
         '<div id="smallSearch" class="ui small borderless stackable menu">' +
             '<a class="item" href="#"><h3 class="ui image header">' +
-                '<img class="image" style="margin-right: -0.5em"' +
+                '<img class="image"' +
                 ' src="images/Folium.png" alt="Folium" />' +
                 '<span class="content">Complex Curves</span>' +
             '</h3></a>' +
