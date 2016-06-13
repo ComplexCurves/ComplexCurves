@@ -1,7 +1,14 @@
 all: ComplexCurves
 
+beautify_args = --max-preserve-newlines 3 --end-with-newline -r -f src/js/*.js
+
+beautified:
+	git diff --exit-code --name-only
+	js-beautify $(beautify_args)
+	git diff --exit-code
+
 beautify:
-	js-beautify --max-preserve-newlines 3 --end-with-newline -r -f src/js/*.js
+	js-beautify $(beautify_args)
 
 jshint:
 	jshint index.js src/js/*.js
@@ -9,7 +16,7 @@ jshint:
 clean:
 	$(RM) -r build
 
-.PHONY: all beautify clean
+.PHONY: all beautified beautify clean
 
 se_mods = API Assembly CachedSurface Complex ComplexCurves Export GLSL Initial \
 	Matrix Mesh Misc Monomial Parser Polynomial PolynomialParser Quaternion \
@@ -64,3 +71,7 @@ ComplexCurves-dbg:
 	$(MAKE) se_extra_args='$(se_dbg_args)' se_closure_level='WHITESPACE_ONLY' build/ComplexCurves.js
 
 .PHONY: ComplexCurves
+
+test: ComplexCurves beautified jshint
+
+.PHONY: test
