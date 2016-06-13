@@ -101,7 +101,7 @@ document.addEventListener("DOMContentLoaded", function() {
         if (id === 'Custom') {
             var equation = decodeURIComponent(options.equation);
             if (options.equation && (!currentExample ||
-                currentExample.equation !== equation))
+                    currentExample.equation !== equation))
                 selectExample(customExample(equation));
         } else if (currentExample === null || currentExample.id !== id) {
             var example = examples.filter(function(ex) {
@@ -132,33 +132,33 @@ document.addEventListener("DOMContentLoaded", function() {
     window.addEventListener('hashchange', updateState);
 
     function clearSearch() {
-        if(!searchClearable)
+        if (!searchClearable)
             return;
         var searchInput = $('#searchInput').detach();
         $('#smallSearch').replaceWith(
-        '<div id="largeSearch" class="ui centered grid">' +
+            '<div id="largeSearch" class="ui centered grid">' +
             '<div class="ten wide center aligned column">' +
-                '<a href="#"><h1 class="ui image header">' +
-                    '<img class="image"' +
-                    ' src="images/Folium.png" alt="Folium" />' +
-                    '<span class="content">Complex Curves</span>' +
-                '</h1></a>' +
-                '<div class="ui raised padded segment">' +
-                    '<form class="ui large form">' +
-                        '<h3>Visualize complex plane algebraic curves</h3>' +
-                        '<div class="field">' +
-                            '<div id="searchField" class="ui icon input">' +
-                                '<i class="search icon"></i>' +
-                            '</div>' +
-                        '</div>' +
-                        '<div class="field">for example <a href="#Folium">' +
-                        'Folium</a> or <a href="#Custom?' +
-                        'equation=y%5E3-3*x*y%2Bx%5E3">y^3 -' +
-                        ' 3 * x * y + x^3</a></div>' +
-                    '</form>' +
-                '</div>' +
+            '<a href="#"><h1 class="ui image header">' +
+            '<img class="image"' +
+            ' src="images/Folium.png" alt="Folium" />' +
+            '<span class="content">Complex Curves</span>' +
+            '</h1></a>' +
+            '<div class="ui raised padded segment">' +
+            '<form class="ui large form">' +
+            '<h3>Visualize complex plane algebraic curves</h3>' +
+            '<div class="field">' +
+            '<div id="searchField" class="ui icon input">' +
+            '<i class="search icon"></i>' +
             '</div>' +
-        '</div>'
+            '</div>' +
+            '<div class="field">for example <a href="#Folium">' +
+            'Folium</a> or <a href="#Custom?' +
+            'equation=y%5E3-3*x*y%2Bx%5E3">y^3 -' +
+            ' 3 * x * y + x^3</a></div>' +
+            '</form>' +
+            '</div>' +
+            '</div>' +
+            '</div>'
         );
         searchInput.val('');
         searchInput.prependTo('#searchField');
@@ -167,24 +167,24 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function makeSearchClearable(focus = false) {
-        if(searchClearable)
+        if (searchClearable)
             return;
         var searchInput = $('#searchInput').detach();
         $('#largeSearch').replaceWith(
-        '<div id="smallSearch" class="ui small borderless stackable menu">' +
+            '<div id="smallSearch" class="ui small borderless stackable menu">' +
             '<a class="item" href="#"><h3 class="ui image header">' +
-                '<img class="image"' +
-                ' src="images/Folium.png" alt="Folium" />' +
-                '<span class="content">Complex Curves</span>' +
+            '<img class="image"' +
+            ' src="images/Folium.png" alt="Folium" />' +
+            '<span class="content">Complex Curves</span>' +
             '</h3></a>' +
             '<form class="ui vertically fitted large form item">' +
-                '<div class="field">' +
-                    '<div id="searchField" class="ui icon input">' +
-                        '<i class="remove link icon"></i>' +
-                    '</div>' +
-                '</div>' +
+            '<div class="field">' +
+            '<div id="searchField" class="ui icon input">' +
+            '<i class="remove link icon"></i>' +
+            '</div>' +
+            '</div>' +
             '</form>' +
-        '</div>'
+            '</div>'
         );
         searchInput.prependTo('#searchField');
         $('.remove.link.icon').on('click', clearSearch);
