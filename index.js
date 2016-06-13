@@ -140,8 +140,8 @@ document.addEventListener("DOMContentLoaded", function() {
             '<div class="ten wide center aligned column">' +
                 '<a href="#"><h1 class="ui image header">' +
                     '<img class="image" style="margin-right: -0.5em"' +
-                    ' src="images/Folium.png" />' +
-                    '<div class="content">Complex Curves</div>' +
+                    ' src="images/Folium.png" alt="Folium" />' +
+                    '<span class="content">Complex Curves</span>' +
                 '</h1></a>' +
                 '<div class="ui raised padded segment">' +
                     '<form class="ui large form">' +
@@ -175,8 +175,8 @@ document.addEventListener("DOMContentLoaded", function() {
         '<div id="smallSearch" class="ui small borderless stackable menu">' +
             '<a class="item" href="#"><h3 class="ui image header">' +
                 '<img class="image" style="margin-right: -0.5em"' +
-                ' src="images/Folium.png" />' +
-                '<div class="content">Complex Curves</div>' +
+                ' src="images/Folium.png" alt="Folium" />' +
+                '<span class="content">Complex Curves</span>' +
             '</h3></a>' +
             '<form class="ui vertically fitted large form item">' +
                 '<div class="field">' +
@@ -295,7 +295,8 @@ document.addEventListener("DOMContentLoaded", function() {
                             if (result[fields.image] !== undefined) {
                                 html += '' + '<div class="ui medium image">' +
                                     ' <img src="' + result[fields.image] +
-                                    '">' + '</div>';
+                                    '" alt="' + result[fields.title] + '">' +
+                                    '</div>';
                             }
                             html += '<div class="content">';
                             if (result[fields.price] !== undefined) {
