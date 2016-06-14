@@ -29,5 +29,7 @@ git clone --depth 1 . build/deploy || exit 1
     git config user.name "Travis CI"
     git config user.email "travis-ci@complexcurves.org"
     git commit -m "Deployment of Complex Curves ${name}"
+    chmod 600 ../../.travis/github_deploy_key
+    ssh-add ../../.travis/github_deploy_key
     git push git@github.com:kranich/ComplexCurves.git gh-pages:gh-pages
 )
