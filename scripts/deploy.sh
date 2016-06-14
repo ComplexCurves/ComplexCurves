@@ -9,6 +9,7 @@ git clone --depth 1 . build/deploy || exit 1
     git checkout FETCH_HEAD
     git checkout -b gh-pages
     rm -rf * .gitignore .jshintrc .travis.yml
+    echo "complexcurves.org" >CNAME
     mkdir build
     cp ../ComplexCurves.js build/ComplexCurves.js
     cp ../ComplexCurves.js.map build/ComplexCurves.js.map
