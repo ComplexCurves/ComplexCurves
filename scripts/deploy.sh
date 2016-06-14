@@ -1,5 +1,6 @@
 #!/bin/bash
 name=$(git describe --always)
+eval "$(ssh-agent -s)"
 chmod 600 .travis/github_deploy_key
 ssh-add .travis/github_deploy_key
 rm -rf build/deploy
