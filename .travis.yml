@@ -1,7 +1,5 @@
 language: node_js
-node_js:
-- node
-- '0.12'
+node_js: node
 script: make test
 deploy:
 - provider: script
