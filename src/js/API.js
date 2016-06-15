@@ -3,12 +3,12 @@ import {
     ComplexCurvesFromEquation,
     ComplexCurvesFromFile
 }
-from 'src/js/ComplexCurves';
+from './ComplexCurves';
 
 import {
     PolynomialParser
 }
-from 'src/js/PolynomialParser';
+from './PolynomialParser';
 
 window['ComplexCurves'] = ComplexCurves;
 ComplexCurves['fromEquation'] = ComplexCurvesFromEquation;

@@ -1,7 +1,7 @@
 import {
     PolynomialParser
 }
-from 'src/js/PolynomialParser';
+from './PolynomialParser';
 
 /**
  * @param {HTMLCanvasElement} canvas
