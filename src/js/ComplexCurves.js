@@ -3,6 +3,9 @@ import {
 }
 from './PolynomialParser';
 
+var defaultLat = 5 / 12 * Math.PI;
+var defaultLon = Math.PI / 6;
+
 /**
  * @param {HTMLCanvasElement} canvas
  * @param {number=} lat
@@ -10,7 +13,8 @@ from './PolynomialParser';
  * @param {boolean=} ortho
  * @constructor
  */
-export function ComplexCurves(canvas, lat = 0, lon = 0, ortho = false) {
+export function ComplexCurves(canvas, lat = defaultLat, lon = defaultLon,
+ortho = false) {
     this.canvas = canvas;
     this.state3d = State3D.fromLatLong(lat, lon, ortho);
     this.stategl = new StateGL(canvas);
@@ -26,7 +30,8 @@ export function ComplexCurves(canvas, lat = 0, lon = 0, ortho = false) {
  * @param {boolean=} ortho
  * @return {ComplexCurves}
  */
-export function ComplexCurvesFromEquation(canvas, equation, depth, lat = 0, lon = 0, ortho = false) {
+export function ComplexCurvesFromEquation(canvas, equation, depth,
+lat = defaultLat, lon = defaultLon, ortho = false) {
     var p = PolynomialParser.eval(PolynomialParser.parse(equation));
     return ComplexCurvesFromPolynomial(canvas, p, depth, lat, lon, ortho);
 }
@@ -41,7 +46,8 @@ export function ComplexCurvesFromEquation(canvas, equation, depth, lat = 0, lon 
  * @param {function()=} onload
  * @return {ComplexCurves}
  */
-export function ComplexCurvesFromFile(canvas, file, equation = "", lat = 0, lon = 0, ortho = false, onload = function() {}) {
+export function ComplexCurvesFromFile(canvas, file, equation = "",
+lat = defaultLat, lon = defaultLon, ortho = false, onload = function() {}) {
     var p = PolynomialParser.eval(PolynomialParser.parse(equation));
     var complexCurves = new ComplexCurves(canvas, lat, lon, ortho);
     var gl = complexCurves.stategl;
@@ -61,7 +67,8 @@ export function ComplexCurvesFromFile(canvas, file, equation = "", lat = 0, lon 
  * @param {boolean=} ortho
  * @return {ComplexCurves}
  */
-function ComplexCurvesFromPolynomial(canvas, polynomial, depth, lat = 0, lon = 0, ortho = false) {
+function ComplexCurvesFromPolynomial(canvas, polynomial, depth,
+lat = defaultLat, lon = defaultLon, ortho = false) {
     var complexCurves = new ComplexCurves(canvas, lat, lon, ortho);
     var gl = complexCurves.stategl;
     gl.renderer = new Surface(gl, polynomial, depth);
