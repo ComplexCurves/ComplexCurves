@@ -113,6 +113,8 @@ CachedSurface.prototype.program = null;
  * @param {State3D} state3d
  */
 CachedSurface.prototype.render = function(stategl, gl, state3d) {
+    if (!this.program)
+        return;
     gl.useProgram(this.program);
     stategl.updateClipping();
     stategl.updateModelViewProjectionMatrices(state3d);
