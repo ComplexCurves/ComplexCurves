@@ -6,6 +6,11 @@
  * @implements {Stage}
  */
 function Surface(stategl, polynomial, depth) {
+    stategl.getExtension("OES_texture_float");
+    stategl.getExtension("WEBGL_color_buffer_float");
+    if (stategl["OES_texture_float"] === null ||
+        stategl["WEBGL_color_buffer_float"] === null)
+        return;
     this.polynomial = polynomial;
     this.depth = depth;
     var gl = stategl.gl;
@@ -17,11 +22,6 @@ function Surface(stategl, polynomial, depth) {
     surface.commonShaderSrc = resources["Common.glsl"];
     surface.customShaderSrc = GLSL.polynomialShaderSource(polynomial);
     surface.texturesShaderSrc = resources["Textures.glsl"];
-    stategl.getExtension("OES_texture_float");
-    stategl.getExtension("WEBGL_color_buffer_float");
-    if (stategl["OES_texture_float"] === null ||
-        stategl["WEBGL_color_buffer_float"] === null)
-        return;
     surface.mkTextures(stategl);
     surface.initial = new Initial(stategl, surface);
     surface.initial.render(stategl, surface, gl);
@@ -147,6 +147,8 @@ Surface.prototype.program = null;
  * @param {State3D} state3d
  */
 Surface.prototype.render = function(stategl, gl, state3d) {
+    if (!this.program)
+        return;
     gl.useProgram(this.program);
     stategl.updateClipping();
     stategl.updateModelViewProjectionMatrices(state3d);
