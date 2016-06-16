@@ -6,12 +6,7 @@ document.addEventListener("DOMContentLoaded", function() {
     var searchClearable = false;
 
     function changeView(text) {
-        var phi = 5 / 12 * Math.PI;
-        var theta = Math.PI / 6;
-        if (text === 'Default')
-            canvas.complexCurves.rotateLatLong(phi, theta);
-        else
-            canvas.complexCurves['rotate' + text]();
+        canvas.complexCurves['rotate' + text]();
     }
 
     function customExample(equation) {

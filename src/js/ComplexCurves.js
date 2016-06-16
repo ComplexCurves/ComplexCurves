@@ -200,6 +200,10 @@ ComplexCurves.prototype.rotateBottom = function() {
     this.rotateLatLong(Math.PI, 0);
 };
 
+ComplexCurves.prototype.rotateDefault = function() {
+    this.rotateLatLong(defaultLat, defaultLon);
+};
+
 ComplexCurves.prototype.rotateFront = function() {
     this.rotateLatLong(Math.PI / 2, 0);
 };

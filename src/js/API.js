@@ -20,6 +20,7 @@ ComplexCurves.prototype['exportScreenshot'] = ComplexCurves.prototype.exportScre
 ComplexCurves.prototype['exportSurface'] = ComplexCurves.prototype.exportSurface;
 ComplexCurves.prototype['rotateBack'] = ComplexCurves.prototype.rotateBack;
 ComplexCurves.prototype['rotateBottom'] = ComplexCurves.prototype.rotateBottom;
+ComplexCurves.prototype['rotateDefault'] = ComplexCurves.prototype.rotateDefault;
 ComplexCurves.prototype['rotateFront'] = ComplexCurves.prototype.rotateFront;
 ComplexCurves.prototype['rotateLatLong'] = ComplexCurves.prototype.rotateLatLong;
 ComplexCurves.prototype['rotateLeft'] = ComplexCurves.prototype.rotateLeft;
