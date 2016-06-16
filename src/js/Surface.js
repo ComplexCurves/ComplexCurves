@@ -18,6 +18,10 @@ function Surface(stategl, polynomial, depth) {
     surface.customShaderSrc = GLSL.polynomialShaderSource(polynomial);
     surface.texturesShaderSrc = resources["Textures.glsl"];
     stategl.getExtension("OES_texture_float");
+    stategl.getExtension("WEBGL_color_buffer_float");
+    if (stategl["OES_texture_float"] === null ||
+        stategl["WEBGL_color_buffer_float"] === null)
+        return;
     surface.mkTextures(stategl);
     surface.initial = new Initial(stategl, surface);
     surface.initial.render(stategl, surface, gl);
