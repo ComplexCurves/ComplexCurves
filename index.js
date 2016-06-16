@@ -161,7 +161,9 @@ document.addEventListener("DOMContentLoaded", function() {
         searchInput.focus();
     }
 
-    function makeSearchClearable(focus = false) {
+    function makeSearchClearable(focus) {
+        if (!focus)
+            focus = false;
         if (searchClearable)
             return;
         var searchInput = $('#searchInput').detach();
