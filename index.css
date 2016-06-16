@@ -15,8 +15,8 @@ a.item:hover {
 }
 .ui.cards.results {
 	border: none;
-	border-radius: unset;
-	box-shadow: unset;
+	border-radius: 0;
+	box-shadow: none;
 	display: flex;
 }
 .ui.cards.results > .card {

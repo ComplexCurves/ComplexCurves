@@ -159,6 +159,8 @@ document.addEventListener("DOMContentLoaded", function() {
         searchInput.prependTo('#searchField');
         searchClearable = false;
         searchInput.focus();
+        $('.ui.search').search('search local', '');
+        $('.ui.search').search('show results');
     }
 
     function makeSearchClearable(focus) {
