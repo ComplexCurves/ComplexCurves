@@ -14,7 +14,7 @@ var defaultLon = Math.PI / 6;
  * @constructor
  */
 export function ComplexCurves(canvas, lat = defaultLat, lon = defaultLon,
-ortho = false) {
+    ortho = false) {
     this.canvas = canvas;
     this.state3d = State3D.fromLatLong(lat, lon, ortho);
     this.stategl = new StateGL(canvas);
@@ -31,7 +31,7 @@ ortho = false) {
  * @return {ComplexCurves}
  */
 export function ComplexCurvesFromEquation(canvas, equation, depth,
-lat = defaultLat, lon = defaultLon, ortho = false) {
+    lat = defaultLat, lon = defaultLon, ortho = false) {
     var p = PolynomialParser.eval(PolynomialParser.parse(equation));
     return ComplexCurvesFromPolynomial(canvas, p, depth, lat, lon, ortho);
 }
@@ -47,7 +47,7 @@ lat = defaultLat, lon = defaultLon, ortho = false) {
  * @return {ComplexCurves}
  */
 export function ComplexCurvesFromFile(canvas, file, equation = "",
-lat = defaultLat, lon = defaultLon, ortho = false, onload = function() {}) {
+    lat = defaultLat, lon = defaultLon, ortho = false, onload = function() {}) {
     var p = PolynomialParser.eval(PolynomialParser.parse(equation));
     var complexCurves = new ComplexCurves(canvas, lat, lon, ortho);
     var gl = complexCurves.stategl;
@@ -68,7 +68,7 @@ lat = defaultLat, lon = defaultLon, ortho = false, onload = function() {}) {
  * @return {ComplexCurves}
  */
 function ComplexCurvesFromPolynomial(canvas, polynomial, depth,
-lat = defaultLat, lon = defaultLon, ortho = false) {
+    lat = defaultLat, lon = defaultLon, ortho = false) {
     var complexCurves = new ComplexCurves(canvas, lat, lon, ortho);
     var gl = complexCurves.stategl;
     gl.renderer = new Surface(gl, polynomial, depth);
@@ -94,7 +94,8 @@ ComplexCurves.prototype.exportBinary = function(name = "surface.bin") {
  * @param {string=} name
  * @param {boolean=} big
  */
-ComplexCurves.prototype.exportDomainColouring = function(name = "sheet", big = true) {
+ComplexCurves.prototype.exportDomainColouring = function(name = "sheet",
+    big = true) {
     var gl = this.stategl;
     gl.renderer.exportDomainColouring(gl, name, big);
 };
@@ -103,7 +104,8 @@ ComplexCurves.prototype.exportDomainColouring = function(name = "sheet", big = t
  * @param {string=} name
  * @param {boolean=} big
  */
-ComplexCurves.prototype.exportScreenshot = function(name = "surface.png", big = false) {
+ComplexCurves.prototype.exportScreenshot = function(name = "surface.png",
+    big = false) {
     var complexCurves = this;
     var stategl = this.stategl;
     stategl.withRenderToTexture(function() {
