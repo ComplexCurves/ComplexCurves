@@ -331,7 +331,8 @@ document.addEventListener("DOMContentLoaded", function() {
         $('.ui.search').search('search local', '');
         $('.ui.search').search('show results');
 
-        $('#searchInput').on('keyup', function(e) {
+        $('#searchInput').on('keydown', function(e) {
+            e.stopPropagation();
             if(e.key === "Enter" || e.code === "Enter" || e.keyCode === 13) {
                 var results = $('.ui.search').search('get results');
                 var result = results[0] ||
