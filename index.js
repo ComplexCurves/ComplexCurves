@@ -331,6 +331,17 @@ document.addEventListener("DOMContentLoaded", function() {
         $('.ui.search').search('search local', '');
         $('.ui.search').search('show results');
 
+        $('#searchInput').on('keyup', function(e) {
+            if(e.key === "Enter" || e.code === "Enter" || e.keyCode === 13) {
+                var results = $('.ui.search').search('get results');
+                var result = results[0] ||
+                    customExample($('.ui.search').search('get value'));
+                if (result)
+                    selectExample(result);
+                return false;
+            }
+        });
+
         updateState();
     };
     req.send();
