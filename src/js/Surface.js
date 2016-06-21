@@ -7,13 +7,21 @@
  */
 function Surface(stategl, polynomial, depth) {
     stategl.getExtension("OES_texture_float");
-    stategl.getExtension("WEBGL_color_buffer_float");
-    if (stategl["OES_texture_float"] === null ||
-        stategl["WEBGL_color_buffer_float"] === null)
+    var gl = stategl.gl;
+    if (gl.getSupportedExtensions().indexOf("WEBGL_color_buffer_float") !== -1)
+        stategl.getExtension("WEBGL_color_buffer_float");
+
+    // test whether readPixels works for float textures
+    this.mkTextures(stategl);
+    var pixels = stategl.readTexture(this.texturesIn[0]);
+    if (pixels === null) {
+        console.log('Reading from float textures not supported.');
+        console.log('Please try another browser or platform.');
         return;
+    }
+
     this.polynomial = polynomial;
     this.depth = depth;
-    var gl = stategl.gl;
     var surface = this;
     var p = surface.polynomial;
     var vars = p.variableList();
@@ -22,7 +30,6 @@ function Surface(stategl, polynomial, depth) {
     surface.commonShaderSrc = resources["Common.glsl"];
     surface.customShaderSrc = GLSL.polynomialShaderSource(polynomial);
     surface.texturesShaderSrc = resources["Textures.glsl"];
-    surface.mkTextures(stategl);
     surface.initial = new Initial(stategl, surface);
     surface.initial.render(stategl, surface, gl);
     surface.subdivisionPre = new SubdivisionPre(stategl, surface);

@@ -29,7 +29,8 @@ StateGL.prototype.getExtension = function(name) {
     if (this[name] === undefined) {
         this[name] = this.gl.getExtension(name);
         if (!this[name]) {
-            alert('Extension ' + name + ' not supported on your device');
+            console.log('Required extension ' + name + ' not supported.');
+            console.log('Please try another browser or platform.');
             return;
         }
     }
@@ -150,7 +151,7 @@ StateGL.prototype.printTexture = function(texture, length, offset = 0) {
  * @param {WebGLTexture} texture
  * @param {number=} length
  * @param {number=} offset
- * @return {Float32Array|Uint8Array}
+ * @return {Float32Array|Uint8Array|null}
  */
 StateGL.prototype.readTexture = function(texture, length, offset = 0) {
     var gl = this.gl;
@@ -166,21 +167,27 @@ StateGL.prototype.readTexture = function(texture, length, offset = 0) {
     var pixels;
     if (texture === this.rttTexture) {
         pixels = new Uint8Array(4 * 2048 * 2048);
+        gl.getError();
         gl.readPixels(0, 0, 2048, 2048, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
     } else if (texture === this.rttBigTexture) {
         var bigTextureSize = this.bigTextureSize;
         pixels = new Uint8Array(4 * bigTextureSize * bigTextureSize);
+        gl.getError();
         gl.readPixels(0, 0, bigTextureSize, bigTextureSize, gl.RGBA,
             gl.UNSIGNED_BYTE, pixels);
     } else {
         pixels = new Float32Array(4 * 2048 * 2048);
+        gl.getError();
         gl.readPixels(0, 0, 2048, 2048, gl.RGBA, gl.FLOAT, pixels);
     }
+    var err = gl.getError();
     gl.bindTexture(gl.TEXTURE_2D, null);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D,
         null, 0);
     gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
     gl.deleteFramebuffer(readBuffer);
+    if (err !== gl.NO_ERROR)
+        return null;
     if (length) {
         return pixels.subarray(offset, offset + length);
     } else {
