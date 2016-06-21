@@ -43,7 +43,6 @@ se_closure_args = \
 	--js_output_file $@ \
 	$(se_extra_args) \
 	--js $(se_srcs)
-se_dbg_args = --formatting PRETTY_PRINT
 
 build/resources.js: $(wildcard src/glsl/*)
 	mkdir -p $(@D)
@@ -65,10 +64,6 @@ compiler.jar:
 	rm compiler-$(CLOSURE_VERSION).zip
 
 ComplexCurves: build/ComplexCurves.js
-
-ComplexCurves-dbg:
-	$(RM) build/ComplexCurves.js
-	$(MAKE) se_extra_args='$(se_dbg_args)' se_closure_level='WHITESPACE_ONLY' build/ComplexCurves.js
 
 .PHONY: ComplexCurves
 
