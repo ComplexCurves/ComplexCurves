@@ -77,7 +77,7 @@ document.addEventListener("DOMContentLoaded", function() {
         currentExample = example ||
             customExample($('.ui.search').search('get value'));
         $('.ui.search').search('set value', currentExample.id === 'Custom' ?
-            currentExample.equation : currentExample.id);
+            currentExample.equation : currentExample.title);
         makeSearchClearable(false);
         updateHash();
     }
