@@ -10,13 +10,13 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function customExample(equation) {
-        return {
+        return PolynomialParser.parse(equation) ? {
             "id": "Custom",
             "cached": false,
             "title": equation,
             "equation": equation,
             "description": "Custom equation"
-        };
+        } : null;
     }
 
     function updateHash() {
@@ -47,6 +47,9 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function selectExample(example) {
+        example = example || customExample($('.ui.search').search('get value'));
+        if (!example)
+            return;
         if (canvas.complexCurves)
             canvas.complexCurves.unregisterEventHandlers();
         var piOver180 = Math.PI / 180;
@@ -59,9 +62,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     example.equation, lat, lon);
         } else {
             canvas.complexCurves = ComplexCurves.fromEquation(canvas,
-                example.equation ||
-                $('.ui.search').search('get value'),
-                example.depth || 12, lat, lon);
+                example.equation, example.depth || 12, lat, lon);
         }
         if (example.zoom !== undefined)
             canvas.complexCurves.setZoom(example.zoom);
@@ -254,9 +255,10 @@ document.addEventListener("DOMContentLoaded", function() {
                     var
                         html = '';
                     var value = $('.ui.search').search('get value');
-                    if (PolynomialParser.parse(value)) {
+                    var example = customExample(value);
+                    if (example) {
                         html = $('.ui.search').search('generate results', {
-                            "results": [customExample(value)]
+                            "results": [example]
                         });
                         $('.ui.search').search('add results', html);
                         return;
