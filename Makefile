@@ -56,7 +56,7 @@ build/resources.js: $(wildcard src/glsl/*)
 build/ComplexCurves.js: compiler.jar $(se_srcs) src/js/ComplexCurves.js.wrapper
 	$(CLOSURE) $(se_closure_args)
 
-CLOSURE_VERSION=20160517
+CLOSURE_VERSION=20160619
 
 compiler.jar:
 	wget http://dl.google.com/closure-compiler/compiler-$(CLOSURE_VERSION).zip
