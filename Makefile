@@ -18,22 +18,22 @@ clean:
 
 .PHONY: all beautified beautify clean
 
-se_mods = API Assembly CachedSurface Complex ComplexCurves Export GLSL Initial \
+cc_mods = API Assembly CachedSurface Complex ComplexCurves Export GLSL Initial \
 	Matrix Mesh Misc Monomial Parser Polynomial PolynomialParser Quaternion \
 	Stage State3D StateGL Subdivision SubdivisionPre Surface Term Tokenizer
-se_srcs = build/resources.js $(se_mods:%=src/js/%.js)
+cc_srcs = build/resources.js $(cc_mods:%=src/js/%.js)
 
 JAVA=java
 CLOSURE=$(JAVA) -jar compiler.jar
-se_closure_level = ADVANCED
-se_closure_warnings = VERBOSE
-se_closure_args = \
+cc_closure_level = ADVANCED
+cc_closure_warnings = VERBOSE
+cc_closure_args = \
 	--language_in ECMASCRIPT6_STRICT \
 	--language_out ECMASCRIPT5_STRICT \
 	--dependency_mode LOOSE \
 	--create_source_map build/ComplexCurves.js.map \
-	--compilation_level $(se_closure_level) \
-	--warning_level $(se_closure_warnings) \
+	--compilation_level $(cc_closure_level) \
+	--warning_level $(cc_closure_warnings) \
  	--jscomp_warning=reportUnknownTypes \
 	--source_map_format V3 \
 	--source_map_location_mapping "build/|" \
@@ -41,8 +41,8 @@ se_closure_args = \
 	--output_wrapper_file src/js/ComplexCurves.js.wrapper \
 	--summary_detail_level 3 \
 	--js_output_file $@ \
-	$(se_extra_args) \
-	--js $(se_srcs)
+	$(cc_extra_args) \
+	--js $(cc_srcs)
 
 build/resources.js: $(wildcard src/glsl/*)
 	mkdir -p $(@D)
@@ -53,8 +53,8 @@ build/resources.js: $(wildcard src/glsl/*)
 		echo '`;' >> $@; \
 		done
 
-build/ComplexCurves.js: compiler.jar $(se_srcs) src/js/ComplexCurves.js.wrapper
-	$(CLOSURE) $(se_closure_args)
+build/ComplexCurves.js: compiler.jar $(cc_srcs) src/js/ComplexCurves.js.wrapper
+	$(CLOSURE) $(cc_closure_args)
 
 CLOSURE_VERSION=20160619
 
