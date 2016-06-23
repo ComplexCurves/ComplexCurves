@@ -4,8 +4,8 @@ precision highp float;
 precision mediump float;
 #endif
 attribute vec4 indexBarycentric;
-uniform float indexOffsetIn;
-uniform float indexOffsetOut;
+attribute float indexOffsetIn;
+attribute float indexOffsetOut;
 varying vec3 barycentric;
 varying vec2 texCoord[3];
 varying vec2 texCoordOut;
