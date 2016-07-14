@@ -12,9 +12,8 @@ varying float which;
 void main (void) {
     gl_Position = indexedPosition (index);
     sheet = floor (index / numIndices);
-    float j = mod (index, 3.0);
-    texCoord[0] = uvPosition (mod (index - j, numIndices));
-    texCoord[1] = uvPosition (mod (index - j + 1.0, numIndices));
-    texCoord[2] = uvPosition (mod (index - j + 2.0, numIndices));
-    which = j;
+    which = mod (index, 3.0);
+    texCoord[0] = uvPosition (mod (index - which, numIndices));
+    texCoord[1] = uvPosition (mod (index - which + 1.0, numIndices));
+    texCoord[2] = uvPosition (mod (index - which + 2.0, numIndices));
 }
