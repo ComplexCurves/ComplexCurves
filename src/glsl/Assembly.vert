@@ -5,15 +5,14 @@ precision mediump float;
 #endif
 attribute float index;
 uniform float numIndices;
-varying float sheet;
+uniform float sheet;
 varying vec2 texCoord[3];
 varying float which;
 
 void main (void) {
-    gl_Position = indexedPosition (index);
-    sheet = floor (index / numIndices);
+    gl_Position = indexedPosition (sheet * numIndices + index);
     which = mod (index, 3.0);
-    texCoord[0] = uvPosition (mod (index - which, numIndices));
-    texCoord[1] = uvPosition (mod (index - which + 1.0, numIndices));
-    texCoord[2] = uvPosition (mod (index - which + 2.0, numIndices));
+    texCoord[0] = uvPosition (index - which);
+    texCoord[1] = uvPosition (index - which + 1.0);
+    texCoord[2] = uvPosition (index - which + 2.0);
 }

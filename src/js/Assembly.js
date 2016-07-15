@@ -33,9 +33,9 @@ Assembly.prototype.render = function(stategl, surface, gl) {
     gl.useProgram(this.program);
 
     var numIndicesLoc = gl.getUniformLocation(this.program, 'numIndices');
-    gl.uniform1f(numIndicesLoc, surface.numIndices);
+    var numIndices = surface.numIndices;
+    gl.uniform1f(numIndicesLoc, numIndices);
 
-    surface.numIndices *= surface.sheets;
     surface.fillIndexBuffer(stategl);
     gl.vertexAttribPointer(0, 1, gl.FLOAT, false, 0, 0);
 
@@ -58,7 +58,13 @@ Assembly.prototype.render = function(stategl, surface, gl) {
     gl.uniform1iv(samplersLocation, texIs);
     gl.disable(gl.DEPTH_TEST);
     gl.viewport(0, 0, 2048, 2048);
-    gl.drawArrays(gl.POINTS, 0, surface.numIndices);
+
+    var sheetLoc = gl.getUniformLocation(this.program, 'sheet');
+    for (var sheet = 0, sheets = surface.sheets; sheet < sheets; sheet++) {
+        gl.uniform1f(sheetLoc, sheet);
+        gl.drawArrays(gl.POINTS, 0, numIndices);
+    }
+
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D,
         null, 0);
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
@@ -66,4 +72,6 @@ Assembly.prototype.render = function(stategl, surface, gl) {
     var texturesTmp = surface.texturesIn;
     surface.texturesIn = surface.texturesOut;
     surface.texturesOut = texturesTmp;
+    surface.numIndices *= surface.sheets;
+    surface.fillIndexBuffer(stategl);
 };
