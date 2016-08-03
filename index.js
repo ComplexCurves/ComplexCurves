@@ -193,7 +193,8 @@ document.addEventListener("DOMContentLoaded", function() {
             searchInput.focus();
     }
 
-    $('#viewDropdown').dropdown().on('change', function(evt) {
+    $('#viewDropdown').dropdown({ allowReselection: true }).on('change',
+    function(evt) {
         var view = evt.target.value;
         changeView(view);
         updateHash();
