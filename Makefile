@@ -24,7 +24,8 @@ cc_mods = API Assembly CachedSurface Complex ComplexCurves Export GLSL Initial \
 cc_srcs = build/resources.js $(cc_mods:%=src/js/%.js)
 
 JAVA=java
-CLOSURE=$(JAVA) -jar compiler.jar
+CLOSURE_VERSION=20160822
+CLOSURE=$(JAVA) -jar closure-compiler-v$(CLOSURE_VERSION).jar
 cc_closure_level = ADVANCED
 cc_closure_warnings = VERBOSE
 cc_closure_args = \
@@ -35,6 +36,7 @@ cc_closure_args = \
 	--compilation_level $(cc_closure_level) \
 	--warning_level $(cc_closure_warnings) \
  	--jscomp_warning=reportUnknownTypes \
+	--rewrite_polyfills=false \
 	--source_map_format V3 \
 	--source_map_location_mapping "build/|" \
 	--source_map_location_mapping "src/js/|../src/js/" \
@@ -53,14 +55,14 @@ build/resources.js: $(wildcard src/glsl/*)
 		echo '`;' >> $@; \
 		done
 
-build/ComplexCurves.js: compiler.jar $(cc_srcs) src/js/ComplexCurves.js.wrapper
+build/ComplexCurves.js: closure-compiler $(cc_srcs) src/js/ComplexCurves.js.wrapper
 	$(CLOSURE) $(cc_closure_args)
 
-CLOSURE_VERSION=20160619
+closure-compiler: closure-compiler-v$(CLOSURE_VERSION).jar
 
-compiler.jar:
+closure-compiler-v$(CLOSURE_VERSION).jar:
 	wget http://dl.google.com/closure-compiler/compiler-$(CLOSURE_VERSION).zip
-	unzip compiler-$(CLOSURE_VERSION).zip compiler.jar
+	unzip compiler-$(CLOSURE_VERSION).zip closure-compiler-v$(CLOSURE_VERSION).jar
 	rm compiler-$(CLOSURE_VERSION).zip
 
 ComplexCurves: build/ComplexCurves.js
