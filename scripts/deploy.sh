@@ -11,6 +11,7 @@ git clone --depth 1 git@github.com:kranich/ComplexCurves.git build/deploy || exi
     git fetch origin gh-pages
     git checkout FETCH_HEAD
     git checkout -b gh-pages
+    mv ./models ../models
     rm -rf * .gitignore .jshintrc .travis.yml .travis
     echo "complexcurves.org" >CNAME
     cp ../../README.md ./README.md
@@ -23,7 +24,7 @@ git clone --depth 1 git@github.com:kranich/ComplexCurves.git build/deploy || exi
     cp ../../index.css ./index.css
     cp ../../index.html ./index.html
     cp ../../index.js ./index.js
-    cp -R ../../models ./models
+    mv ../models ./models
     mkdir lib
     cp -R ../../node_modules/jquery lib/jquery
     cp -R ../../node_modules/semantic-ui-css lib/semantic-ui-css
