@@ -24,7 +24,7 @@ cc_mods = API Assembly CachedSurface Complex ComplexCurves Export GLSL Initial \
 cc_srcs = build/resources.js $(cc_mods:%=src/js/%.js)
 
 JAVA=java
-CLOSURE_VERSION=20160822
+CLOSURE_VERSION=20160911
 CLOSURE=$(JAVA) -jar closure-compiler-v$(CLOSURE_VERSION).jar
 cc_closure_level = ADVANCED
 cc_closure_warnings = VERBOSE
