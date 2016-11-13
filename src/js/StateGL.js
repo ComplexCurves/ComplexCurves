@@ -162,8 +162,17 @@ StateGL.prototype.readTexture = function(texture, length, offset = 0) {
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D,
         texture, 0);
+    var complete = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+    if (complete !== gl.FRAMEBUFFER_COMPLETE) {
+        console.error('Incomplete framebuffer.' +
+            ' Reading from float textures not supported.' +
+            ' Please try another browser or platform.');
+        return null;
+    }
     var pixels;
     if (texture === this.rttTexture) {
         pixels = new Uint8Array(4 * 2048 * 2048);
@@ -178,6 +187,12 @@ StateGL.prototype.readTexture = function(texture, length, offset = 0) {
     } else {
         pixels = new Float32Array(4 * 2048 * 2048);
         gl.getError();
+        var type = gl.getParameter(gl['IMPLEMENTATION_COLOR_READ_TYPE']);
+        if (type !== gl.FLOAT) {
+            console.error('Reading from float textures not supported.' +
+                ' Please try another browser or platform.');
+            return null;
+        }
         gl.readPixels(0, 0, 2048, 2048, gl.RGBA, gl.FLOAT, pixels);
     }
     var err = gl.getError();

@@ -14,11 +14,8 @@ function Surface(stategl, polynomial, depth) {
     // test whether readPixels works for float textures
     this.mkTextures(stategl);
     var pixels = stategl.readTexture(this.texturesIn[0]);
-    if (pixels === null) {
-        console.log('Reading from float textures not supported.');
-        console.log('Please try another browser or platform.');
+    if (pixels === null)
         return;
-    }
 
     this.polynomial = polynomial;
     this.depth = depth;
