@@ -11,10 +11,10 @@ function Surface(stategl, polynomial, depth) {
     if (gl.getSupportedExtensions().indexOf("WEBGL_color_buffer_float") !== -1)
         stategl.getExtension("WEBGL_color_buffer_float");
 
-    // test whether readPixels works for float textures
     this.mkTextures(stategl);
-    var pixels = stategl.readTexture(this.texturesIn[0]);
-    if (pixels === null)
+
+    // test support for rendering to and reading from float textures
+    if (!stategl.canUseTextureFloat(this.texturesIn[0]))
         return;
 
     this.polynomial = polynomial;
