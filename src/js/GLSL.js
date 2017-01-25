@@ -152,9 +152,9 @@ GLSL.glslM = function(p, vx, vy) {
         lines.push("    a[0] *= distance (" + vx + ", " +
             GLSL.glslComplex(leadRoots[i]) + ") - rho;");
     for (i = 1, l = cs.length; i < l; i++)
-    // FIXME: 'r' must not conflict with variables of polynomial p
+        // FIXME: 'r' must not conflict with variables of polynomial p
         lines.push("    a[" + i + "] = length (" + GLSL.glslHorner('r',
-        GLSL.glslCoefficients(cs[i])) + ");");
+            GLSL.glslCoefficients(cs[i])) + ");");
     lines = lines.concat(["    float m = a[1] / a[0];",
         "    for (int j = 2; j < " + cs.length + "; j++) {",
         "        m = max (m, pow (a[j] / a[0], 1.0 / float (j)));",
