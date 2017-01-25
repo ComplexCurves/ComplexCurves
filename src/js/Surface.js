@@ -169,7 +169,6 @@ Surface.prototype.render = function(stategl, gl, state3d) {
 
     this.fillIndexBuffer(stategl);
     gl.vertexAttribPointer(0, 1, gl.FLOAT, false, 0, 0);
-    gl.enable(gl.DEPTH_TEST);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.drawArrays(gl.TRIANGLES, 0, this.numIndices);
     stategl.updateTransparency(false);
