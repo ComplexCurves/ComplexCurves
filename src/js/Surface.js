@@ -26,10 +26,6 @@ function Surface(stategl, polynomial, depth) {
 
     this.mkTextures(stategl);
 
-    // test support for rendering to and reading from float textures
-    if (!stategl.canUseTextureFloat(this.texturesIn[0]))
-        return;
-
     surface.commonShaderSrc = /** @type {string} */ (resources["Common.glsl"]).trim();
     surface.customShaderSrc = GLSL.polynomialShaderSource(polynomial);
     surface.texturesShaderSrc = resources["Textures.glsl"];

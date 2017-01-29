@@ -15,54 +15,6 @@ function StateGL(canvas) {
 /** @type {number} */
 StateGL.prototype.bigTextureSize = 8192;
 
-/**
- * @param {WebGLTexture} texture
- * @return {boolean}
- */
-StateGL.prototype.canUseTextureFloat = function(texture) {
-    var gl = this.gl;
-    var framebuffer = /** @type {WebGLFramebuffer} */
-        (gl.getParameter(gl.FRAMEBUFFER_BINDING));
-    gl.getError();
-    var testFramebuffer = gl.createFramebuffer();
-    gl.bindFramebuffer(gl.FRAMEBUFFER, testFramebuffer);
-    var testRenderbuffer = gl.createRenderbuffer();
-    gl.bindRenderbuffer(gl.RENDERBUFFER, testRenderbuffer);
-    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, 2048, 2048);
-    gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER,
-        testRenderbuffer);
-    gl.bindTexture(gl.TEXTURE_2D, texture);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D,
-        texture, 0);
-    var complete = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
-    var err = gl.getError();
-    var canRender = complete === gl.FRAMEBUFFER_COMPLETE && err === gl.NO_ERROR;
-    gl.bindTexture(gl.TEXTURE_2D, null);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D,
-        null, 0);
-    gl.bindRenderbuffer(gl.RENDERBUFFER, null);
-    gl.deleteRenderbuffer(testRenderbuffer);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
-    gl.deleteFramebuffer(testFramebuffer);
-    var canRead = this.readTexture(texture) !== null;
-    var msg;
-    if (canRender && canRead) {
-        return true;
-    } else if (!canRender && !canRead) {
-        msg = 'Rendering to and reading from float textures not supported.';
-    } else if (!canRender) {
-        msg = 'Rendering to float textures not supported.';
-    } else {
-        msg = 'Reading from float textures not supported.';
-    }
-    alert(msg + ' Please try another browser or platform.');
-    return false;
-};
-
 /** @type {boolean} */
 StateGL.prototype.clipping = false;
 
