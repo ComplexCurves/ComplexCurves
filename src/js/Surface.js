@@ -20,10 +20,9 @@ function Surface(stategl, polynomial, depth) {
         return;
     }
 
-    stategl.getExtension("OES_texture_float");
     var gl = stategl.gl;
-    if (gl.getSupportedExtensions().indexOf("WEBGL_color_buffer_float") !== -1)
-        stategl.getExtension("WEBGL_color_buffer_float");
+    if (gl.getSupportedExtensions().indexOf("EXT_color_buffer_float") !== -1)
+        stategl.getExtension("EXT_color_buffer_float");
 
     this.mkTextures(stategl);
 
@@ -132,13 +131,13 @@ Surface.prototype.mkTextures = function(stategl) {
         gl.bindTexture(gl.TEXTURE_2D, texturesIn[i]);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 2048, 2048, 0, gl.RGBA,
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl["RGBA16F"], 2048, 2048, 0, gl.RGBA,
             gl.FLOAT, null);
         texturesOut[i] = gl.createTexture();
         gl.bindTexture(gl.TEXTURE_2D, texturesOut[i]);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 2048, 2048, 0, gl.RGBA,
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl["RGBA16F"], 2048, 2048, 0, gl.RGBA,
             gl.FLOAT, null);
     }
     gl.bindTexture(gl.TEXTURE_2D, null);

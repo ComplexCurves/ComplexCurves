@@ -3,7 +3,7 @@
  * @constructor
  */
 function StateGL(canvas) {
-    this.gl = /** @type WebGLRenderingContext */ (canvas.getContext('webgl', {
+    this.gl = /** @type WebGLRenderingContext */ (canvas.getContext('webgl2', {
         preserveDrawingBuffer: true
     }));
     var gl = this.gl;
