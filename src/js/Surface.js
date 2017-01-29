@@ -21,8 +21,7 @@ function Surface(stategl, polynomial, depth) {
     }
 
     var gl = stategl.gl;
-    if (gl.getSupportedExtensions().indexOf("EXT_color_buffer_float") !== -1)
-        stategl.getExtension("EXT_color_buffer_float");
+    stategl.getExtension("EXT_color_buffer_float");
 
     this.mkTextures(stategl);
 
