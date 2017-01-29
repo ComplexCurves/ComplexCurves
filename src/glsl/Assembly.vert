@@ -3,11 +3,11 @@ precision highp float;
 #else
 precision mediump float;
 #endif
-attribute float index;
+in float index;
 uniform float numIndices;
 uniform float sheet;
-varying vec2 texCoord[3];
-varying float which;
+out vec2 texCoord[3];
+out float which;
 
 void main (void) {
     gl_Position = indexedPosition (sheet * numIndices + index);

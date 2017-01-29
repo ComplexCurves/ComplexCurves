@@ -3,11 +3,11 @@ precision highp float;
 #else
 precision mediump float;
 #endif
-attribute vec4 indexBarycentric;
-attribute float indexOffsetIn;
-attribute float indexOffsetOut;
-varying vec3 barycentric;
-varying vec2 texCoord[3];
+in vec4 indexBarycentric;
+in float indexOffsetIn;
+in float indexOffsetOut;
+out vec3 barycentric;
+out vec2 texCoord[3];
 
 void main (void) {
     float indexOut = indexBarycentric.x + indexOffsetOut;

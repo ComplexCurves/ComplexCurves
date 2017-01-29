@@ -5,17 +5,18 @@ precision mediump float;
 #endif
 uniform sampler2D samplers[1 + N/2];
 uniform float sheet;
-varying float which;
-varying vec2 texCoord[3];
+in float which;
+in vec2 texCoord[3];
+out vec4 fColor;
 
 void readTex (out vec2 pos[3], out float delta[3], out vec2 values[3*N]) {
     vec4 s;
     for (int i = 0; i < 3; i++) {
-        s = texture2D (samplers[0], texCoord[i]);
+        s = texture (samplers[0], texCoord[i]);
         pos[i] = s.xy;
         delta[i] = s.z;
         for (int j = 1; j < N/2; j++) {
-            s = texture2D (samplers[j], texCoord[i]);
+            s = texture (samplers[j], texCoord[i]);
             values[i*N+2*j-2] = s.xy;
             values[i*N+2*j-1] = s.zw;
         }
@@ -52,7 +53,7 @@ void main(void) {
                                     minDist = dist;
                                 }
                             }
-                            gl_FragColor = vec4(pos[w], valueWhich);
+                            fColor = vec4(pos[w], valueWhich);
                         }
                     }
                 }
@@ -60,5 +61,5 @@ void main(void) {
         return;
         }
     }
-    gl_FragColor = vec4(-10.0, -10.0, -10.0, 1.0);
+    fColor = vec4(-10.0, -10.0, -10.0, 1.0);
 }

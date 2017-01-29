@@ -40,7 +40,10 @@ StateGL.prototype.getExtension = function(name) {
  * @return {Array<string>}
  */
 StateGL.getShaderSources = function(shaderId) {
-    return [resources[shaderId + '.vert'], resources[shaderId + '.frag']];
+    return [
+        /** @type {string} */ (resources[shaderId + '.vert']).trim(),
+        /** @type {string} */ (resources[shaderId + '.frag']).trim()
+    ];
 };
 
 /** @type {WebGLRenderingContext} */

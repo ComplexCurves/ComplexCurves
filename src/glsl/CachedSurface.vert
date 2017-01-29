@@ -1,12 +1,13 @@
+#version 300 es
 #ifdef GL_FRAGMENT_PRECISION_HIGH
 precision highp float;
 #else
 precision mediump float;
 #endif
-attribute vec4 position;
+in vec4 position;
 uniform mat4 m, v, p;
-varying vec4 vPos;
-varying vec2 vValue;
+out vec4 vPos;
+out vec2 vValue;
 void main (void)
 {
     vPos = vec4 (position.xyz, 1.0);

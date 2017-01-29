@@ -1,3 +1,4 @@
+#version 300 es
 #ifdef GL_FRAGMENT_PRECISION_HIGH
 precision highp float;
 #else
@@ -6,6 +7,7 @@ precision mediump float;
 uniform sampler2D u_tex;
 uniform float width;
 uniform float height;
+out vec4 fColor;
 
 #define FXAA_REDUCE_MIN (1.0/ 128.0)
 #define FXAA_REDUCE_MUL (1.0 / 8.0)
@@ -15,11 +17,11 @@ vec4 applyFXAA(in vec2 fragCoord, in sampler2D tex)
 {
     vec4 color;
     vec2 inverseVP = vec2(1.0 / width, 1.0 / height);
-    vec3 rgbNW = texture2D(tex, (fragCoord + vec2(-1.0, -1.0)) * inverseVP).xyz;
-    vec3 rgbNE = texture2D(tex, (fragCoord + vec2(1.0, -1.0)) * inverseVP).xyz;
-    vec3 rgbSW = texture2D(tex, (fragCoord + vec2(-1.0, 1.0)) * inverseVP).xyz;
-    vec3 rgbSE = texture2D(tex, (fragCoord + vec2(1.0, 1.0)) * inverseVP).xyz;
-    vec3 rgbM = texture2D(tex, fragCoord * inverseVP).xyz;
+    vec3 rgbNW = texture(tex, (fragCoord + vec2(-1.0, -1.0)) * inverseVP).xyz;
+    vec3 rgbNE = texture(tex, (fragCoord + vec2(1.0, -1.0)) * inverseVP).xyz;
+    vec3 rgbSW = texture(tex, (fragCoord + vec2(-1.0, 1.0)) * inverseVP).xyz;
+    vec3 rgbSE = texture(tex, (fragCoord + vec2(1.0, 1.0)) * inverseVP).xyz;
+    vec3 rgbM = texture(tex, fragCoord * inverseVP).xyz;
     vec3 luma = vec3(0.299, 0.587, 0.114);
     float lumaNW = dot(rgbNW, luma);
     float lumaNE = dot(rgbNE, luma);
@@ -38,11 +40,11 @@ vec4 applyFXAA(in vec2 fragCoord, in sampler2D tex)
     max(vec2(-FXAA_SPAN_MAX, -FXAA_SPAN_MAX),
     dir * rcpDirMin)) * inverseVP;
     vec3 rgbA = 0.5 * (
-    texture2D(tex, fragCoord * inverseVP + dir * (1.0 / 3.0 - 0.5)).xyz +
-    texture2D(tex, fragCoord * inverseVP + dir * (2.0 / 3.0 - 0.5)).xyz);
+    texture(tex, fragCoord * inverseVP + dir * (1.0 / 3.0 - 0.5)).xyz +
+    texture(tex, fragCoord * inverseVP + dir * (2.0 / 3.0 - 0.5)).xyz);
     vec3 rgbB = rgbA * 0.5 + 0.25 * (
-    texture2D(tex, fragCoord * inverseVP + dir * -0.5).xyz +
-    texture2D(tex, fragCoord * inverseVP + dir * 0.5).xyz);
+    texture(tex, fragCoord * inverseVP + dir * -0.5).xyz +
+    texture(tex, fragCoord * inverseVP + dir * 0.5).xyz);
     float lumaB = dot(rgbB, luma);
     if ((lumaB < lumaMin) || (lumaB > lumaMax))
         color = vec4(rgbA, 1.0);
@@ -53,5 +55,5 @@ vec4 applyFXAA(in vec2 fragCoord, in sampler2D tex)
 
 void main (void)
 {
-    gl_FragColor = applyFXAA(gl_FragCoord.xy, u_tex);
+    fColor = applyFXAA(gl_FragCoord.xy, u_tex);
 }

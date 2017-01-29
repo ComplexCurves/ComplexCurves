@@ -4,7 +4,8 @@ precision highp float;
 precision mediump float;
 #endif
 uniform int computedRoots;
-varying vec2 vPosition;
+in vec2 vPosition;
+out vec4 fColor;
 void main(void) {
     vec2 position = clamp (vPosition, -5.0, 5.0);
     vec2 values[N];
@@ -16,12 +17,12 @@ void main(void) {
         for (int i = 0; i < N; i += 2) {
             if (i == computedRoots)
                 if (computedRoots + 1 < sheets)
-                    gl_FragColor = vec4(values[i], values[i + 1]);
+                    fColor = vec4(values[i], values[i + 1]);
                 else
-                    gl_FragColor = vec4(values[i], vec2 (0.0, 0.0));
+                    fColor = vec4(values[i], vec2 (0.0, 0.0));
         }
     } else {
         float delta = Delta (position, values);
-        gl_FragColor = vec4 (position, delta, 1.0);
+        fColor = vec4 (position, delta, 1.0);
     }
 }

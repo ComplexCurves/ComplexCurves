@@ -3,8 +3,8 @@ precision highp float;
 #else
 precision mediump float;
 #endif
-attribute float index;
-varying vec2 texCoord[2];
+in float index;
+out vec2 texCoord[2];
 
 void main (void) {
     gl_Position = indexedPosition (index);

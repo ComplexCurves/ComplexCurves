@@ -1,7 +1,8 @@
+#version 300 es
 uniform float maxValue;
 uniform float minValue;
-attribute vec2 vPosition;
-varying vec2 vValue;
+in vec2 vPosition;
+out vec2 vValue;
 
 void main()
 {

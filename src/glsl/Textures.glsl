@@ -1,3 +1,4 @@
+#version 300 es
 #define W 2048.0
 #define H 2048.0
 vec2 uvPosition (in float i) {

@@ -27,7 +27,7 @@ function Surface(stategl, polynomial, depth) {
 
     surface.commonShaderSrc = /** @type {string} */ (resources["Common.glsl"]).trim();
     surface.customShaderSrc = GLSL.polynomialShaderSource(polynomial);
-    surface.texturesShaderSrc = resources["Textures.glsl"];
+    surface.texturesShaderSrc = /** @type {string} */ (resources["Textures.glsl"]).trim();
     surface.initial = new Initial(stategl, surface);
     surface.initial.render(stategl, surface, gl);
     surface.subdivisionPre = new SubdivisionPre(stategl, surface);
