@@ -24,7 +24,7 @@ cc_mods = API Assembly CachedSurface Complex ComplexCurves Export GLSL Initial \
 cc_srcs = build/resources.js $(cc_mods:%=src/js/%.js)
 
 JAVA=java
-CLOSURE_VERSION=20161024
+CLOSURE_VERSION=20170218
 CLOSURE=$(JAVA) -jar closure-compiler-v$(CLOSURE_VERSION).jar
 cc_closure_level = ADVANCED
 cc_closure_warnings = VERBOSE
@@ -32,6 +32,7 @@ cc_closure_args = \
 	--language_in ECMASCRIPT6_STRICT \
 	--language_out ECMASCRIPT5_STRICT \
 	--dependency_mode LOOSE \
+	--module_resolution NODE \
 	--create_source_map build/ComplexCurves.js.map \
 	--compilation_level $(cc_closure_level) \
 	--warning_level $(cc_closure_warnings) \
