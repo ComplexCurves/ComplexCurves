@@ -7,7 +7,6 @@ uniform int computedRoots;
 uniform sampler2D oldSamplers[1 + N/2];
 varying vec3 barycentric;
 varying vec2 texCoord[3];
-varying vec2 texCoordOut;
 
 void main(void) {
     if (barycentric == vec3 (1.0, 0.0, 0.0)) {

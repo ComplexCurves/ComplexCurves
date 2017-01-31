@@ -4,7 +4,6 @@ precision highp float;
 precision mediump float;
 #endif
 uniform int computedRoots;
-varying vec2 texCoord;
 varying vec2 vPosition;
 void main(void) {
     vec2 position = clamp (vPosition, -5.0, 5.0);
