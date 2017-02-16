@@ -86,7 +86,7 @@ StateGL.prototype.mkProgram = function(sources, transformFeedbackVaryings) {
             console.log(gl.getShaderInfoLog(fragmentShader));
         gl.attachShader(shaderProgram, fragmentShader);
     }
-    if(transformFeedbackVaryings) {
+    if (transformFeedbackVaryings) {
         gl["transformFeedbackVaryings"](shaderProgram, transformFeedbackVaryings,
             gl["INTERLEAVED_ATTRIBS"]);
         gl.enable(gl["RASTERIZER_DISCARD"]);

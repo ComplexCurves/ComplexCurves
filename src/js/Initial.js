@@ -38,7 +38,8 @@ Initial.prototype.mkProgram = function(stategl, surface) {
     ];
     sources[0] = surface.withCustomAndCommon(sources[0]);
     this.program = stategl.mkProgram(sources, ["position", "delta",
-        "subdivisionFlag", "values"]);
+        "subdivisionFlag", "values"
+    ]);
 };
 
 /** @type {WebGLBuffer} */
