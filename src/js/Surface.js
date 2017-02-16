@@ -23,7 +23,9 @@ function Surface(stategl, polynomial, depth) {
     var gl = stategl.gl;
     stategl.getExtension("EXT_color_buffer_float");
 
+    this.indexBuffer = gl.createBuffer();
     this.mkTextures(stategl);
+    this.mkTransformFeedback(stategl);
 
     surface.commonShaderSrc = /** @type {string} */ (resources["Common.glsl"]).trim();
     surface.customShaderSrc = GLSL.polynomialShaderSource(polynomial);
@@ -138,6 +140,15 @@ Surface.prototype.mkTextures = function(stategl) {
     gl.bindTexture(gl.TEXTURE_2D, null);
     this.texturesIn = texturesIn;
     this.texturesOut = texturesOut;
+};
+
+/**
+ * @param {StateGL} stategl
+ */
+Surface.prototype.mkTransformFeedback = function(stategl) {
+    var gl = stategl.gl;
+    this.transformFeedback = gl["createTransformFeedback"]();
+    this.transformFeedbackBuffer = gl.createBuffer();
 };
 
 /** @type {number} */

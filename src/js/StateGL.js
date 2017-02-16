@@ -36,13 +36,21 @@ StateGL.prototype.getExtension = function(name) {
 };
 
 /**
+ * @param {string} shader
+ * @return {string}
+ */
+StateGL.getShaderSource = function(shader) {
+    return /** @type {string} */ (resources[shader]).trim();
+};
+
+/**
  * @param {string} shaderId
  * @return {Array<string>}
  */
 StateGL.getShaderSources = function(shaderId) {
     return [
-        /** @type {string} */ (resources[shaderId + '.vert']).trim(),
-        /** @type {string} */ (resources[shaderId + '.frag']).trim()
+        StateGL.getShaderSource(shaderId + '.vert'),
+        StateGL.getShaderSource(shaderId + '.frag')
     ];
 };
 
@@ -56,9 +64,10 @@ StateGL.prototype.mkFXAAProgram = function() {
 
 /**
  * @param {Array<string>} sources
+ * @param {Array<string>=} transformFeedbackVaryings
  * @return {WebGLProgram}
  */
-StateGL.prototype.mkProgram = function(sources) {
+StateGL.prototype.mkProgram = function(sources, transformFeedbackVaryings) {
     var gl = this.gl;
     var vertexShaderSource = sources[0],
         fragmentShaderSource = sources[1];
@@ -67,14 +76,23 @@ StateGL.prototype.mkProgram = function(sources) {
     gl.compileShader(vertexShader);
     if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS))
         console.log(gl.getShaderInfoLog(vertexShader));
-    var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
-    gl.shaderSource(fragmentShader, fragmentShaderSource);
-    gl.compileShader(fragmentShader);
-    if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS))
-        console.log(gl.getShaderInfoLog(fragmentShader));
     var shaderProgram = gl.createProgram();
     gl.attachShader(shaderProgram, vertexShader);
-    gl.attachShader(shaderProgram, fragmentShader);
+    if (sources[1]) {
+        var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+        gl.shaderSource(fragmentShader, fragmentShaderSource);
+        gl.compileShader(fragmentShader);
+        if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS))
+            console.log(gl.getShaderInfoLog(fragmentShader));
+        gl.attachShader(shaderProgram, fragmentShader);
+    }
+    if(transformFeedbackVaryings) {
+        gl["transformFeedbackVaryings"](shaderProgram, transformFeedbackVaryings,
+            gl["INTERLEAVED_ATTRIBS"]);
+        gl.enable(gl["RASTERIZER_DISCARD"]);
+    } else {
+        gl.disable(gl["RASTERIZER_DISCARD"]);
+    }
     gl.linkProgram(shaderProgram);
     if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS))
         console.log(gl.getProgramInfoLog(shaderProgram));
