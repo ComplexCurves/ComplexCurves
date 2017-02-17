@@ -13,10 +13,12 @@ function Assembly(stategl, surface) {
  * @param {Surface} surface
  */
 Assembly.prototype.mkProgram = function(stategl, surface) {
-    var sources = StateGL.getShaderSources("Assembly");
-    sources[0] = surface.withTextures(sources[0]);
-    sources[1] = surface.withCustomAndCommon(sources[1]);
-    this.program = stategl.mkProgram(sources);
+    var sources = [
+        StateGL.getShaderSource('Assembly.vert'),
+        StateGL.getShaderSource('Dummy.frag')
+    ];
+    sources[0] = surface.withCustomAndCommon(sources[0]);
+    this.program = stategl.mkProgram(sources, ["posValue"]);
 };
 
 /** @type {WebGLProgram} */
@@ -39,11 +41,13 @@ Assembly.prototype.render = function(stategl, surface, gl) {
     surface.fillIndexBuffer(stategl);
     gl.vertexAttribPointer(0, 1, gl.FLOAT, false, 0, 0);
 
-    gl.bindFramebuffer(gl.FRAMEBUFFER, surface.framebuffer);
-    gl.bindTexture(gl.TEXTURE_2D, textureOut);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D,
-        textureOut, 0);
-    gl.bindTexture(gl.TEXTURE_2D, null);
+    var sheets = surface.sheets;
+    var stride = 4;
+    var size = stride * numIndices * sheets;
+    gl.bindBuffer(gl.ARRAY_BUFFER, surface.transformFeedbackBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, size * Float32Array.BYTES_PER_ELEMENT, gl["STATIC_COPY"]);
+    gl.bindBuffer(gl.ARRAY_BUFFER, null);
+
     var texIs = [];
     for (var i = 0, l = texturesIn.length; i < l; i++) {
         gl.activeTexture(gl.TEXTURE0 + i);
@@ -57,21 +61,24 @@ Assembly.prototype.render = function(stategl, surface, gl) {
     var samplersLocation = gl.getUniformLocation(this.program, 'samplers');
     gl.uniform1iv(samplersLocation, texIs);
     gl.disable(gl.DEPTH_TEST);
-    gl.viewport(0, 0, 2048, 2048);
+
+    gl["bindTransformFeedback"](gl["TRANSFORM_FEEDBACK"], surface.transformFeedback);
+    gl["bindBufferBase"](gl["TRANSFORM_FEEDBACK_BUFFER"], 0, surface.transformFeedbackBuffer);
+    gl["beginTransformFeedback"](gl.POINTS);
 
     var sheetLoc = gl.getUniformLocation(this.program, 'sheet');
-    for (var sheet = 0, sheets = surface.sheets; sheet < sheets; sheet++) {
+    for (var sheet = 0; sheet < sheets; sheet++) {
         gl.uniform1f(sheetLoc, sheet);
         gl.drawArrays(gl.POINTS, 0, numIndices);
     }
 
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D,
-        null, 0);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl["endTransformFeedback"]();
+    var output = new Float32Array(size);
+    gl["getBufferSubData"](gl["TRANSFORM_FEEDBACK_BUFFER"], 0, output);
+    gl["bindBufferBase"](gl["TRANSFORM_FEEDBACK_BUFFER"], 0, null);
+    gl["bindTransformFeedback"](gl["TRANSFORM_FEEDBACK"], null);
+    console.log(output);
 
-    var texturesTmp = surface.texturesIn;
-    surface.texturesIn = surface.texturesOut;
-    surface.texturesOut = texturesTmp;
-    surface.numIndices *= surface.sheets;
-    surface.fillIndexBuffer(stategl);
+    surface.numIndices *= sheets;
+    gl.enable(gl.DEPTH_TEST);
 };

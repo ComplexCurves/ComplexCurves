@@ -170,17 +170,8 @@ Surface.prototype.render = function(stategl, gl, state3d) {
     stategl.updateModelViewProjectionMatrices(state3d);
     stategl.updateTransparency();
 
-    gl.activeTexture(gl.TEXTURE0);
-    gl.bindTexture(gl.TEXTURE_2D, this.texturesIn[0]);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    var samplerLocation = gl.getUniformLocation(this.program, 'sampler');
-    gl.uniform1i(samplerLocation, 0);
-
-    this.fillIndexBuffer(stategl);
-    gl.vertexAttribPointer(0, 1, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.transformFeedbackBuffer);
+    gl.vertexAttribPointer(0, 4, gl.FLOAT, false, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.drawArrays(gl.TRIANGLES, 0, this.numIndices);
     stategl.updateTransparency(false);

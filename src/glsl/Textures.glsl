@@ -2,7 +2,6 @@
 #define W 2048.0
 #define H 2048.0
 vec2 uvPosition (in float i) {
-    const float h = 2048.0;
     return vec2 (mod (i, W) / W + 0.5 / W, floor (i / W) / H + 0.5 / H);
 }
 
