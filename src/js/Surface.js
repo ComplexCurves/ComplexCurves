@@ -189,6 +189,9 @@ Surface.prototype.texturesOut = [];
 /** @type {string} */
 Surface.prototype.texturesShaderSrc = "";
 
+/** @type {WebGLBuffer} */
+Surface.prototype.transformFeedbackBuffer = null;
+
 /**
  * @param {string} src
  * @return {string}
