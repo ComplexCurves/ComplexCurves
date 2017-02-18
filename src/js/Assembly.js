@@ -77,7 +77,6 @@ Assembly.prototype.render = function(stategl, surface, gl) {
     gl["getBufferSubData"](gl["TRANSFORM_FEEDBACK_BUFFER"], 0, output);
     gl["bindBufferBase"](gl["TRANSFORM_FEEDBACK_BUFFER"], 0, null);
     gl["bindTransformFeedback"](gl["TRANSFORM_FEEDBACK"], null);
-    console.log(output);
 
     surface.numIndices *= sheets;
     gl.enable(gl.DEPTH_TEST);
