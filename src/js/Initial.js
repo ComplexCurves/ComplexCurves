@@ -71,31 +71,14 @@ Initial.prototype.render = function(stategl, surface, gl) {
     gl["beginTransformFeedback"](gl.POINTS);
     gl.drawArrays(gl.POINTS, 0, surface.numIndices);
     gl["endTransformFeedback"]();
-    var output = new Float32Array(size);
-    gl["getBufferSubData"](gl["TRANSFORM_FEEDBACK_BUFFER"], 0, output);
     gl["bindBufferBase"](gl["TRANSFORM_FEEDBACK_BUFFER"], 0, null);
     gl["bindTransformFeedback"](gl["TRANSFORM_FEEDBACK"], null);
 
     // store feedback values in textures
-    var i, l, k;
-    var texData = new Float32Array(4 * 2048 * 2048);
-
-    for (i = 0; i <= GLSL.N / 2; i++) {
-        gl.bindTexture(gl.TEXTURE_2D, texturesOut[i]);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-        for (l = 0; l < surface.numIndices; l++) {
-            for (k = 0; k < 4; k++)
-                texData[4 * l + k] = output[stride * l + 4 * i + k];
-        }
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl["RGBA16F"], 2048, 2048, 0, gl.RGBA,
-            gl.FLOAT, texData);
-    }
+    TransformFeedback.toTextures(gl, surface, texturesOut);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
-    for (i = 0, l = texturesOut.length; i < l; i++) {
+    for (var i = 0, l = texturesOut.length; i < l; i++) {
         gl.activeTexture(gl.TEXTURE0 + i);
         gl.bindTexture(gl.TEXTURE_2D, null);
     }
