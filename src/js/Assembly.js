@@ -73,8 +73,6 @@ Assembly.prototype.render = function(stategl, surface, gl) {
     }
 
     gl["endTransformFeedback"]();
-    var output = new Float32Array(size);
-    gl["getBufferSubData"](gl["TRANSFORM_FEEDBACK_BUFFER"], 0, output);
     gl["bindBufferBase"](gl["TRANSFORM_FEEDBACK_BUFFER"], 0, null);
     gl["bindTransformFeedback"](gl["TRANSFORM_FEEDBACK"], null);
 
