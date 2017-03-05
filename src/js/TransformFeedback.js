@@ -3,9 +3,9 @@ var TransformFeedback = {};
 /**
  * @param {WebGLRenderingContext} gl
  * @param {Surface} surface
- * @param {Array<WebGLTexture>} textures
+ * @return {Float32Array}
  */
-TransformFeedback.toTextures = function(gl, surface, textures) {
+TransformFeedback.toFloat32Array = function(gl, surface) {
     var stride = 4 + 2 * GLSL.N;
     var size = stride * surface.numIndices;
     var output = new Float32Array(size);
@@ -14,6 +14,17 @@ TransformFeedback.toTextures = function(gl, surface, textures) {
     gl["getBufferSubData"](gl["TRANSFORM_FEEDBACK_BUFFER"], 0, output);
     gl["bindBufferBase"](gl["TRANSFORM_FEEDBACK_BUFFER"], 0, null);
     gl["bindTransformFeedback"](gl["TRANSFORM_FEEDBACK"], null);
+    return output;
+};
+
+/**
+ * @param {WebGLRenderingContext} gl
+ * @param {Surface} surface
+ * @param {Array<WebGLTexture>} textures
+ */
+TransformFeedback.toTextures = function(gl, surface, textures) {
+    var stride = 4 + 2 * GLSL.N;
+    var output = TransformFeedback.toFloat32Array(gl, surface);
     var texData = new Float32Array(4 * 2048 * 2048);
     for (var i = 0; i <= GLSL.N / 2; i++) {
         gl.bindTexture(gl.TEXTURE_2D, textures[i]);
