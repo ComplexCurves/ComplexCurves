@@ -38,11 +38,13 @@ Subdivision.prototype.render = function(stategl, surface, gl) {
     var program = this.program;
     gl.useProgram(program);
 
-    // read texture into array
-    var pixels =
-        /** @type {Float32Array} */
-        (stategl.readTexture(texturesIn[0]));
-    // TODO read from transformFeedbackBuffer?
+    // read subdivision flags from transform feedback buffer
+    var subdivisionFlags = new Float32Array(surface.numIndices);
+    var buf = TransformFeedback.toFloat32Array(gl, surface);
+    var stride = 4 + 2 * GLSL.N;
+    var size = stride * surface.numIndices;
+    for (i = 3, l = 0; i < size; i += stride, l++)
+        subdivisionFlags[l] = buf[i];
 
     // prepare subdivision patterns and buffers
     var subdivisionPattern = [
@@ -98,8 +100,8 @@ Subdivision.prototype.render = function(stategl, surface, gl) {
     var /** number */ primitivesWritten = 0;
     // identify and prepare subdivision patterns
     for (i = 0, l = surface.numIndices / 3; i < l; i++) {
-        var /** number */ patternIndex = 4 * pixels[12 * i + 3] +
-            2 * pixels[12 * i + 7] + pixels[12 * i + 11];
+        var /** number */ patternIndex = 4 * subdivisionFlags[3 * i] +
+            2 * subdivisionFlags[3 * i + 1] + subdivisionFlags[3 * i + 2];
         var /** number */ first = subdivisionPatternFirst[patternIndex];
         var /** number */ numIndices = subdivisionPatternCount[patternIndex];
         var pattern = subdivisionPattern.slice(4 * first,
@@ -113,8 +115,7 @@ Subdivision.prototype.render = function(stategl, surface, gl) {
     }
     patterns = Array.prototype.concat.apply([], patterns);
 
-    var stride = 4 + 2 * GLSL.N;
-    var size = stride * primitivesWritten;
+    size = stride * primitivesWritten;
     gl.bindBuffer(gl.ARRAY_BUFFER, surface.transformFeedbackBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, size * Float32Array.BYTES_PER_ELEMENT, gl["STATIC_COPY"]);
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
