@@ -54,8 +54,7 @@ Initial.prototype.program = null;
  * @param {WebGLRenderingContext} gl
  */
 Initial.prototype.render = function(stategl, surface, gl) {
-    var texturesIn = surface.texturesIn,
-        texturesOut = surface.texturesOut;
+    var textures = surface.textures;
     gl.useProgram(this.program);
     var sheets = surface.sheets;
     var stride = 4 + 2 * GLSL.N;
@@ -75,15 +74,7 @@ Initial.prototype.render = function(stategl, surface, gl) {
     gl["bindTransformFeedback"](gl["TRANSFORM_FEEDBACK"], null);
 
     // store feedback values in textures
-    TransformFeedback.toTextures(gl, surface, texturesOut);
+    TransformFeedback.toTextures(gl, surface, textures);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
-    for (var i = 0, l = texturesOut.length; i < l; i++) {
-        gl.activeTexture(gl.TEXTURE0 + i);
-        gl.bindTexture(gl.TEXTURE_2D, null);
-    }
-
-    var texturesTmp = texturesIn;
-    surface.texturesIn = texturesOut;
-    surface.texturesOut = texturesTmp;
 };

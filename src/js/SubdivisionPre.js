@@ -32,8 +32,7 @@ SubdivisionPre.prototype.program = null;
  * @param {WebGLRenderingContext} gl
  */
 SubdivisionPre.prototype.render = function(stategl, surface, gl) {
-    var texturesIn = surface.texturesIn,
-        texturesOut = surface.texturesOut;
+    var textures = surface.textures;
     var program = this.program;
     gl.useProgram(program);
     surface.fillIndexBuffer(stategl);
@@ -46,9 +45,9 @@ SubdivisionPre.prototype.render = function(stategl, surface, gl) {
 
     // prepare input textures
     var texIs = [];
-    for (var i = 0, l = texturesIn.length; i < l; i++) {
+    for (var i = 0, l = textures.length; i < l; i++) {
         gl.activeTexture(gl.TEXTURE0 + i);
-        gl.bindTexture(gl.TEXTURE_2D, texturesIn[i]);
+        gl.bindTexture(gl.TEXTURE_2D, textures[i]);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
@@ -67,13 +66,9 @@ SubdivisionPre.prototype.render = function(stategl, surface, gl) {
     gl["bindTransformFeedback"](gl["TRANSFORM_FEEDBACK"], null);
 
     // store feedback values in textures
-    TransformFeedback.toTextures(gl, surface, texturesOut);
+    TransformFeedback.toTextures(gl, surface, textures);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
-
-    var texturesTmp = texturesIn;
-    surface.texturesIn = texturesOut;
-    surface.texturesOut = texturesTmp;
 };
 
 /** @type {number} */

@@ -33,8 +33,7 @@ Subdivision.prototype.program = null;
  */
 Subdivision.prototype.render = function(stategl, surface, gl) {
     var i, l;
-    var texturesIn = surface.texturesIn,
-        texturesOut = surface.texturesOut;
+    var textures = surface.textures;
     var program = this.program;
     gl.useProgram(program);
 
@@ -82,9 +81,9 @@ Subdivision.prototype.render = function(stategl, surface, gl) {
 
     // prepare input textures
     var texIs = [];
-    for (i = 0, l = texturesIn.length; i < l; i++) {
+    for (i = 0, l = textures.length; i < l; i++) {
         gl.activeTexture(gl.TEXTURE0 + i);
-        gl.bindTexture(gl.TEXTURE_2D, texturesIn[i]);
+        gl.bindTexture(gl.TEXTURE_2D, textures[i]);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
@@ -143,9 +142,9 @@ Subdivision.prototype.render = function(stategl, surface, gl) {
     surface.numIndices = primitivesWritten;
 
     // store feedback values in textures
-    TransformFeedback.toTextures(gl, surface, texturesOut);
+    TransformFeedback.toTextures(gl, surface, textures);
 
-    for (i = 0, l = texturesIn.length + 1; i < l; i++) {
+    for (i = 0, l = textures.length + 1; i < l; i++) {
         gl.activeTexture(gl.TEXTURE0 + i);
         gl.bindTexture(gl.TEXTURE_2D, null);
     }
@@ -153,8 +152,4 @@ Subdivision.prototype.render = function(stategl, surface, gl) {
     gl.deleteBuffer(offsetsInBuffer);
     gl.deleteBuffer(patternsBuffer);
     gl.disableVertexAttribArray(1);
-
-    var texturesTmp = texturesIn;
-    surface.texturesIn = texturesOut;
-    surface.texturesOut = texturesTmp;
 };

@@ -66,7 +66,7 @@ Surface.prototype.domainColouring = function(stategl, big = false) {
  */
 Surface.prototype.exportBinary = function(stategl, name = "surface.bin") {
     // FIXME
-    var url = stategl.textureToURL(this.texturesIn[0], 4 * this.numIndices);
+    var url = stategl.textureToURL(this.textures[0], 4 * this.numIndices);
     Export.download(name, url);
 };
 
@@ -86,7 +86,7 @@ Surface.prototype.exportDomainColouring = function(stategl, name = "sheet", big 
  */
 Surface.prototype.exportSurface = function(stategl, name = "surface", big = true) {
     // FIXME
-    var texture = this.texturesIn[0];
+    var texture = this.textures[0];
     var length = 4 * this.numIndices;
     var pixels = /** @type {Float32Array} */
         (stategl.readTexture(texture, length));
@@ -123,25 +123,17 @@ Surface.prototype.mkProgram = function(stategl) {
 /** @param {StateGL} stategl */
 Surface.prototype.mkTextures = function(stategl) {
     var gl = stategl.gl,
-        texturesIn = [],
-        texturesOut = [];
+        textures = [];
     for (var i = 0; i < 5; i++) {
-        texturesIn[i] = gl.createTexture();
-        gl.bindTexture(gl.TEXTURE_2D, texturesIn[i]);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl["RGBA16F"], 2048, 2048, 0, gl.RGBA,
-            gl.FLOAT, null);
-        texturesOut[i] = gl.createTexture();
-        gl.bindTexture(gl.TEXTURE_2D, texturesOut[i]);
+        textures[i] = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, textures[i]);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
         gl.texImage2D(gl.TEXTURE_2D, 0, gl["RGBA16F"], 2048, 2048, 0, gl.RGBA,
             gl.FLOAT, null);
     }
     gl.bindTexture(gl.TEXTURE_2D, null);
-    this.texturesIn = texturesIn;
-    this.texturesOut = texturesOut;
+    this.textures = textures;
 };
 
 /**
@@ -183,10 +175,7 @@ Surface.prototype.render = function(stategl, gl, state3d) {
 Surface.prototype.sheets = 0;
 
 /** @type {Array<WebGLTexture>} */
-Surface.prototype.texturesIn = [];
-
-/** @type {Array<WebGLTexture>} */
-Surface.prototype.texturesOut = [];
+Surface.prototype.textures = [];
 
 /** @type {string} */
 Surface.prototype.texturesShaderSrc = "";
