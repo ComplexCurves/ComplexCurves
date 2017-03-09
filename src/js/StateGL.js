@@ -281,9 +281,7 @@ StateGL.prototype.setTransparency = function(transparency) {
  */
 StateGL.prototype.textureToURL = function(texture, length) {
     var pixels = this.readTexture(texture, length);
-    return URL.createObjectURL(new Blob([pixels], {
-        type: "application/octet-binary"
-    }));
+    return Export.pixelsToObjectURL(pixels);
 };
 
 StateGL.prototype.toggleAntialiasing = function() {

@@ -197,3 +197,13 @@ Export.pixelsToImageDataURL = function(pixels) {
     contextFlip.drawImage(canvas, 0, 0);
     return canvasFlip.toDataURL();
 };
+
+/**
+ * @param {Uint8Array|Float32Array} pixels
+ * @return {string}
+ */
+Export.pixelsToObjectURL = function(pixels) {
+    return URL.createObjectURL(new Blob([pixels], {
+        type: "application/octet-binary"
+    }));
+};

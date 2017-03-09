@@ -65,8 +65,7 @@ Surface.prototype.domainColouring = function(stategl, big = false) {
  * @param {string=} name
  */
 Surface.prototype.exportBinary = function(stategl, name = "surface.bin") {
-    // FIXME
-    var url = stategl.textureToURL(this.textures[0], 4 * this.numIndices);
+    var url = TransformFeedback.toURL(stategl.gl, this, 4);
     Export.download(name, url);
 };
 

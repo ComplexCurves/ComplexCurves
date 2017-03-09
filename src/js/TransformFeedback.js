@@ -3,10 +3,10 @@ var TransformFeedback = {};
 /**
  * @param {WebGLRenderingContext} gl
  * @param {Surface} surface
+ * @param {number=} stride
  * @return {Float32Array}
  */
-TransformFeedback.toFloat32Array = function(gl, surface) {
-    var stride = 4 + 2 * GLSL.N;
+TransformFeedback.toFloat32Array = function(gl, surface, stride = 4 + 2 * GLSL.N) {
     var size = stride * surface.numIndices;
     var output = new Float32Array(size);
     gl["bindTransformFeedback"](gl["TRANSFORM_FEEDBACK"], surface.transformFeedback);
@@ -21,10 +21,11 @@ TransformFeedback.toFloat32Array = function(gl, surface) {
  * @param {WebGLRenderingContext} gl
  * @param {Surface} surface
  * @param {Array<WebGLTexture>} textures
+ * @param {number=} stride
  */
-TransformFeedback.toTextures = function(gl, surface, textures) {
-    var stride = 4 + 2 * GLSL.N;
-    var output = TransformFeedback.toFloat32Array(gl, surface);
+TransformFeedback.toTextures = function(gl, surface, textures,
+    stride = 4 + 2 * GLSL.N) {
+    var output = TransformFeedback.toFloat32Array(gl, surface, stride);
     var texData = new Float32Array(4 * 2048 * 2048);
     for (var i = 0; i <= GLSL.N / 2; i++) {
         gl.bindTexture(gl.TEXTURE_2D, textures[i]);
@@ -39,4 +40,15 @@ TransformFeedback.toTextures = function(gl, surface, textures) {
         gl.texImage2D(gl.TEXTURE_2D, 0, gl["RGBA16F"], 2048, 2048, 0, gl.RGBA,
             gl.FLOAT, texData);
     }
+};
+
+/**
+ * @param {WebGLRenderingContext} gl
+ * @param {Surface} surface
+ * @param {number=} stride
+ * @return {string}
+ */
+TransformFeedback.toURL = function(gl, surface, stride = 4 + 2 * GLSL.N) {
+    var pixels = TransformFeedback.toFloat32Array(gl, surface, stride);
+    return Export.pixelsToObjectURL(pixels);
 };
