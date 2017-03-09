@@ -73,6 +73,7 @@ Export.exportDomainColouring = function(p, stategl, name = "sheet", big = true) 
  * @param {boolean=} big
  */
 Export.exportSurface = function(stategl, pixels, name = "surface", big = true) {
+    // FIXME much too slow
     var d, i, j, k, u, v, x, y, z, w;
     var length, indices, maxValue = -Infinity,
         minValue = Infinity;
