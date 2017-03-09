@@ -84,11 +84,7 @@ Surface.prototype.exportDomainColouring = function(stategl, name = "sheet", big 
  * @param {boolean=} big
  */
 Surface.prototype.exportSurface = function(stategl, name = "surface", big = true) {
-    // FIXME
-    var texture = this.textures[0];
-    var length = 4 * this.numIndices;
-    var pixels = /** @type {Float32Array} */
-        (stategl.readTexture(texture, length));
+    var pixels = TransformFeedback.toFloat32Array(stategl.gl, this, 4);
     Export.exportSurface(stategl, pixels, name, big);
 };
 
