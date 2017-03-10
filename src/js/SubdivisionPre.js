@@ -59,7 +59,7 @@ SubdivisionPre.prototype.render = function(stategl, surface, gl) {
     });
 
     // store feedback values in textures
-    TransformFeedback.toTextures(gl, surface, textures);
+    TransformFeedback.toTextures(gl, surface);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
 };

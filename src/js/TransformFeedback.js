@@ -20,11 +20,10 @@ TransformFeedback.toFloat32Array = function(gl, surface, stride = 4 + 2 * GLSL.N
 /**
  * @param {WebGLRenderingContext} gl
  * @param {Surface} surface
- * @param {Array<WebGLTexture>} textures
  * @param {number=} stride
  */
-TransformFeedback.toTextures = function(gl, surface, textures,
-    stride = 4 + 2 * GLSL.N) {
+TransformFeedback.toTextures = function(gl, surface, stride = 4 + 2 * GLSL.N) {
+    var textures = surface.textures;
     var output = TransformFeedback.toFloat32Array(gl, surface, stride);
     var texData = new Float32Array(4 * 2048 * 2048);
     for (var i = 0; i <= GLSL.N / 2; i++) {

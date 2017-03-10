@@ -135,7 +135,7 @@ Subdivision.prototype.render = function(stategl, surface, gl) {
     surface.numIndices = primitivesWritten;
 
     // store feedback values in textures
-    TransformFeedback.toTextures(gl, surface, textures);
+    TransformFeedback.toTextures(gl, surface);
 
     for (i = 0, l = textures.length + 1; i < l; i++) {
         gl.activeTexture(gl.TEXTURE0 + i);

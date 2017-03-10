@@ -24,7 +24,6 @@ Initial.prototype.mkBuffers = function(stategl, surface, positions) {
     this.positionBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
-    surface.framebuffer = gl.createFramebuffer();
 };
 
 /**
@@ -54,9 +53,7 @@ Initial.prototype.program = null;
  * @param {WebGLRenderingContext} gl
  */
 Initial.prototype.render = function(stategl, surface, gl) {
-    var textures = surface.textures;
     gl.useProgram(this.program);
-    var sheets = surface.sheets;
     var stride = 4 + 2 * GLSL.N;
     var size = stride * surface.numIndices;
     gl.enableVertexAttribArray(0);
@@ -68,7 +65,7 @@ Initial.prototype.render = function(stategl, surface, gl) {
     });
 
     // store feedback values in textures
-    TransformFeedback.toTextures(gl, surface, textures);
+    TransformFeedback.toTextures(gl, surface);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
 };
