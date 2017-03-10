@@ -5,7 +5,7 @@ precision mediump float;
 #endif
 in vec4 indexBarycentric;
 in float indexOffsetIn;
-uniform sampler2D oldSamplers[1 + N/2];
+uniform sampler2D samplers[1 + N/2];
 out vec2 position;
 out float delta;
 out float subdivisionFlag;
@@ -26,39 +26,39 @@ void main (void) {
     vec4 tmp;
 
     if (barycentric == vec3 (1.0, 0.0, 0.0)) {
-        tmp = texture (oldSamplers[0], texCoord[0]);
+        tmp = texture (samplers[0], texCoord[0]);
         position = tmp.xy;
         delta = tmp.z;
         subdivisionFlag = tmp.w;
         for (int j = 1; j < 1 + N/2; j++) {
-            tmp = texture (oldSamplers[j], texCoord[0]);
+            tmp = texture (samplers[j], texCoord[0]);
             values[2 * j - 2] = tmp.xy;
             values[2 * j - 1] = tmp.zw;
         }
     } else if (barycentric == vec3 (0.0, 1.0, 0.0)) {
-        tmp = texture (oldSamplers[0], texCoord[1]);
+        tmp = texture (samplers[0], texCoord[1]);
         position = tmp.xy;
         delta = tmp.z;
         subdivisionFlag = tmp.w;
         for (int j = 1; j < 1 + N/2; j++) {
-            tmp = texture (oldSamplers[j], texCoord[1]);
+            tmp = texture (samplers[j], texCoord[1]);
             values[2 * j - 2] = tmp.xy;
             values[2 * j - 1] = tmp.zw;
         }
     } else if (barycentric == vec3 (0.0, 0.0, 1.0)) {
-        tmp = texture (oldSamplers[0], texCoord[2]);
+        tmp = texture (samplers[0], texCoord[2]);
         position = tmp.xy;
         delta = tmp.z;
         subdivisionFlag = tmp.w;
         for (int j = 1; j < 1 + N/2; j++) {
-            tmp = texture (oldSamplers[j], texCoord[2]);
+            tmp = texture (samplers[j], texCoord[2]);
             values[2 * j - 2] = tmp.xy;
             values[2 * j - 1] = tmp.zw;
         }
     } else {
-        position = barycentric.x * texture (oldSamplers[0], texCoord[0]).xy
-                 + barycentric.y * texture (oldSamplers[0], texCoord[1]).xy
-                 + barycentric.z * texture (oldSamplers[0], texCoord[2]).xy;
+        position = barycentric.x * texture (samplers[0], texCoord[0]).xy
+                 + barycentric.y * texture (samplers[0], texCoord[1]).xy
+                 + barycentric.z * texture (samplers[0], texCoord[2]).xy;
         vec2 cs[N+1];
         f (position, cs);
         roots (sheets, cs, values);

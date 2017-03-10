@@ -21,7 +21,6 @@ function Surface(stategl, polynomial, depth) {
     }
 
     var gl = stategl.gl;
-    stategl.getExtension("EXT_color_buffer_float");
 
     this.indexBuffer = gl.createBuffer();
     this.mkTextures(stategl);
@@ -29,7 +28,6 @@ function Surface(stategl, polynomial, depth) {
 
     surface.commonShaderSrc = /** @type {string} */ (resources["Common.glsl"]).trim();
     surface.customShaderSrc = GLSL.polynomialShaderSource(polynomial);
-    surface.texturesShaderSrc = /** @type {string} */ (resources["Textures.glsl"]).trim();
     surface.initial = new Initial(stategl, surface);
     surface.initial.render(stategl, surface, gl);
     surface.subdivisionPre = new SubdivisionPre(stategl, surface);
@@ -88,9 +86,6 @@ Surface.prototype.exportSurface = function(stategl, name = "surface", big = true
     Export.exportSurface(stategl, pixels, name, big);
 };
 
-/** @type {WebGLFramebuffer} */
-Surface.prototype.frameBuffer = null;
-
 /** @param {StateGL} stategl */
 Surface.prototype.fillIndexBuffer = function(stategl) {
     var gl = stategl.gl;
@@ -101,16 +96,12 @@ Surface.prototype.fillIndexBuffer = function(stategl) {
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(indices), gl.STATIC_DRAW);
 };
 
-/** @type {WebGLFramebuffer} */
-Surface.prototype.framebuffer = null;
-
 /** @type {WebGLBuffer} */
 Surface.prototype.indexBuffer = null;
 
 /** @param {StateGL} stategl */
 Surface.prototype.mkProgram = function(stategl) {
     var sources = StateGL.getShaderSources("Surface");
-    sources[0] = this.withTextures(sources[0]);
     sources[1] = this.withCustomAndCommon(sources[1]);
     this.program = stategl.mkProgram(sources);
 };
@@ -172,19 +163,8 @@ Surface.prototype.sheets = 0;
 /** @type {Array<WebGLTexture>} */
 Surface.prototype.textures = [];
 
-/** @type {string} */
-Surface.prototype.texturesShaderSrc = "";
-
 /** @type {WebGLBuffer} */
 Surface.prototype.transformFeedbackBuffer = null;
-
-/**
- * @param {string} src
- * @return {string}
- */
-Surface.prototype.withTextures = function(src) {
-    return [this.texturesShaderSrc, src].join("\n");
-};
 
 /**
  * @param {string} src

@@ -90,11 +90,10 @@ Subdivision.prototype.render = function(stategl, surface, gl) {
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
         texIs[i] = i;
     }
-    var oldSamplersLocation = gl.getUniformLocation(program, 'oldSamplers');
-    gl.uniform1iv(oldSamplersLocation, texIs);
+    var samplersLocation = gl.getUniformLocation(program, 'samplers');
+    gl.uniform1iv(samplersLocation, texIs);
 
     var offsetsIn = [];
-    var offsetsOut = [];
     var patterns = [];
     var /** number */ primitivesWritten = 0;
     // identify and prepare subdivision patterns
@@ -106,10 +105,8 @@ Subdivision.prototype.render = function(stategl, surface, gl) {
         var pattern = subdivisionPattern.slice(4 * first,
             4 * (first + numIndices));
         patterns.push(pattern);
-        for (var j = 0; j < numIndices; j++) {
+        for (var j = 0; j < numIndices; j++)
             offsetsIn.push(3 * i);
-            offsetsOut.push(primitivesWritten);
-        }
         primitivesWritten += numIndices;
     }
     patterns = Array.prototype.concat.apply([], patterns);

@@ -44,6 +44,7 @@ Assembly.prototype.render = function(stategl, surface, gl) {
     var stride = 4;
     var size = stride * numIndices * sheets;
 
+    // prepare input textures
     var texIs = [];
     for (var i = 0, l = textures.length; i < l; i++) {
         gl.activeTexture(gl.TEXTURE0 + i);
