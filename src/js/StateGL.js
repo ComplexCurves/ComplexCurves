@@ -7,6 +7,11 @@ function StateGL(canvas) {
         preserveDrawingBuffer: true
     }));
     var gl = this.gl;
+    var hasWebGL2 = !!gl;
+    if (!hasWebGL2) {
+        alert('WebGL 2 not supported. Please try another browser or platform.');
+        throw new Error('WebGL 2 not supported.');
+    }
     gl.enable(gl.DEPTH_TEST);
     this.mkRenderToTextureObjects();
     this.mkFXAAProgram();
