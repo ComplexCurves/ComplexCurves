@@ -115,9 +115,6 @@ Subdivision.prototype.render = function(stategl, surface, gl) {
     patterns = Array.prototype.concat.apply([], patterns);
 
     size = stride * primitivesWritten;
-    gl.bindBuffer(gl.ARRAY_BUFFER, surface.transformFeedbackBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, size * Float32Array.BYTES_PER_ELEMENT, gl["STATIC_COPY"]);
-    gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
     var patternsBuffer = gl.createBuffer();
     gl.enableVertexAttribArray(0);
@@ -131,13 +128,9 @@ Subdivision.prototype.render = function(stategl, surface, gl) {
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(offsetsIn), gl.STATIC_DRAW);
     gl.vertexAttribPointer(1, 1, gl.FLOAT, false, 0, 0);
 
-    gl["bindTransformFeedback"](gl["TRANSFORM_FEEDBACK"], surface.transformFeedback);
-    gl["bindBufferBase"](gl["TRANSFORM_FEEDBACK_BUFFER"], 0, surface.transformFeedbackBuffer);
-    gl["beginTransformFeedback"](gl.POINTS);
-    gl.drawArrays(gl.POINTS, 0, primitivesWritten);
-    gl["endTransformFeedback"]();
-    gl["bindBufferBase"](gl["TRANSFORM_FEEDBACK_BUFFER"], 0, null);
-    gl["bindTransformFeedback"](gl["TRANSFORM_FEEDBACK"], null);
+    TransformFeedback.withTransformFeedback(gl, surface, size, function() {
+        gl.drawArrays(gl.POINTS, 0, primitivesWritten);
+    });
 
     surface.numIndices = primitivesWritten;
 

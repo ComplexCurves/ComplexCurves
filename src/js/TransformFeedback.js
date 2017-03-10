@@ -52,3 +52,20 @@ TransformFeedback.toURL = function(gl, surface, stride = 4 + 2 * GLSL.N) {
     var pixels = TransformFeedback.toFloat32Array(gl, surface, stride);
     return Export.pixelsToObjectURL(pixels);
 };
+
+/**
+ * @param {WebGLRenderingContext} gl
+ * @param {Surface} surface
+ * @param {number} size
+ * @param {function()} action
+ */
+TransformFeedback.withTransformFeedback = function(gl, surface, size, action) {
+    gl["bindTransformFeedback"](gl["TRANSFORM_FEEDBACK"], surface.transformFeedback);
+    gl["bindBufferBase"](gl["TRANSFORM_FEEDBACK_BUFFER"], 0, surface.transformFeedbackBuffer);
+    gl.bufferData(gl["TRANSFORM_FEEDBACK_BUFFER"], size * Float32Array.BYTES_PER_ELEMENT, gl["STATIC_COPY"]);
+    gl["beginTransformFeedback"](gl.POINTS);
+    action();
+    gl["endTransformFeedback"]();
+    gl["bindBufferBase"](gl["TRANSFORM_FEEDBACK_BUFFER"], 0, null);
+    gl["bindTransformFeedback"](gl["TRANSFORM_FEEDBACK"], null);
+};

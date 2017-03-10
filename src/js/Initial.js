@@ -59,19 +59,13 @@ Initial.prototype.render = function(stategl, surface, gl) {
     var sheets = surface.sheets;
     var stride = 4 + 2 * GLSL.N;
     var size = stride * surface.numIndices;
-    gl.bindBuffer(gl.ARRAY_BUFFER, surface.transformFeedbackBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, size * Float32Array.BYTES_PER_ELEMENT, gl["STATIC_COPY"]);
-    gl.bindBuffer(gl.ARRAY_BUFFER, null);
     gl.enableVertexAttribArray(0);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
     gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
-    gl["bindTransformFeedback"](gl["TRANSFORM_FEEDBACK"], surface.transformFeedback);
-    gl["bindBufferBase"](gl["TRANSFORM_FEEDBACK_BUFFER"], 0, surface.transformFeedbackBuffer);
-    gl["beginTransformFeedback"](gl.POINTS);
-    gl.drawArrays(gl.POINTS, 0, surface.numIndices);
-    gl["endTransformFeedback"]();
-    gl["bindBufferBase"](gl["TRANSFORM_FEEDBACK_BUFFER"], 0, null);
-    gl["bindTransformFeedback"](gl["TRANSFORM_FEEDBACK"], null);
+
+    TransformFeedback.withTransformFeedback(gl, surface, size, function() {
+        gl.drawArrays(gl.POINTS, 0, surface.numIndices);
+    });
 
     // store feedback values in textures
     TransformFeedback.toTextures(gl, surface, textures);

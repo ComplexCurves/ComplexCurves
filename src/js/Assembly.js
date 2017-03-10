@@ -43,9 +43,6 @@ Assembly.prototype.render = function(stategl, surface, gl) {
     var sheets = surface.sheets;
     var stride = 4;
     var size = stride * numIndices * sheets;
-    gl.bindBuffer(gl.ARRAY_BUFFER, surface.transformFeedbackBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, size * Float32Array.BYTES_PER_ELEMENT, gl["STATIC_COPY"]);
-    gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
     var texIs = [];
     for (var i = 0, l = textures.length; i < l; i++) {
@@ -61,19 +58,13 @@ Assembly.prototype.render = function(stategl, surface, gl) {
     gl.uniform1iv(samplersLocation, texIs);
     gl.disable(gl.DEPTH_TEST);
 
-    gl["bindTransformFeedback"](gl["TRANSFORM_FEEDBACK"], surface.transformFeedback);
-    gl["bindBufferBase"](gl["TRANSFORM_FEEDBACK_BUFFER"], 0, surface.transformFeedbackBuffer);
-    gl["beginTransformFeedback"](gl.POINTS);
-
     var sheetLoc = gl.getUniformLocation(this.program, 'sheet');
-    for (var sheet = 0; sheet < sheets; sheet++) {
-        gl.uniform1f(sheetLoc, sheet);
-        gl.drawArrays(gl.POINTS, 0, numIndices);
-    }
-
-    gl["endTransformFeedback"]();
-    gl["bindBufferBase"](gl["TRANSFORM_FEEDBACK_BUFFER"], 0, null);
-    gl["bindTransformFeedback"](gl["TRANSFORM_FEEDBACK"], null);
+    TransformFeedback.withTransformFeedback(gl, surface, size, function() {
+        for (var sheet = 0; sheet < sheets; sheet++) {
+            gl.uniform1f(sheetLoc, sheet);
+            gl.drawArrays(gl.POINTS, 0, numIndices);
+        }
+    });
 
     surface.numIndices *= sheets;
     gl.enable(gl.DEPTH_TEST);

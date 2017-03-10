@@ -39,9 +39,6 @@ SubdivisionPre.prototype.render = function(stategl, surface, gl) {
     gl.vertexAttribPointer(0, 1, gl.FLOAT, false, 0, 0);
     var stride = 4 + 2 * GLSL.N;
     var size = stride * surface.numIndices;
-    gl.bindBuffer(gl.ARRAY_BUFFER, surface.transformFeedbackBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, size * Float32Array.BYTES_PER_ELEMENT, gl["STATIC_COPY"]);
-    gl.bindBuffer(gl.ARRAY_BUFFER, null);
 
     // prepare input textures
     var texIs = [];
@@ -57,13 +54,9 @@ SubdivisionPre.prototype.render = function(stategl, surface, gl) {
     var samplersLocation = gl.getUniformLocation(program, 'samplers');
     gl.uniform1iv(samplersLocation, texIs);
 
-    gl["bindTransformFeedback"](gl["TRANSFORM_FEEDBACK"], surface.transformFeedback);
-    gl["bindBufferBase"](gl["TRANSFORM_FEEDBACK_BUFFER"], 0, surface.transformFeedbackBuffer);
-    gl["beginTransformFeedback"](gl.POINTS);
-    gl.drawArrays(gl.POINTS, 0, surface.numIndices);
-    gl["endTransformFeedback"]();
-    gl["bindBufferBase"](gl["TRANSFORM_FEEDBACK_BUFFER"], 0, null);
-    gl["bindTransformFeedback"](gl["TRANSFORM_FEEDBACK"], null);
+    TransformFeedback.withTransformFeedback(gl, surface, size, function() {
+        gl.drawArrays(gl.POINTS, 0, surface.numIndices);
+    });
 
     // store feedback values in textures
     TransformFeedback.toTextures(gl, surface, textures);
