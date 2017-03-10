@@ -63,7 +63,7 @@ Assembly.prototype.render = function(stategl, surface, gl) {
     TransformFeedback.withTransformFeedback(gl, surface, size, function() {
         for (var sheet = 0; sheet < sheets; sheet++) {
             gl.uniform1f(sheetLoc, sheet);
-            gl.drawArrays(gl.POINTS, 0, numIndices);
+            gl.drawArrays(gl.TRIANGLES, 0, numIndices);
         }
     });
 

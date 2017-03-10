@@ -55,7 +55,7 @@ SubdivisionPre.prototype.render = function(stategl, surface, gl) {
     gl.uniform1iv(samplersLocation, texIs);
 
     TransformFeedback.withTransformFeedback(gl, surface, size, function() {
-        gl.drawArrays(gl.POINTS, 0, surface.numIndices);
+        gl.drawArrays(gl.TRIANGLES, 0, surface.numIndices);
     });
 
     // store feedback values in textures

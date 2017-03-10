@@ -62,7 +62,7 @@ TransformFeedback.withTransformFeedback = function(gl, surface, size, action) {
     gl["bindTransformFeedback"](gl["TRANSFORM_FEEDBACK"], surface.transformFeedback);
     gl["bindBufferBase"](gl["TRANSFORM_FEEDBACK_BUFFER"], 0, surface.transformFeedbackBuffer);
     gl.bufferData(gl["TRANSFORM_FEEDBACK_BUFFER"], size * Float32Array.BYTES_PER_ELEMENT, gl["STATIC_COPY"]);
-    gl["beginTransformFeedback"](gl.POINTS);
+    gl["beginTransformFeedback"](gl.TRIANGLES);
     action();
     gl["endTransformFeedback"]();
     gl["bindBufferBase"](gl["TRANSFORM_FEEDBACK_BUFFER"], 0, null);

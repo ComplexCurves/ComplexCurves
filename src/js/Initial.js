@@ -61,7 +61,7 @@ Initial.prototype.render = function(stategl, surface, gl) {
     gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
 
     TransformFeedback.withTransformFeedback(gl, surface, size, function() {
-        gl.drawArrays(gl.POINTS, 0, surface.numIndices);
+        gl.drawArrays(gl.TRIANGLES, 0, surface.numIndices);
     });
 
     // store feedback values in textures
