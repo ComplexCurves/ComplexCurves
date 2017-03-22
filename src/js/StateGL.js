@@ -236,12 +236,6 @@ StateGL.prototype.readTexture = function(texture, length, offset = 0) {
     } else {
         pixels = new Float32Array(4 * 2048 * 2048);
         gl.getError();
-        var type = gl.getParameter(gl['IMPLEMENTATION_COLOR_READ_TYPE']);
-        if (type !== gl.FLOAT) {
-            console.error('Reading from float textures not supported.' +
-                ' Please try another browser or platform.');
-            return null;
-        }
         gl.readPixels(0, 0, 2048, 2048, gl.RGBA, gl.FLOAT, pixels);
     }
     var err = gl.getError();
