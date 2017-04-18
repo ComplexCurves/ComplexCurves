@@ -126,6 +126,8 @@ float M (in vec2 x, in float rho);
 
 float epsilon (in vec2 ys[N]) {
     float d = distance (ys[0], ys[1]);
+    if (sheets < 2)
+        return 1.0 / 0.0;
     for (int j = 0; j < sheets; j++) {
         for (int k = 0; k < sheets; k++) {
             if (k > j)
