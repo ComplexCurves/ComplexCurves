@@ -5,7 +5,6 @@ precision mediump float;
 #endif
 in float index;
 uniform sampler2D samplers[1 + N/2];
-vec2 texCoord[2];
 out vec2 position;
 out float delta;
 out float subdivisionFlag;
@@ -17,25 +16,29 @@ vec2 uvPosition (in float i) {
     return vec2 (mod (i, W) / W + 0.5 / W, floor (i / W) / H + 0.5 / H);
 }
 
-bool validOutgoingEdge () {
-    vec3 next = texture (samplers[0], texCoord[1]).xyz;
-    return distance (position, next.xy) < min (delta, next.z);
-}
-
 void main (void) {
-    float j = 1.0;
-    if (mod (index, 3.0) > 1.0)
-        j = -2.0;
-    texCoord[0] = uvPosition (index);
-    texCoord[1] = uvPosition (index + j);
-    vec4 s = texture (samplers[0], texCoord[0]);
+    float which = mod (index, 3.0);
+    vec2 texCoordWhich = uvPosition (index);
+    vec2 texCoord[3];
+    texCoord[0] = uvPosition (index - which);
+    texCoord[1] = uvPosition (index - which + 1.0);
+    texCoord[2] = uvPosition (index - which + 2.0);
+    vec4 s = texture (samplers[0], texCoordWhich);
     position = s.xy;
     delta = s.z;
-    subdivisionFlag = s.w;
-    if (subdivisionFlag == 1.0 && validOutgoingEdge ())
-        subdivisionFlag = 0.0;
+    subdivisionFlag = 0.0;
+    vec3 positionDelta[3];
+    positionDelta[0] = texture (samplers[0], texCoord[0]).xyz;
+    positionDelta[1] = texture (samplers[0], texCoord[1]).xyz;
+    positionDelta[2] = texture (samplers[0], texCoord[2]).xyz;
+    if (distance (positionDelta[0].xy, positionDelta[1].xy) >= min (positionDelta[0].z, positionDelta[1].z))
+        subdivisionFlag += 4.0;
+    if (distance (positionDelta[1].xy, positionDelta[2].xy) >= min (positionDelta[1].z, positionDelta[2].z))
+        subdivisionFlag += 2.0;
+    if (distance (positionDelta[2].xy, positionDelta[0].xy) >= min (positionDelta[2].z, positionDelta[0].z))
+        subdivisionFlag += 1.0;
     for (int i = 1; i < N/2; i++) {
-        s = texture (samplers[i], texCoord[0]);
+        s = texture (samplers[i], texCoordWhich);
         values[2*i-2] = s.xy;
         values[2*i-1] = s.zw;
     }

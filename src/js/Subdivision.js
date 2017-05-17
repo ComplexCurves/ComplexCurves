@@ -98,8 +98,7 @@ Subdivision.prototype.render = function(stategl, surface, gl) {
     var /** number */ primitivesWritten = 0;
     // identify and prepare subdivision patterns
     for (i = 0, l = surface.numIndices / 3; i < l; i++) {
-        var /** number */ patternIndex = 4 * subdivisionFlags[3 * i] +
-            2 * subdivisionFlags[3 * i + 1] + subdivisionFlags[3 * i + 2];
+        var /** number */ patternIndex = subdivisionFlags[3 * i];
         var /** number */ first = subdivisionPatternFirst[patternIndex];
         var /** number */ numIndices = subdivisionPatternCount[patternIndex];
         var pattern = subdivisionPattern.slice(4 * first,
