@@ -37,6 +37,12 @@ void main (void) {
         subdivisionFlag += 2.0;
     if (distance (positionDelta[2].xy, positionDelta[0].xy) >= min (positionDelta[2].z, positionDelta[0].z))
         subdivisionFlag += 1.0;
+    if (subdivisionFlag == 3.0 && distance (positionDelta[0].xy, 0.5 * (positionDelta[1].xy + positionDelta[2].xy)) < distance (positionDelta[1].xy, 0.5 * (positionDelta[0].xy + positionDelta[2].xy)))
+        subdivisionFlag = 8.0;
+    if (subdivisionFlag == 5.0 && distance (positionDelta[1].xy, 0.5 * (positionDelta[0].xy + positionDelta[2].xy)) < distance (positionDelta[2].xy, 0.5 * (positionDelta[0].xy + positionDelta[1].xy)))
+        subdivisionFlag = 9.0;
+    if (subdivisionFlag == 6.0 && distance (positionDelta[2].xy, 0.5 * (positionDelta[0].xy + positionDelta[1].xy)) < distance (positionDelta[0].xy, 0.5 * (positionDelta[1].xy + positionDelta[2].xy)))
+        subdivisionFlag = 10.0;
     for (int i = 1; i < N/2; i++) {
         s = texture (samplers[i], texCoordWhich);
         values[2*i-2] = s.xy;
