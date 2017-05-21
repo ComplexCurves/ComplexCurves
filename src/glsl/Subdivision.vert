@@ -3,7 +3,7 @@ precision highp float;
 #else
 precision mediump float;
 #endif
-in vec4 indexBarycentric;
+in vec3 barycentric;
 in float indexOffsetIn;
 uniform sampler2D samplers[1 + N/2];
 out vec2 position;
@@ -22,7 +22,6 @@ void main (void) {
     texCoord[0] = uvPosition (indexOffsetIn);
     texCoord[1] = uvPosition (indexOffsetIn + 1.0);
     texCoord[2] = uvPosition (indexOffsetIn + 2.0);
-    vec3 barycentric = indexBarycentric.yzw;
     vec4 tmp;
 
     if (barycentric == vec3 (1.0, 0.0, 0.0)) {

@@ -48,33 +48,33 @@ Subdivision.prototype.render = function(stategl, surface, gl) {
     // prepare subdivision patterns and buffers
     var subdivisionPattern = [
         // 1st pattern (no subdivision)
-        0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 2.0, 0.0, 0.0, 1.0,
+        1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0,
         // 2nd pattern
-        0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 2.0, 0.5, 0.0, 0.5,
-        3.0, 0.0, 1.0, 0.0, 4.0, 0.0, 0.0, 1.0, 5.0, 0.5, 0.0, 0.5,
+        1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.5, 0.0, 0.5,
+        0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.5, 0.0, 0.5,
         // 3rd pattern
-        0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 2.0, 0.0, 0.5, 0.5,
-        3.0, 0.0, 0.5, 0.5, 4.0, 0.0, 0.0, 1.0, 5.0, 1.0, 0.0, 0.0,
+        1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.5, 0.5,
+        0.0, 0.5, 0.5, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0,
         // 4th pattern
-        0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 2.0, 0.5, 0.0, 0.5,
-        3.0, 0.0, 0.5, 0.5, 4.0, 0.0, 0.0, 1.0, 5.0, 0.5, 0.0, 0.5,
-        6.0, 0.5, 0.0, 0.5, 7.0, 0.0, 1.0, 0.0, 8.0, 0.0, 0.5, 0.5,
+        1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.5, 0.0, 0.5,
+        0.0, 0.5, 0.5, 0.0, 0.0, 1.0, 0.5, 0.0, 0.5,
+        0.5, 0.0, 0.5, 0.0, 1.0, 0.0, 0.0, 0.5, 0.5,
         // 5th pattern
-        0.0, 1.0, 0.0, 0.0, 1.0, 0.5, 0.5, 0.0, 2.0, 0.0, 0.0, 1.0,
-        3.0, 0.0, 0.0, 1.0, 4.0, 0.5, 0.5, 0.0, 5.0, 0.0, 1.0, 0.0,
+        1.0, 0.0, 0.0, 0.5, 0.5, 0.0, 0.0, 0.0, 1.0,
+        0.0, 0.0, 1.0, 0.5, 0.5, 0.0, 0.0, 1.0, 0.0,
         // 6th pattern
-        0.0, 1.0, 0.0, 0.0, 1.0, 0.5, 0.5, 0.0, 2.0, 0.5, 0.0, 0.5,
-        3.0, 0.5, 0.0, 0.5, 4.0, 0.5, 0.5, 0.0, 5.0, 0.0, 0.0, 1.0,
-        6.0, 0.0, 1.0, 0.0, 7.0, 0.0, 0.0, 1.0, 8.0, 0.5, 0.5, 0.0,
+        1.0, 0.0, 0.0, 0.5, 0.5, 0.0, 0.5, 0.0, 0.5,
+        0.5, 0.0, 0.5, 0.5, 0.5, 0.0, 0.0, 0.0, 1.0,
+        0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.5, 0.5, 0.0,
         // 7th pattern
-        0.0, 1.0, 0.0, 0.0, 1.0, 0.5, 0.5, 0.0, 2.0, 0.0, 0.5, 0.5,
-        3.0, 0.0, 0.0, 1.0, 4.0, 1.0, 0.0, 0.0, 5.0, 0.0, 0.5, 0.5,
-        6.0, 0.0, 0.5, 0.5, 7.0, 0.5, 0.5, 0.0, 8.0, 0.0, 1.0, 0.0,
+        1.0, 0.0, 0.0, 0.5, 0.5, 0.0, 0.0, 0.5, 0.5,
+        0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.5, 0.5,
+        0.0, 0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 1.0, 0.0,
         // 8th pattern
-        0.0, 1.0, 0.0, 0.0, 1.0, 0.5, 0.5, 0.0, 2.0, 0.5, 0.0, 0.5,
-        3.0, 0.5, 0.5, 0.0, 4.0, 0.0, 1.0, 0.0, 5.0, 0.0, 0.5, 0.5,
-        6.0, 0.0, 0.5, 0.5, 7.0, 0.0, 0.0, 1.0, 8.0, 0.5, 0.0, 0.5,
-        9.0, 0.5, 0.5, 0.0, 10.0, 0.0, 0.5, 0.5, 11.0, 0.5, 0.0, 0.5
+        1.0, 0.0, 0.0, 0.5, 0.5, 0.0, 0.5, 0.0, 0.5,
+        0.5, 0.5, 0.0, 0.0, 1.0, 0.0, 0.0, 0.5, 0.5,
+        0.0, 0.5, 0.5, 0.0, 0.0, 1.0, 0.5, 0.0, 0.5,
+        0.5, 0.5, 0.0, 0.0, 0.5, 0.5, 0.5, 0.0, 0.5
     ];
     var subdivisionPatternFirst = [0, 3, 9, 15, 24, 30, 39, 48];
     var subdivisionPatternCount = [3, 6, 6, 9, 6, 9, 9, 12];
@@ -101,8 +101,8 @@ Subdivision.prototype.render = function(stategl, surface, gl) {
         var /** number */ patternIndex = subdivisionFlags[3 * i];
         var /** number */ first = subdivisionPatternFirst[patternIndex];
         var /** number */ numIndices = subdivisionPatternCount[patternIndex];
-        var pattern = subdivisionPattern.slice(4 * first,
-            4 * (first + numIndices));
+        var pattern = subdivisionPattern.slice(3 * first,
+            3 * (first + numIndices));
         patterns.push(pattern);
         for (var j = 0; j < numIndices; j++)
             offsetsIn.push(3 * i);
@@ -116,7 +116,7 @@ Subdivision.prototype.render = function(stategl, surface, gl) {
     gl.enableVertexAttribArray(0);
     gl.bindBuffer(gl.ARRAY_BUFFER, patternsBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(patterns), gl.STATIC_DRAW);
-    gl.vertexAttribPointer(0, 4, gl.FLOAT, false, 0, 0);
+    gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
 
     var offsetsInBuffer = gl.createBuffer();
     gl.enableVertexAttribArray(1);
