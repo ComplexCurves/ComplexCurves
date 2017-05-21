@@ -46,31 +46,32 @@ Subdivision.prototype.render = function(stategl, surface, gl) {
         subdivisionFlags[l] = buf[i];
 
     // prepare subdivision patterns and buffers
+    // subdivision patterns are given in barycentric coordinates
     var subdivisionPattern = [
         // 1st pattern (no subdivision)
         1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0,
-        // 2nd pattern
+        // 2nd pattern (split 3rd edge)
         1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.5, 0.0, 0.5,
         0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.5, 0.0, 0.5,
-        // 3rd pattern
+        // 3rd pattern (split 2nd edge)
         1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.5, 0.5,
         0.0, 0.5, 0.5, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0,
-        // 4th pattern
+        // 4th pattern (split 2nd and 3rd edge)
         1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.5, 0.0, 0.5,
         0.0, 0.5, 0.5, 0.0, 0.0, 1.0, 0.5, 0.0, 0.5,
         0.5, 0.0, 0.5, 0.0, 1.0, 0.0, 0.0, 0.5, 0.5,
-        // 5th pattern
+        // 5th pattern (split 1st edge)
         1.0, 0.0, 0.0, 0.5, 0.5, 0.0, 0.0, 0.0, 1.0,
         0.0, 0.0, 1.0, 0.5, 0.5, 0.0, 0.0, 1.0, 0.0,
-        // 6th pattern
+        // 6th pattern (split 1st and 3rd edge)
         1.0, 0.0, 0.0, 0.5, 0.5, 0.0, 0.5, 0.0, 0.5,
         0.5, 0.0, 0.5, 0.5, 0.5, 0.0, 0.0, 0.0, 1.0,
         0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.5, 0.5, 0.0,
-        // 7th pattern
+        // 7th pattern (split 1st and 2nd edge)
         1.0, 0.0, 0.0, 0.5, 0.5, 0.0, 0.0, 0.5, 0.5,
         0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.5, 0.5,
         0.0, 0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 1.0, 0.0,
-        // 8th pattern
+        // 8th pattern (split all edges)
         1.0, 0.0, 0.0, 0.5, 0.5, 0.0, 0.5, 0.0, 0.5,
         0.5, 0.5, 0.0, 0.0, 1.0, 0.0, 0.0, 0.5, 0.5,
         0.0, 0.5, 0.5, 0.0, 0.0, 1.0, 0.5, 0.0, 0.5,
