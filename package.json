@@ -10,7 +10,7 @@
     "js-beautify": "^1.6.3",
     "jshint": "^2.9.2"
   },
-  "main": "index.js",
+  "main": "build/ComplexCurves.js",
   "scripts": {
     "prepare": "make",
     "test": "make test"
@@ -21,7 +21,6 @@
   },
   "author": "Stefan Kranich <kranich@ma.tum.de>",
   "license": "Apache-2.0",
-  "main": "build/ComplexCurves.js",
   "files": [
     "build/js",
     "examples.json",
