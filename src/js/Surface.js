@@ -6,6 +6,20 @@
  * @implements {Stage}
  */
 function Surface(stategl, polynomial, depth) {
+    var surface = this;
+    this.polynomial = polynomial;
+    this.depth = depth;
+    surface.sheets = polynomial.sheets();
+    // surface must be bivariate and at least quadratic
+    if (!polynomial.isBivariate()) {
+        console.log("Equation must be bivariate!");
+        return;
+    }
+    if (surface.sheets < 2) {
+        console.log("There must be at least two sheets!");
+        return;
+    }
+
     stategl.getExtension("OES_texture_float");
     var gl = stategl.gl;
     if (gl.getSupportedExtensions().indexOf("WEBGL_color_buffer_float") !== -1)
@@ -17,14 +31,7 @@ function Surface(stategl, polynomial, depth) {
     if (!stategl.canUseTextureFloat(this.texturesIn[0]))
         return;
 
-    this.polynomial = polynomial;
-    this.depth = depth;
-    var surface = this;
-    var p = surface.polynomial;
-    var vars = p.variableList();
-    var vy = vars.length === 0 ? "y" : vars[vars.length - 1];
-    surface.sheets = p.degree(vy);
-    surface.commonShaderSrc = resources["Common.glsl"];
+    surface.commonShaderSrc = /** @type {string} */ (resources["Common.glsl"]).trim();
     surface.customShaderSrc = GLSL.polynomialShaderSource(polynomial);
     surface.texturesShaderSrc = resources["Textures.glsl"];
     surface.initial = new Initial(stategl, surface);

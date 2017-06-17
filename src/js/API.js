@@ -1,7 +1,8 @@
 import {
     ComplexCurves,
     ComplexCurvesFromEquation,
-    ComplexCurvesFromFile
+    ComplexCurvesFromFile,
+    ComplexCurvesFromPolynomial
 }
 from './ComplexCurves';
 
@@ -13,6 +14,7 @@ from './PolynomialParser';
 window['ComplexCurves'] = ComplexCurves;
 ComplexCurves['fromEquation'] = ComplexCurvesFromEquation;
 ComplexCurves['fromFile'] = ComplexCurvesFromFile;
+ComplexCurves['fromPolynomial'] = ComplexCurvesFromPolynomial;
 ComplexCurves.prototype['domainColouring'] = ComplexCurves.prototype.domainColouring;
 ComplexCurves.prototype['exportBinary'] = ComplexCurves.prototype.exportBinary;
 ComplexCurves.prototype['exportDomainColouring'] = ComplexCurves.prototype.exportDomainColouring;
@@ -41,4 +43,7 @@ ComplexCurves.prototype['toggleTransparency'] = ComplexCurves.prototype.toggleTr
 ComplexCurves.prototype['unregisterEventHandlers'] = ComplexCurves.prototype.unregisterEventHandlers;
 
 window['PolynomialParser'] = PolynomialParser;
+PolynomialParser['eval'] = PolynomialParser.eval;
+PolynomialParser['isBivariate'] = PolynomialParser.isBivariate;
 PolynomialParser['parse'] = PolynomialParser.parse;
+PolynomialParser['sheets'] = PolynomialParser.sheets;

@@ -10,12 +10,15 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function customExample(equation) {
-        return PolynomialParser.parse(equation) ? {
+        var p = PolynomialParser.eval(PolynomialParser.parse(equation));
+        return p ? {
             "id": "Custom",
             "cached": false,
-            "title": equation,
             "equation": equation,
-            "description": "Custom equation"
+            "title": equation,
+            "description": "Custom equation",
+            "polynomial": p,
+            "sheets": PolynomialParser.sheets(p)
         } : null;
     }
 
@@ -48,7 +51,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function selectExample(example) {
         example = example || customExample($('.ui.search').search('get value'));
-        if (!example)
+        if (!example || example.sheets < 2)
             return;
         if (canvas.complexCurves)
             canvas.complexCurves.unregisterEventHandlers();
@@ -61,8 +64,8 @@ document.addEventListener("DOMContentLoaded", function() {
                     'http://complexcurves.org/models/' + example.id + '.bin',
                     example.equation, lat, lon);
         } else {
-            canvas.complexCurves = ComplexCurves.fromEquation(canvas,
-                example.equation, example.depth || 12, lat, lon);
+            canvas.complexCurves = ComplexCurves.fromPolynomial(canvas,
+                example.polynomial, example.depth || 12, lat, lon);
         }
         if (example.zoom !== undefined)
             canvas.complexCurves.setZoom(example.zoom);
@@ -253,23 +256,36 @@ document.addEventListener("DOMContentLoaded", function() {
             },
             templates: {
                 message: function(message, type) {
-                    var
-                        html = '';
+                    var html = '';
                     var value = $('.ui.search').search('get value');
                     var example = customExample(value);
                     if (example) {
-                        html = $('.ui.search').search('generate results', {
-                            "results": [example]
-                        });
-                        $('.ui.search').search('add results', html);
-                        return;
+                        if (!PolynomialParser.isBivariate(example.polynomial)) {
+                            return '<div class="message info">' +
+                                '<div class="header">' + 'Invalid equation' +
+                                '</div>' + '<div class="description">' +
+                                'Equation must be bivariate!' + '</div>' +
+                                '</div>';
+                        } else if (example.sheets < 2) {
+                            return '<div class="message info">' +
+                                '<div class="header">' + 'Invalid equation' +
+                                '</div>' + '<div class="description">' +
+                                'There must be at least two sheets!' + '</div>' +
+                                '</div>';
+                        } else {
+                            html = $('.ui.search').search('generate results', {
+                                "results": [example]
+                            });
+                            $('.ui.search').search('add results', html);
+                            return;
+                        }
                     }
                     if (message !== undefined && type !== undefined) {
-                        html += '' + '<div class="message ' + type + '">';
+                        html = '<div class="message ' + type + '">';
                         // message type
                         if (type == 'empty') {
                             html += '' +
-                                '<div class="header">' + 'No Results' +
+                                '<div class="header">' + 'No results' +
                                 '</div>' + '<div class="description">' +
                                 message + '</div>';
                         } else {

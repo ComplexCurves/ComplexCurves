@@ -362,6 +362,15 @@ Polynomial.roots = function(cs) {
 };
 
 /**
+ * @return {number}
+ */
+Polynomial.prototype.sheets = function() {
+    var vars = this.variableList();
+    var vy = vars.length === 0 ? "y" : vars[vars.length - 1];
+    return this.degree(vy);
+};
+
+/**
  * @param {Polynomial} p
  * @param {Polynomial} q
  * @return {Polynomial}

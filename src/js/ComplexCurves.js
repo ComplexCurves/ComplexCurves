@@ -67,11 +67,14 @@ export function ComplexCurvesFromFile(canvas, file, equation = "",
  * @param {boolean=} ortho
  * @return {ComplexCurves}
  */
-function ComplexCurvesFromPolynomial(canvas, polynomial, depth,
+export function ComplexCurvesFromPolynomial(canvas, polynomial, depth,
     lat = defaultLat, lon = defaultLon, ortho = false) {
     var complexCurves = new ComplexCurves(canvas, lat, lon, ortho);
     var gl = complexCurves.stategl;
     gl.renderer = new Surface(gl, polynomial, depth);
+    // equation must be bivariate and at least quadratic
+    if (!polynomial.isBivariate() || gl.renderer.sheets < 2)
+        return null;
     complexCurves.renderSurface();
     return complexCurves;
 }

@@ -5,6 +5,8 @@ export function PolynomialParser() {}
  * @return {Polynomial}
  */
 PolynomialParser.eval = function(tree) {
+    if (tree === null)
+        return null;
     var type = tree.type;
     var value = tree.value;
     var first, second;
@@ -41,6 +43,14 @@ PolynomialParser.eval = function(tree) {
     else if (type === "imaginary")
         return Polynomial.complex(new Complex(0, 1));
     return null;
+};
+
+/**
+ * @param {!Polynomial} p
+ * @return {boolean}
+ */
+PolynomialParser.isBivariate = function(p) {
+    return p.isBivariate();
 };
 
 /**
@@ -179,4 +189,12 @@ PolynomialParser.parse = function(str) {
     var parse = polynomial;
     var tree = parse(tokens);
     return tree;
+};
+
+/**
+ * @param {!Polynomial} p
+ * @return {number}
+ */
+PolynomialParser.sheets = function(p) {
+    return p.sheets();
 };
