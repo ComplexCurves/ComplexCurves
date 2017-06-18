@@ -27,9 +27,9 @@ function StateGL(canvas, contextType = 'webgl2') {
             alert('WebGL 2 not supported. Please try another browser or platform.');
             throw new Error('WebGL 2 not supported.');
         }
-        this.mkFXAAProgram();
     }
     gl.enable(gl.DEPTH_TEST);
+    this.mkFXAAProgram();
     this.mkRenderToTextureObjects();
 }
 
@@ -383,7 +383,7 @@ StateGL.prototype.updateViewMatrix = function(st) {
 
 /** @param {function()} action */
 StateGL.prototype.withFXAA = function(action) {
-    if(this.fxaaProgram === null)
+    if (this.fxaaProgram === null)
         return;
     this.withRenderToTexture(action);
     var gl = this.gl;
