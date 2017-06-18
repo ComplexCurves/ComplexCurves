@@ -1,20 +1,36 @@
 /**
  * @param {HTMLCanvasElement} canvas
+ * @param {string=} contextType
  * @constructor
  */
-function StateGL(canvas) {
-    this.gl = /** @type WebGLRenderingContext */ (canvas.getContext('webgl2', {
-        preserveDrawingBuffer: true
-    }));
-    var gl = this.gl;
-    var hasWebGL2 = !!gl;
-    if (!hasWebGL2) {
-        alert('WebGL 2 not supported. Please try another browser or platform.');
-        throw new Error('WebGL 2 not supported.');
+function StateGL(canvas, contextType = 'webgl2') {
+    var gl;
+    this.contextType = contextType;
+    if (contextType === 'webgl') {
+        this.gl = /** @type WebGLRenderingContext */ (canvas.getContext('webgl', {
+            preserveDrawingBuffer: true
+        }));
+        gl = this.gl;
+        var hasWebGL = !!gl;
+        if (!hasWebGL) {
+            alert('WebGL not supported. Please try another browser or platform.');
+            throw new Error('WebGL not supported.');
+        }
+
+    } else {
+        this.gl = /** @type WebGLRenderingContext */ (canvas.getContext('webgl2', {
+            preserveDrawingBuffer: true
+        }));
+        gl = this.gl;
+        var hasWebGL2 = !!gl;
+        if (!hasWebGL2) {
+            alert('WebGL 2 not supported. Please try another browser or platform.');
+            throw new Error('WebGL 2 not supported.');
+        }
+        this.mkFXAAProgram();
     }
     gl.enable(gl.DEPTH_TEST);
     this.mkRenderToTextureObjects();
-    this.mkFXAAProgram();
 }
 
 /** @type {number} */
@@ -22,6 +38,9 @@ StateGL.prototype.bigTextureSize = 8192;
 
 /** @type {boolean} */
 StateGL.prototype.clipping = false;
+
+/** @type {string} */
+StateGL.prototype.contextType = 'webgl2';
 
 /** @type {boolean} */
 StateGL.prototype.fxaa = true;
@@ -95,7 +114,7 @@ StateGL.prototype.mkProgram = function(sources, transformFeedbackVaryings) {
         gl["transformFeedbackVaryings"](shaderProgram, transformFeedbackVaryings,
             gl["INTERLEAVED_ATTRIBS"]);
         gl.enable(gl["RASTERIZER_DISCARD"]);
-    } else {
+    } else if (this.contextType === 'webgl2') {
         gl.disable(gl["RASTERIZER_DISCARD"]);
     }
     gl.linkProgram(shaderProgram);
@@ -364,6 +383,8 @@ StateGL.prototype.updateViewMatrix = function(st) {
 
 /** @param {function()} action */
 StateGL.prototype.withFXAA = function(action) {
+    if(this.fxaaProgram === null)
+        return;
     this.withRenderToTexture(action);
     var gl = this.gl;
     var program = this.fxaaProgram;
@@ -382,7 +403,7 @@ StateGL.prototype.withFXAA = function(action) {
 
 /** @param {function()} action */
 StateGL.prototype.withOptionalFXAA = function(action) {
-    if (this.fxaa)
+    if (this.fxaa && this.fxaaProgram !== null)
         this.withFXAA(action);
     else
         action();
