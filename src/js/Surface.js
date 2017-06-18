@@ -171,5 +171,5 @@ Surface.prototype.transformFeedbackBuffer = null;
  * @return {string}
  */
 Surface.prototype.withCustomAndCommon = function(src) {
-    return [this.customShaderSrc, this.commonShaderSrc, src].join("\n");
+    return ["#version 300 es", this.customShaderSrc, this.commonShaderSrc, src].join("\n");
 };

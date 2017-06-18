@@ -1,6 +1,5 @@
 uniform int sheet;
-in vec2 vPosition;
-out vec4 fColor;
+varying vec2 vPosition;
 vec3 hue_to_rgb (in float hue)
 {
     hue = mod (degrees (hue), 360.0) / 60.0;
@@ -46,5 +45,5 @@ void main (void)
     float blackp = sawfct (angle, PI / 12.0, 0.7, 1.0);
     float blackm = sawfct (log (length (value)), PI / 12.0, 0.7, 1.0);
     float black = blackp * blackm;
-    fColor = vec4 (black * hue_to_rgb(angle), 1.0);
+    gl_FragColor = vec4 (black * hue_to_rgb(angle), 1.0);
 }
