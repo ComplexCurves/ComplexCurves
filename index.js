@@ -108,6 +108,9 @@ document.addEventListener("DOMContentLoaded", function() {
             })[0];
             if (example) {
                 example.cached = options.cached !== '0';
+                example.polynomial = PolynomialParser.eval(
+                    PolynomialParser.parse(example.equation)
+                );
                 selectExample(example);
             }
         }
