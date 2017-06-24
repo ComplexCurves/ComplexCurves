@@ -53,8 +53,15 @@ document.addEventListener("DOMContentLoaded", function() {
         example = example || customExample($('.ui.search').search('get value'));
         if (!example || example.sheets < 2)
             return;
-        if (canvas.complexCurves)
+        if (canvas.complexCurves) {
             canvas.complexCurves.unregisterEventHandlers();
+            var parentNode = canvas.parentNode;
+            var newCanvas = document.createElement("canvas");
+            newCanvas.width = 800;
+            newCanvas.height = 800;
+            parentNode.replaceChild(newCanvas, canvas);
+            canvas = newCanvas;
+        }
         var piOver180 = Math.PI / 180;
         var lat = 75 * piOver180;
         var lon = 30 * piOver180;

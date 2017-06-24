@@ -13,10 +13,14 @@ function Subdivision(stategl, surface) {
  * @param {Surface} surface
  */
 Subdivision.prototype.mkProgram = function(stategl, surface) {
-    var sources = StateGL.getShaderSources("Subdivision");
-    sources[0] = surface.withTextures(sources[0]);
-    sources[1] = surface.withCustomAndCommon(sources[1]);
-    this.program = stategl.mkProgram(sources);
+    var sources = [
+        StateGL.getShaderSource('Subdivision.vert'),
+        StateGL.getShaderSource('Dummy.frag')
+    ];
+    sources[0] = surface.withCustomAndCommon(sources[0]);
+    this.program = stategl.mkProgram(sources, ["position", "delta",
+        "subdivisionFlag", "values"
+    ]);
 };
 
 /** @type {WebGLProgram} */
@@ -29,98 +33,103 @@ Subdivision.prototype.program = null;
  */
 Subdivision.prototype.render = function(stategl, surface, gl) {
     var i, l;
-    var texturesIn = surface.texturesIn,
-        texturesOut = surface.texturesOut;
+    var textures = surface.textures;
     var program = this.program;
     gl.useProgram(program);
 
-    // read texture into array
-    var pixels =
-        /** @type {Float32Array} */
-        (stategl.readTexture(texturesIn[0]));
+    // read subdivision flags from transform feedback buffer
+    var subdivisionFlags = new Float32Array(surface.numIndices);
+    var buf = TransformFeedback.toFloat32Array(gl, surface);
+    var stride = 4 + 2 * GLSL.N;
+    var size = stride * surface.numIndices;
+    for (i = 3, l = 0; i < size; i += stride, l++)
+        subdivisionFlags[l] = buf[i];
 
     // prepare subdivision patterns and buffers
+    // subdivision patterns are given in barycentric coordinates
     var subdivisionPattern = [
         // 1st pattern (no subdivision)
-        0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 2.0, 0.0, 0.0, 1.0,
-        // 2nd pattern
-        0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 2.0, 0.5, 0.0, 0.5,
-        3.0, 0.0, 1.0, 0.0, 4.0, 0.0, 0.0, 1.0, 5.0, 0.5, 0.0, 0.5,
-        // 3rd pattern
-        0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 2.0, 0.0, 0.5, 0.5,
-        3.0, 0.0, 0.5, 0.5, 4.0, 0.0, 0.0, 1.0, 5.0, 1.0, 0.0, 0.0,
-        // 4th pattern
-        0.0, 1.0, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, 2.0, 0.5, 0.0, 0.5,
-        3.0, 0.0, 0.5, 0.5, 4.0, 0.0, 0.0, 1.0, 5.0, 0.5, 0.0, 0.5,
-        6.0, 0.5, 0.0, 0.5, 7.0, 0.0, 1.0, 0.0, 8.0, 0.0, 0.5, 0.5,
-        // 5th pattern
-        0.0, 1.0, 0.0, 0.0, 1.0, 0.5, 0.5, 0.0, 2.0, 0.0, 0.0, 1.0,
-        3.0, 0.0, 0.0, 1.0, 4.0, 0.5, 0.5, 0.0, 5.0, 0.0, 1.0, 0.0,
-        // 6th pattern
-        0.0, 1.0, 0.0, 0.0, 1.0, 0.5, 0.5, 0.0, 2.0, 0.5, 0.0, 0.5,
-        3.0, 0.5, 0.0, 0.5, 4.0, 0.5, 0.5, 0.0, 5.0, 0.0, 0.0, 1.0,
-        6.0, 0.0, 1.0, 0.0, 7.0, 0.0, 0.0, 1.0, 8.0, 0.5, 0.5, 0.0,
-        // 7th pattern
-        0.0, 1.0, 0.0, 0.0, 1.0, 0.5, 0.5, 0.0, 2.0, 0.0, 0.5, 0.5,
-        3.0, 0.0, 0.0, 1.0, 4.0, 1.0, 0.0, 0.0, 5.0, 0.0, 0.5, 0.5,
-        6.0, 0.0, 0.5, 0.5, 7.0, 0.5, 0.5, 0.0, 8.0, 0.0, 1.0, 0.0,
-        // 8th pattern
-        0.0, 1.0, 0.0, 0.0, 1.0, 0.5, 0.5, 0.0, 2.0, 0.5, 0.0, 0.5,
-        3.0, 0.5, 0.5, 0.0, 4.0, 0.0, 1.0, 0.0, 5.0, 0.0, 0.5, 0.5,
-        6.0, 0.0, 0.5, 0.5, 7.0, 0.0, 0.0, 1.0, 8.0, 0.5, 0.0, 0.5,
-        9.0, 0.5, 0.5, 0.0, 10.0, 0.0, 0.5, 0.5, 11.0, 0.5, 0.0, 0.5
+        1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0,
+        // 2nd pattern (split 3rd edge)
+        1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.5, 0.0, 0.5,
+        0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.5, 0.0, 0.5,
+        // 3rd pattern (split 2nd edge)
+        1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.5, 0.5,
+        0.0, 0.5, 0.5, 0.0, 0.0, 1.0, 1.0, 0.0, 0.0,
+        // 4th pattern (split 2nd and 3rd edge)
+        1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.5, 0.0, 0.5,
+        0.0, 0.5, 0.5, 0.0, 0.0, 1.0, 0.5, 0.0, 0.5,
+        0.5, 0.0, 0.5, 0.0, 1.0, 0.0, 0.0, 0.5, 0.5,
+        // 5th pattern (split 1st edge)
+        1.0, 0.0, 0.0, 0.5, 0.5, 0.0, 0.0, 0.0, 1.0,
+        0.0, 0.0, 1.0, 0.5, 0.5, 0.0, 0.0, 1.0, 0.0,
+        // 6th pattern (split 1st and 3rd edge)
+        1.0, 0.0, 0.0, 0.5, 0.5, 0.0, 0.5, 0.0, 0.5,
+        0.5, 0.0, 0.5, 0.5, 0.5, 0.0, 0.0, 0.0, 1.0,
+        0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.5, 0.5, 0.0,
+        // 7th pattern (split 1st and 2nd edge)
+        1.0, 0.0, 0.0, 0.5, 0.5, 0.0, 0.0, 0.5, 0.5,
+        0.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.5, 0.5,
+        0.0, 0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 1.0, 0.0,
+        // 8th pattern (split all edges)
+        1.0, 0.0, 0.0, 0.5, 0.5, 0.0, 0.5, 0.0, 0.5,
+        0.5, 0.5, 0.0, 0.0, 1.0, 0.0, 0.0, 0.5, 0.5,
+        0.0, 0.5, 0.5, 0.0, 0.0, 1.0, 0.5, 0.0, 0.5,
+        0.5, 0.5, 0.0, 0.0, 0.5, 0.5, 0.5, 0.0, 0.5,
+        // 9th pattern (variation of 4th pattern)
+        1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.5, 0.5,
+        0.0, 0.5, 0.5, 0.5, 0.0, 0.5, 1.0, 0.0, 0.0,
+        0.5, 0.0, 0.5, 0.0, 0.5, 0.5, 0.0, 0.0, 1.0,
+        // 10th pattern (variation of 6th pattern)
+        1.0, 0.0, 0.0, 0.5, 0.5, 0.0, 0.5, 0.0, 0.5,
+        0.5, 0.0, 0.5, 0.5, 0.5, 0.0, 0.0, 1.0, 0.0,
+        0.0, 1.0, 0.0, 0.0, 0.0, 1.0, 0.5, 0.0, 0.5,
+        // 11th pattern (variation of 7th pattern)
+        1.0, 0.0, 0.0, 0.5, 0.5, 0.0, 0.0, 0.0, 1.0,
+        0.0, 0.0, 1.0, 0.5, 0.5, 0.0, 0.0, 0.5, 0.5,
+        0.0, 0.5, 0.5, 0.5, 0.5, 0.0, 0.0, 1.0, 0.0
     ];
-    var subdivisionPatternFirst = [0, 3, 9, 15, 24, 30, 39, 48];
-    var subdivisionPatternCount = [3, 6, 6, 9, 6, 9, 9, 12];
-    gl.bindFramebuffer(gl.FRAMEBUFFER, surface.framebuffer);
+    var subdivisionPatternFirst = [0, 3, 9, 15, 24, 30, 39, 48, 60, 69, 78];
+    var subdivisionPatternCount = [3, 6, 6, 9, 6, 9, 9, 12, 9, 9, 9];
 
     // prepare input textures
     var texIs = [];
-    for (i = 0, l = texturesIn.length; i < l; i++) {
+    for (i = 0, l = textures.length; i < l; i++) {
         gl.activeTexture(gl.TEXTURE0 + i);
-        gl.bindTexture(gl.TEXTURE_2D, texturesIn[i]);
+        gl.bindTexture(gl.TEXTURE_2D, textures[i]);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
         texIs[i] = i;
     }
-    var oldSamplersLocation = gl.getUniformLocation(program, 'oldSamplers');
-    gl.uniform1iv(oldSamplersLocation, texIs);
-
-    gl.disable(gl.DEPTH_TEST);
-    gl.viewport(0, 0, 2048, 2048);
-
-    var computedRootsLoc = gl.getUniformLocation(this.program, 'computedRoots');
-    var sheets = surface.sheets;
-    texIs = [];
+    var samplersLocation = gl.getUniformLocation(program, 'samplers');
+    gl.uniform1iv(samplersLocation, texIs);
 
     var offsetsIn = [];
-    var offsetsOut = [];
     var patterns = [];
     var /** number */ primitivesWritten = 0;
     // identify and prepare subdivision patterns
     for (i = 0, l = surface.numIndices / 3; i < l; i++) {
-        var /** number */ patternIndex = 4 * pixels[12 * i + 3] +
-            2 * pixels[12 * i + 7] + pixels[12 * i + 11];
+        var /** number */ patternIndex = subdivisionFlags[3 * i];
         var /** number */ first = subdivisionPatternFirst[patternIndex];
         var /** number */ numIndices = subdivisionPatternCount[patternIndex];
-        var pattern = subdivisionPattern.slice(4 * first,
-            4 * (first + numIndices));
+        var pattern = subdivisionPattern.slice(3 * first,
+            3 * (first + numIndices));
         patterns.push(pattern);
-        for (var j = 0; j < numIndices; j++) {
+        for (var j = 0; j < numIndices; j++)
             offsetsIn.push(3 * i);
-            offsetsOut.push(primitivesWritten);
-        }
         primitivesWritten += numIndices;
     }
     patterns = Array.prototype.concat.apply([], patterns);
+
+    size = stride * primitivesWritten;
 
     var patternsBuffer = gl.createBuffer();
     gl.enableVertexAttribArray(0);
     gl.bindBuffer(gl.ARRAY_BUFFER, patternsBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(patterns), gl.STATIC_DRAW);
-    gl.vertexAttribPointer(0, 4, gl.FLOAT, false, 0, 0);
+    gl.vertexAttribPointer(0, 3, gl.FLOAT, false, 0, 0);
 
     var offsetsInBuffer = gl.createBuffer();
     gl.enableVertexAttribArray(1);
@@ -128,45 +137,21 @@ Subdivision.prototype.render = function(stategl, surface, gl) {
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(offsetsIn), gl.STATIC_DRAW);
     gl.vertexAttribPointer(1, 1, gl.FLOAT, false, 0, 0);
 
-    var offsetsOutBuffer = gl.createBuffer();
-    gl.enableVertexAttribArray(2);
-    gl.bindBuffer(gl.ARRAY_BUFFER, offsetsOutBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(offsetsOut), gl.STATIC_DRAW);
-    gl.vertexAttribPointer(2, 1, gl.FLOAT, false, 0, 0);
+    TransformFeedback.withTransformFeedback(gl, surface, size, function() {
+        gl.drawArrays(gl.TRIANGLES, 0, primitivesWritten);
+    });
 
-    for (var computedRoots = 0; computedRoots <= sheets + 1; computedRoots += 2) {
-        i = computedRoots < sheets ? computedRoots / 2 + 1 : 0;
+    surface.numIndices = primitivesWritten;
 
-        gl.activeTexture(gl.TEXTURE0 + texturesIn.length);
-        gl.bindTexture(gl.TEXTURE_2D, texturesOut[i]);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 2048, 2048, 0, gl.RGBA,
-            gl.FLOAT, null);
-        gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0,
-            gl.TEXTURE_2D, texturesOut[i], 0);
-        gl.uniform1i(computedRootsLoc, computedRoots);
+    // store feedback values in textures
+    TransformFeedback.toTextures(gl, surface);
 
-        gl.drawArrays(gl.POINTS, 0, primitivesWritten);
-    }
-
-    // cleanup
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0,
-        gl.TEXTURE_2D, null, 0);
-    for (i = 0, l = texturesIn.length + 1; i < l; i++) {
+    for (i = 0, l = textures.length + 1; i < l; i++) {
         gl.activeTexture(gl.TEXTURE0 + i);
         gl.bindTexture(gl.TEXTURE_2D, null);
     }
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
     gl.bindBuffer(gl.ARRAY_BUFFER, null);
     gl.deleteBuffer(offsetsInBuffer);
-    gl.deleteBuffer(offsetsOutBuffer);
     gl.deleteBuffer(patternsBuffer);
     gl.disableVertexAttribArray(1);
-    gl.disableVertexAttribArray(2);
-
-    surface.numIndices = primitivesWritten;
-    var texturesTmp = texturesIn;
-    surface.texturesIn = texturesOut;
-    surface.texturesOut = texturesTmp;
 };

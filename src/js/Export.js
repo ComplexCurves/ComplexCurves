@@ -73,6 +73,7 @@ Export.exportDomainColouring = function(p, stategl, name = "sheet", big = true) 
  * @param {boolean=} big
  */
 Export.exportSurface = function(stategl, pixels, name = "surface", big = true) {
+    // FIXME much too slow
     var d, i, j, k, u, v, x, y, z, w;
     var length, indices, maxValue = -Infinity,
         minValue = Infinity;
@@ -196,4 +197,14 @@ Export.pixelsToImageDataURL = function(pixels) {
     contextFlip.scale(1, -1);
     contextFlip.drawImage(canvas, 0, 0);
     return canvasFlip.toDataURL();
+};
+
+/**
+ * @param {Uint8Array|Float32Array} pixels
+ * @return {string}
+ */
+Export.pixelsToObjectURL = function(pixels) {
+    return URL.createObjectURL(new Blob([pixels], {
+        type: "application/octet-binary"
+    }));
 };

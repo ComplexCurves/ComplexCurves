@@ -4,8 +4,9 @@ precision highp float;
 precision mediump float;
 #endif
 uniform bool clipping;
-varying vec4 vPos;
-varying vec2 v_value;
+in vec4 vPos;
+in vec2 v_value;
+out vec4 fColor;
 vec3 hue_to_rgb (in float hue)
 {
     hue = mod (degrees (hue), 360.0) / 60.0;
@@ -37,5 +38,5 @@ void main (void)
     float blackp = sawfct (angle, PI / 12.0, 0.7, 1.0);
     float blackm = sawfct (log (length (v_value)), PI / 12.0, 0.7, 1.0);
     float black = blackp * blackm;
-    gl_FragColor = vec4 (black * hue_to_rgb (angle), gl_FragCoord.z);
+    fColor = vec4 (black * hue_to_rgb (angle), gl_FragCoord.z);
 }

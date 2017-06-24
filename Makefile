@@ -20,11 +20,12 @@ clean:
 
 cc_mods = API Assembly CachedSurface Complex ComplexCurves Export GLSL Initial \
 	Matrix Mesh Misc Monomial Parser Polynomial PolynomialParser Quaternion \
-	Stage State3D StateGL Subdivision SubdivisionPre Surface Term Tokenizer
+	Stage State3D StateGL Subdivision SubdivisionPre Surface Term Tokenizer \
+	TransformFeedback
 cc_srcs = build/resources.js $(cc_mods:%=src/js/%.js)
 
 JAVA=java
-CLOSURE_VERSION=20170409
+CLOSURE_VERSION=20170521
 CLOSURE=$(JAVA) -jar closure-compiler-v$(CLOSURE_VERSION).jar
 cc_closure_level = ADVANCED
 cc_closure_warnings = VERBOSE

@@ -20,20 +20,14 @@ function Surface(stategl, polynomial, depth) {
         return;
     }
 
-    stategl.getExtension("OES_texture_float");
     var gl = stategl.gl;
-    if (gl.getSupportedExtensions().indexOf("WEBGL_color_buffer_float") !== -1)
-        stategl.getExtension("WEBGL_color_buffer_float");
 
+    this.indexBuffer = gl.createBuffer();
     this.mkTextures(stategl);
-
-    // test support for rendering to and reading from float textures
-    if (!stategl.canUseTextureFloat(this.texturesIn[0]))
-        return;
+    this.mkTransformFeedback(stategl);
 
     surface.commonShaderSrc = /** @type {string} */ (resources["Common.glsl"]).trim();
     surface.customShaderSrc = GLSL.polynomialShaderSource(polynomial);
-    surface.texturesShaderSrc = resources["Textures.glsl"];
     surface.initial = new Initial(stategl, surface);
     surface.initial.render(stategl, surface, gl);
     surface.subdivisionPre = new SubdivisionPre(stategl, surface);
@@ -69,7 +63,7 @@ Surface.prototype.domainColouring = function(stategl, big = false) {
  * @param {string=} name
  */
 Surface.prototype.exportBinary = function(stategl, name = "surface.bin") {
-    var url = stategl.textureToURL(this.texturesIn[0], 4 * this.numIndices);
+    var url = TransformFeedback.toURL(stategl.gl, this, 4);
     Export.download(name, url);
 };
 
@@ -88,15 +82,9 @@ Surface.prototype.exportDomainColouring = function(stategl, name = "sheet", big 
  * @param {boolean=} big
  */
 Surface.prototype.exportSurface = function(stategl, name = "surface", big = true) {
-    var texture = this.texturesIn[0];
-    var length = 4 * this.numIndices;
-    var pixels = /** @type {Float32Array} */
-        (stategl.readTexture(texture, length));
+    var pixels = TransformFeedback.toFloat32Array(stategl.gl, this, 4);
     Export.exportSurface(stategl, pixels, name, big);
 };
-
-/** @type {WebGLFramebuffer} */
-Surface.prototype.frameBuffer = null;
 
 /** @param {StateGL} stategl */
 Surface.prototype.fillIndexBuffer = function(stategl) {
@@ -108,16 +96,12 @@ Surface.prototype.fillIndexBuffer = function(stategl) {
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(indices), gl.STATIC_DRAW);
 };
 
-/** @type {WebGLFramebuffer} */
-Surface.prototype.framebuffer = null;
-
 /** @type {WebGLBuffer} */
 Surface.prototype.indexBuffer = null;
 
 /** @param {StateGL} stategl */
 Surface.prototype.mkProgram = function(stategl) {
     var sources = StateGL.getShaderSources("Surface");
-    sources[0] = this.withTextures(sources[0]);
     sources[1] = this.withCustomAndCommon(sources[1]);
     this.program = stategl.mkProgram(sources);
 };
@@ -125,25 +109,26 @@ Surface.prototype.mkProgram = function(stategl) {
 /** @param {StateGL} stategl */
 Surface.prototype.mkTextures = function(stategl) {
     var gl = stategl.gl,
-        texturesIn = [],
-        texturesOut = [];
+        textures = [];
     for (var i = 0; i < 5; i++) {
-        texturesIn[i] = gl.createTexture();
-        gl.bindTexture(gl.TEXTURE_2D, texturesIn[i]);
+        textures[i] = gl.createTexture();
+        gl.bindTexture(gl.TEXTURE_2D, textures[i]);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
         gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 2048, 2048, 0, gl.RGBA,
-            gl.FLOAT, null);
-        texturesOut[i] = gl.createTexture();
-        gl.bindTexture(gl.TEXTURE_2D, texturesOut[i]);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 2048, 2048, 0, gl.RGBA,
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl["RGBA16F"], 2048, 2048, 0, gl.RGBA,
             gl.FLOAT, null);
     }
     gl.bindTexture(gl.TEXTURE_2D, null);
-    this.texturesIn = texturesIn;
-    this.texturesOut = texturesOut;
+    this.textures = textures;
+};
+
+/**
+ * @param {StateGL} stategl
+ */
+Surface.prototype.mkTransformFeedback = function(stategl) {
+    var gl = stategl.gl;
+    this.transformFeedback = gl["createTransformFeedback"]();
+    this.transformFeedbackBuffer = gl.createBuffer();
 };
 
 /** @type {number} */
@@ -165,17 +150,8 @@ Surface.prototype.render = function(stategl, gl, state3d) {
     stategl.updateModelViewProjectionMatrices(state3d);
     stategl.updateTransparency();
 
-    gl.activeTexture(gl.TEXTURE0);
-    gl.bindTexture(gl.TEXTURE_2D, this.texturesIn[0]);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    var samplerLocation = gl.getUniformLocation(this.program, 'sampler');
-    gl.uniform1i(samplerLocation, 0);
-
-    this.fillIndexBuffer(stategl);
-    gl.vertexAttribPointer(0, 1, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.transformFeedbackBuffer);
+    gl.vertexAttribPointer(0, 4, gl.FLOAT, false, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     gl.drawArrays(gl.TRIANGLES, 0, this.numIndices);
     stategl.updateTransparency(false);
@@ -185,26 +161,15 @@ Surface.prototype.render = function(stategl, gl, state3d) {
 Surface.prototype.sheets = 0;
 
 /** @type {Array<WebGLTexture>} */
-Surface.prototype.texturesIn = [];
+Surface.prototype.textures = [];
 
-/** @type {Array<WebGLTexture>} */
-Surface.prototype.texturesOut = [];
-
-/** @type {string} */
-Surface.prototype.texturesShaderSrc = "";
-
-/**
- * @param {string} src
- * @return {string}
- */
-Surface.prototype.withTextures = function(src) {
-    return [this.texturesShaderSrc, src].join("\n");
-};
+/** @type {WebGLBuffer} */
+Surface.prototype.transformFeedbackBuffer = null;
 
 /**
  * @param {string} src
  * @return {string}
  */
 Surface.prototype.withCustomAndCommon = function(src) {
-    return [this.customShaderSrc, this.commonShaderSrc, src].join("\n");
+    return ["#version 300 es", this.customShaderSrc, this.commonShaderSrc, src].join("\n");
 };

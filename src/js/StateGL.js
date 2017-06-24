@@ -1,70 +1,46 @@
 /**
  * @param {HTMLCanvasElement} canvas
+ * @param {string=} contextType
  * @constructor
  */
-function StateGL(canvas) {
-    this.gl = /** @type WebGLRenderingContext */ (canvas.getContext('webgl', {
-        preserveDrawingBuffer: true
-    }));
-    var gl = this.gl;
+function StateGL(canvas, contextType = 'webgl2') {
+    var gl;
+    this.contextType = contextType;
+    if (contextType === 'webgl') {
+        this.gl = /** @type WebGLRenderingContext */ (canvas.getContext('webgl', {
+            preserveDrawingBuffer: true
+        }));
+        gl = this.gl;
+        var hasWebGL = !!gl;
+        if (!hasWebGL) {
+            alert('WebGL not supported. Please try another browser or platform.');
+            throw new Error('WebGL not supported.');
+        }
+
+    } else {
+        this.gl = /** @type WebGLRenderingContext */ (canvas.getContext('webgl2', {
+            preserveDrawingBuffer: true
+        }));
+        gl = this.gl;
+        var hasWebGL2 = !!gl;
+        if (!hasWebGL2) {
+            alert('WebGL 2 not supported. Please try another browser or platform.');
+            throw new Error('WebGL 2 not supported.');
+        }
+    }
     gl.enable(gl.DEPTH_TEST);
-    this.mkRenderToTextureObjects();
     this.mkFXAAProgram();
+    this.mkRenderToTextureObjects();
 }
 
 /** @type {number} */
 StateGL.prototype.bigTextureSize = 8192;
 
-/**
- * @param {WebGLTexture} texture
- * @return {boolean}
- */
-StateGL.prototype.canUseTextureFloat = function(texture) {
-    var gl = this.gl;
-    var framebuffer = /** @type {WebGLFramebuffer} */
-        (gl.getParameter(gl.FRAMEBUFFER_BINDING));
-    gl.getError();
-    var testFramebuffer = gl.createFramebuffer();
-    gl.bindFramebuffer(gl.FRAMEBUFFER, testFramebuffer);
-    var testRenderbuffer = gl.createRenderbuffer();
-    gl.bindRenderbuffer(gl.RENDERBUFFER, testRenderbuffer);
-    gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, 2048, 2048);
-    gl.framebufferRenderbuffer(gl.FRAMEBUFFER, gl.DEPTH_ATTACHMENT, gl.RENDERBUFFER,
-        testRenderbuffer);
-    gl.bindTexture(gl.TEXTURE_2D, texture);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D,
-        texture, 0);
-    var complete = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
-    var err = gl.getError();
-    var canRender = complete === gl.FRAMEBUFFER_COMPLETE && err === gl.NO_ERROR;
-    gl.bindTexture(gl.TEXTURE_2D, null);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D,
-        null, 0);
-    gl.bindRenderbuffer(gl.RENDERBUFFER, null);
-    gl.deleteRenderbuffer(testRenderbuffer);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, framebuffer);
-    gl.deleteFramebuffer(testFramebuffer);
-    var canRead = this.readTexture(texture) !== null;
-    var msg;
-    if (canRender && canRead) {
-        return true;
-    } else if (!canRender && !canRead) {
-        msg = 'Rendering to and reading from float textures not supported.';
-    } else if (!canRender) {
-        msg = 'Rendering to float textures not supported.';
-    } else {
-        msg = 'Reading from float textures not supported.';
-    }
-    alert(msg + ' Please try another browser or platform.');
-    return false;
-};
-
 /** @type {boolean} */
 StateGL.prototype.clipping = false;
+
+/** @type {string} */
+StateGL.prototype.contextType = 'webgl2';
 
 /** @type {boolean} */
 StateGL.prototype.fxaa = true;
@@ -84,11 +60,22 @@ StateGL.prototype.getExtension = function(name) {
 };
 
 /**
+ * @param {string} shader
+ * @return {string}
+ */
+StateGL.getShaderSource = function(shader) {
+    return /** @type {string} */ (resources[shader]).trim();
+};
+
+/**
  * @param {string} shaderId
  * @return {Array<string>}
  */
 StateGL.getShaderSources = function(shaderId) {
-    return [resources[shaderId + '.vert'], resources[shaderId + '.frag']];
+    return [
+        StateGL.getShaderSource(shaderId + '.vert'),
+        StateGL.getShaderSource(shaderId + '.frag')
+    ];
 };
 
 /** @type {WebGLRenderingContext} */
@@ -101,9 +88,10 @@ StateGL.prototype.mkFXAAProgram = function() {
 
 /**
  * @param {Array<string>} sources
+ * @param {Array<string>=} transformFeedbackVaryings
  * @return {WebGLProgram}
  */
-StateGL.prototype.mkProgram = function(sources) {
+StateGL.prototype.mkProgram = function(sources, transformFeedbackVaryings) {
     var gl = this.gl;
     var vertexShaderSource = sources[0],
         fragmentShaderSource = sources[1];
@@ -112,14 +100,23 @@ StateGL.prototype.mkProgram = function(sources) {
     gl.compileShader(vertexShader);
     if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS))
         console.log(gl.getShaderInfoLog(vertexShader));
-    var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
-    gl.shaderSource(fragmentShader, fragmentShaderSource);
-    gl.compileShader(fragmentShader);
-    if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS))
-        console.log(gl.getShaderInfoLog(fragmentShader));
     var shaderProgram = gl.createProgram();
     gl.attachShader(shaderProgram, vertexShader);
-    gl.attachShader(shaderProgram, fragmentShader);
+    if (sources[1]) {
+        var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+        gl.shaderSource(fragmentShader, fragmentShaderSource);
+        gl.compileShader(fragmentShader);
+        if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS))
+            console.log(gl.getShaderInfoLog(fragmentShader));
+        gl.attachShader(shaderProgram, fragmentShader);
+    }
+    if (transformFeedbackVaryings) {
+        gl["transformFeedbackVaryings"](shaderProgram, transformFeedbackVaryings,
+            gl["INTERLEAVED_ATTRIBS"]);
+        gl.enable(gl["RASTERIZER_DISCARD"]);
+    } else if (this.contextType === 'webgl2') {
+        gl.disable(gl["RASTERIZER_DISCARD"]);
+    }
     gl.linkProgram(shaderProgram);
     if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS))
         console.log(gl.getProgramInfoLog(shaderProgram));
@@ -308,9 +305,7 @@ StateGL.prototype.setTransparency = function(transparency) {
  */
 StateGL.prototype.textureToURL = function(texture, length) {
     var pixels = this.readTexture(texture, length);
-    return URL.createObjectURL(new Blob([pixels], {
-        type: "application/octet-binary"
-    }));
+    return Export.pixelsToObjectURL(pixels);
 };
 
 StateGL.prototype.toggleAntialiasing = function() {
@@ -388,6 +383,8 @@ StateGL.prototype.updateViewMatrix = function(st) {
 
 /** @param {function()} action */
 StateGL.prototype.withFXAA = function(action) {
+    if (this.fxaaProgram === null)
+        return;
     this.withRenderToTexture(action);
     var gl = this.gl;
     var program = this.fxaaProgram;
@@ -406,7 +403,7 @@ StateGL.prototype.withFXAA = function(action) {
 
 /** @param {function()} action */
 StateGL.prototype.withOptionalFXAA = function(action) {
-    if (this.fxaa)
+    if (this.fxaa && this.fxaaProgram !== null)
         this.withFXAA(action);
     else
         action();

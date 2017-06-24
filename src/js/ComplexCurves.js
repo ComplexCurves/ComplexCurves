@@ -11,13 +11,14 @@ var defaultLon = Math.PI / 6;
  * @param {number=} lat
  * @param {number=} lon
  * @param {boolean=} ortho
+ * @param {string} contextType
  * @constructor
  */
 export function ComplexCurves(canvas, lat = defaultLat, lon = defaultLon,
-    ortho = false) {
+    ortho = false, contextType = 'webgl2') {
     this.canvas = canvas;
     this.state3d = State3D.fromLatLong(lat, lon, ortho);
-    this.stategl = new StateGL(canvas);
+    this.stategl = new StateGL(canvas, contextType);
     this.registerEventHandlers();
 }
 
@@ -49,7 +50,7 @@ export function ComplexCurvesFromEquation(canvas, equation, depth,
 export function ComplexCurvesFromFile(canvas, file, equation = "",
     lat = defaultLat, lon = defaultLon, ortho = false, onload = function() {}) {
     var p = PolynomialParser.eval(PolynomialParser.parse(equation));
-    var complexCurves = new ComplexCurves(canvas, lat, lon, ortho);
+    var complexCurves = new ComplexCurves(canvas, lat, lon, ortho, 'webgl');
     var gl = complexCurves.stategl;
     gl.renderer = new CachedSurface(gl, file, p, function() {
         complexCurves.renderSurface();

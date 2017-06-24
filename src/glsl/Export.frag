@@ -1,9 +1,11 @@
+#version 300 es
 #ifdef GL_FRAGMENT_PRECISION_HIGH
 precision highp float;
 #else
 precision mediump float;
 #endif
-varying vec2 vValue;
+in vec2 vValue;
+out vec4 fColor;
 vec3 hue_to_rgb (in float hue)
 {
     hue = mod (degrees (hue), 360.0) / 60.0;
@@ -33,5 +35,5 @@ void main (void)
     float blackp = sawfct (angle / (2.0 * PI), 0.05, 0.7, 1.0);
     float blackm = sawfct (log (length (vValue)), 0.1 * PI, 0.7, 1.0);
     float black = blackp * blackm;
-    gl_FragColor = vec4 (black * hue_to_rgb(angle), 1.0);
+    fColor = vec4 (black * hue_to_rgb(angle), 1.0);
 }
