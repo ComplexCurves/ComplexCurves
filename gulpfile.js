@@ -4,6 +4,7 @@ const compilerPackage = require('google-closure-compiler');
 const closureCompiler = compilerPackage.gulp();
 const del = require('del');
 const gap = require('gulp-append-prepend');
+const gitmodified = require('gulp-gitmodified');
 const gulp = require('gulp');
 const jshint = require('gulp-jshint');
 const jsstring = require('gulp-js-string');
@@ -23,6 +24,15 @@ gulp.task('beautify', function() {
             'end_with_newline': true
         }))
         .pipe(gulp.dest('./'));
+});
+
+gulp.task('beautified', ['beautify'], function() {
+    var files = gulp.src(['index.js', 'gulpfile.js', paths.js])
+        .pipe(gitmodified('modified'));
+    files.on('data', function(file) {
+        console.error('Error: JavaScript sources must be beautified!');
+        process.exit(1);
+    });
 });
 
 gulp.task('clean:build', function() {
@@ -47,7 +57,7 @@ gulp.task('resources', function() {
         .pipe(gulp.dest('build/'));
 });
 
-gulp.task('js-compile', ['lint', 'beautify', 'resources'], function() {
+gulp.task('js-compile', ['resources'], function() {
     return gulp.src(['build/resources.js', paths.js], {
             base: './'
         })
@@ -68,5 +78,7 @@ gulp.task('js-compile', ['lint', 'beautify', 'resources'], function() {
         .pipe(sourcemaps.write('/'))
         .pipe(gulp.dest('./build/'));
 });
+
+gulp.task('test', ['js-compile', 'beautified', 'lint']);
 
 gulp.task('default', ['js-compile']);
