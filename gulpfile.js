@@ -10,12 +10,12 @@ const jsstring = require('gulp-js-string');
 const sourcemaps = require('gulp-sourcemaps');
 
 const paths = {
-    js: ['index.js', 'src/js/*.js', 'gulpfile.js'],
+    js: 'src/js/*.js',
     glsl: 'src/glsl/*'
 };
 
 gulp.task('beautify', function() {
-    return gulp.src(paths.js, {
+    return gulp.src(['index.js', 'gulpfile.js', paths.js], {
             base: './'
         })
         .pipe(beautify({
@@ -30,7 +30,7 @@ gulp.task('clean:build', function() {
 });
 
 gulp.task('jshint', function() {
-    return gulp.src(paths.js)
+    return gulp.src(['index.js', 'gulpfile.js', paths.js])
         .pipe(jshint())
         .pipe(jshint.reporter('default'))
         .pipe(jshint.reporter('fail'));
@@ -48,7 +48,7 @@ gulp.task('resources', function() {
 });
 
 gulp.task('js-compile', ['jshint', 'beautify', 'resources'], function() {
-    return gulp.src(['build/resources.js', 'src/js/*.js'], {
+    return gulp.src(['build/resources.js', paths.js], {
             base: './'
         })
         .pipe(sourcemaps.init())
