@@ -29,7 +29,7 @@ gulp.task('clean:build', function() {
     return del(['build']);
 });
 
-gulp.task('jshint', function() {
+gulp.task('lint', function() {
     return gulp.src(['index.js', 'gulpfile.js', paths.js])
         .pipe(jshint())
         .pipe(jshint.reporter('default'))
@@ -47,7 +47,7 @@ gulp.task('resources', function() {
         .pipe(gulp.dest('build/'));
 });
 
-gulp.task('js-compile', ['jshint', 'beautify', 'resources'], function() {
+gulp.task('js-compile', ['lint', 'beautify', 'resources'], function() {
     return gulp.src(['build/resources.js', paths.js], {
             base: './'
         })
