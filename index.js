@@ -206,12 +206,14 @@ document.addEventListener("DOMContentLoaded", function() {
             searchInput.focus();
     }
 
-    $('#viewDropdown').dropdown({ allowReselection: true }).on('change',
-    function(evt) {
-        var view = evt.target.value;
-        changeView(view);
-        updateHash();
-    });
+    $('#viewDropdown').dropdown({
+        allowReselection: true
+    }).on('change',
+        function(evt) {
+            var view = evt.target.value;
+            changeView(view);
+            updateHash();
+        });
 
     function registerToggleAction(id, action) {
         $(id).checkbox({
@@ -360,7 +362,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         $('#searchInput').on('keydown', function(e) {
             e.stopPropagation();
-            if(e.key === "Enter" || e.code === "Enter" || e.keyCode === 13) {
+            if (e.key === "Enter" || e.code === "Enter" || e.keyCode === 13) {
                 var results = $('.ui.search').search('get results');
                 var result = results[0] ||
                     customExample($('.ui.search').search('get value'));
