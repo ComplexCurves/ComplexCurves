@@ -7,8 +7,11 @@
     "semantic-ui-css": "^2.2.3"
   },
   "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-beautify": "^2.0.1",
+    "gulp-jshint": "^2.0.4",
     "js-beautify": "^1.6.3",
-    "jshint": "^2.9.2"
+    "jshint": "^2.9.5"
   },
   "main": "build/ComplexCurves.js",
   "scripts": {
