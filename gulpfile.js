@@ -37,7 +37,7 @@ gulp.task('resources', function() {
     return gulp.src(paths.glsl)
         .pipe(jsstring(function(escapedstring, file) {
             var name = file.basename;
-            return 'resources[' + name + '] = \'' + escapedstring + '\';';
+            return 'resources[\'' + name + '\'] = \'' + escapedstring + '\';';
         }))
         .pipe(concat('resources.js'))
         .pipe(gap.prependText('var resources = {};'))
