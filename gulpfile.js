@@ -6,7 +6,10 @@ const sources = ['./index.js', './src/js/*.js'];
 
 gulp.task('beautify', function () {
     return gulp.src(sources)
-        .pipe(beautify())
+        .pipe(beautify({
+            'max-preserve-newlines': 3,
+            'end-with-newline': true
+        }))
         .pipe(gulp.dest('.'));
 });
 
