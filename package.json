@@ -3,13 +3,16 @@
   "version": "0.1.0",
   "description": "A JavaScript library for visualization of complex plane algebraic curves",
   "dependencies": {
+    "gulp-concat": "^2.6.1",
     "jquery": "^3.0.0",
     "semantic-ui-css": "^2.2.3"
   },
   "devDependencies": {
     "del": "^3.0.0",
     "gulp": "^3.9.1",
+    "gulp-append-prepend": "^1.0.3",
     "gulp-beautify": "^2.0.1",
+    "gulp-git": "^2.4.1",
     "gulp-jshint": "^2.0.4",
     "js-beautify": "^1.6.3",
     "jshint": "^2.9.5"

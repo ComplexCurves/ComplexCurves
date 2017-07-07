@@ -1,10 +1,14 @@
-const gulp = require('gulp');
-const del = require('del');
-const jshint = require('gulp-jshint');
 const beautify = require('gulp-beautify');
+const concat = require('gulp-concat');
+const del = require('del');
+const gap = require('gulp-append-prepend');
+const gulp = require('gulp');
+const jshint = require('gulp-jshint');
+const jsstring = require('gulp-js-string');
 
 const paths = {
-    js: ['index.js', 'src/js/*.js']
+    js: ['index.js', 'src/js/*.js', 'gulpfile.js'],
+    glsl: 'src/glsl/*'
 };
 
 gulp.task('beautify', function () {
@@ -16,15 +20,26 @@ gulp.task('beautify', function () {
         .pipe(gulp.dest('.'));
 });
 
-gulp.task('clean:build', function () {
+gulp.task('clean:build', function() {
     return del(['build']);
 });
 
-gulp.task('jshint', function () {
+gulp.task('jshint', function() {
     return gulp.src(paths.js)
         .pipe(jshint())
         .pipe(jshint.reporter('default'))
         .pipe(jshint.reporter('fail'));
+});
+
+gulp.task('resources', function() {
+    return gulp.src(paths.glsl)
+        .pipe(jsstring(function(escapedstring, file) {
+            var name = file.basename;
+            return 'resources[' + name + '] = \'' + escapedstring + '\';';
+        }))
+        .pipe(concat('resources.js'))
+        .pipe(gap.prependText('var resources = {};'))
+        .pipe(gulp.dest('build/'));
 });
 
 gulp.task('default', ['jshint', 'beautify']);
