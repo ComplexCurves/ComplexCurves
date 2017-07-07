@@ -22,8 +22,7 @@
   },
   "main": "build/ComplexCurves.js",
   "scripts": {
-    "prepare": "make",
-    "test": "make test"
+    "prepare": "gulp"
   },
   "repository": {
     "type": "git",
