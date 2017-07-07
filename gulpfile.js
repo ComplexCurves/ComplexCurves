@@ -1,11 +1,14 @@
 const gulp = require('gulp');
+const del = require('del');
 const jshint = require('gulp-jshint');
 const beautify = require('gulp-beautify');
 
-const sources = ['./index.js', './src/js/*.js'];
+const paths = {
+    js: ['index.js', 'src/js/*.js']
+};
 
 gulp.task('beautify', function () {
-    return gulp.src(sources)
+    return gulp.src(paths.js)
         .pipe(beautify({
             'max-preserve-newlines': 3,
             'end-with-newline': true
@@ -13,8 +16,12 @@ gulp.task('beautify', function () {
         .pipe(gulp.dest('.'));
 });
 
+gulp.task('clean:build', function () {
+    return del(['build']);
+});
+
 gulp.task('jshint', function () {
-    return gulp.src(sources)
+    return gulp.src(paths.js)
         .pipe(jshint())
         .pipe(jshint.reporter('default'))
         .pipe(jshint.reporter('fail'));
