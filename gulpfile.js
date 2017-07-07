@@ -11,13 +11,15 @@ const paths = {
     glsl: 'src/glsl/*'
 };
 
-gulp.task('beautify', function () {
-    return gulp.src(paths.js)
+gulp.task('beautify', function() {
+    return gulp.src(paths.js, {
+            base: './'
+        })
         .pipe(beautify({
-            'max-preserve-newlines': 3,
-            'end-with-newline': true
+            'max_preserve_newlines': 3,
+            'end_with_newline': true
         }))
-        .pipe(gulp.dest('.'));
+        .pipe(gulp.dest('./'));
 });
 
 gulp.task('clean:build', function() {
