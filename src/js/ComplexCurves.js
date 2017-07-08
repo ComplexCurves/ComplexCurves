@@ -1,6 +1,9 @@
-/* beautify preserve:start */
-import { PolynomialParser } from './PolynomialParser';
-/* beautify preserve:end */
+import './PolynomialParser';
+
+import {
+    PolynomialParser
+}
+from './PolynomialParser';
 
 var defaultLat = 5 / 12 * Math.PI;
 var defaultLon = Math.PI / 6;

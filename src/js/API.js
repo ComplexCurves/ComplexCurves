@@ -1,7 +1,18 @@
-/* beautify preserve:start */
-import { ComplexCurves, ComplexCurvesFromEquation, ComplexCurvesFromFile, ComplexCurvesFromPolynomial } from './ComplexCurves';
-import { PolynomialParser } from './PolynomialParser';
-/* beautify preserve:end */
+import './ComplexCurves';
+import './PolynomialParser';
+
+import {
+    ComplexCurves,
+    ComplexCurvesFromEquation,
+    ComplexCurvesFromFile,
+    ComplexCurvesFromPolynomial
+}
+from './ComplexCurves';
+
+import {
+    PolynomialParser
+}
+from './PolynomialParser';
 
 window['ComplexCurves'] = ComplexCurves;
 ComplexCurves['fromEquation'] = ComplexCurvesFromEquation;
