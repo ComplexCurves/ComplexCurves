@@ -33,6 +33,7 @@ ComplexCurves.prototype['rotateRight'] = ComplexCurves.prototype.rotateRight;
 ComplexCurves.prototype['rotateTop'] = ComplexCurves.prototype.rotateTop;
 ComplexCurves.prototype['setAntialiasing'] = ComplexCurves.prototype.setAntialiasing;
 ComplexCurves.prototype['setAutorotate'] = ComplexCurves.prototype.setAutorotate;
+ComplexCurves.prototype['setBackground'] = ComplexCurves.prototype.setBackground;
 ComplexCurves.prototype['setClipping'] = ComplexCurves.prototype.setClipping;
 ComplexCurves.prototype['setLatLong'] = ComplexCurves.prototype.setLatLong;
 ComplexCurves.prototype['setOrtho'] = ComplexCurves.prototype.setOrtho;

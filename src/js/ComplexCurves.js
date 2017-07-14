@@ -251,6 +251,17 @@ ComplexCurves.prototype.setAutorotate = function(autorotate) {
     this.renderSurface();
 };
 
+/**
+ * @param {number} r
+ * @param {number} g
+ * @param {number} b
+ * @param {number} a
+ */
+ComplexCurves.prototype.setBackground = function(r, g, b, a) {
+    this.stategl.gl.clearColor(r, g, b, a);
+    this.renderSurface();
+};
+
 /** @param {boolean} clipping */
 ComplexCurves.prototype.setClipping = function(clipping) {
     this.stategl.setClipping(clipping);
