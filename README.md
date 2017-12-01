@@ -1,7 +1,7 @@
 # Complex Curves
 
 **Complex Curves** is a [JavaScript
-library](https://github.com/kranich/ComplexCurves) and
+library](https://github.com/ComplexCurves/ComplexCurves) and
 [website](http://complexcurves.org) for visualization of complex plane
 algebraic curves.
 
@@ -19,7 +19,7 @@ license](http://www.apache.org/licenses/LICENSE-2.0.html).
 ## Contributing
 
 Bug reports and pull requests on
-[GitHub](https://github.com/kranich/ComplexCurves) are very welcome.
+[GitHub](https://github.com/ComplexCurves/ComplexCurves) are very welcome.
 
 ## Funding
 
