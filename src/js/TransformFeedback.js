@@ -4,6 +4,7 @@ var TransformFeedback = {};
  * @param {WebGLRenderingContext} gl
  * @param {Surface} surface
  * @param {number=} stride
+ * @suppress {reportUnknownTypes}
  * @return {Float32Array}
  */
 TransformFeedback.toFloat32Array = function(gl, surface, stride = 4 + 2 * GLSL.N) {
@@ -57,6 +58,7 @@ TransformFeedback.toURL = function(gl, surface, stride = 4 + 2 * GLSL.N) {
  * @param {Surface} surface
  * @param {number} size
  * @param {function()} action
+ * @suppress {reportUnknownTypes}
  */
 TransformFeedback.withTransformFeedback = function(gl, surface, size, action) {
     gl["bindTransformFeedback"](gl["TRANSFORM_FEEDBACK"], surface.transformFeedback);

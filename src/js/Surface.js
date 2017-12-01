@@ -124,6 +124,7 @@ Surface.prototype.mkTextures = function(stategl) {
 
 /**
  * @param {StateGL} stategl
+ * @suppress {reportUnknownTypes}
  */
 Surface.prototype.mkTransformFeedback = function(stategl) {
     var gl = stategl.gl;
