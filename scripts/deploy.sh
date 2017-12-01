@@ -5,7 +5,7 @@ chmod 600 .travis/github_deploy_key
 ssh-add .travis/github_deploy_key
 rm -rf build/deploy
 mkdir -p build/deploy
-git clone --depth 1 git@github.com:kranich/ComplexCurves.git build/deploy || exit 1
+git clone --depth 1 git@github.com:ComplexCurves/ComplexCurves.git build/deploy || exit 1
 (
     cd build/deploy
     git fetch origin gh-pages
@@ -33,5 +33,5 @@ git clone --depth 1 git@github.com:kranich/ComplexCurves.git build/deploy || exi
     git config user.name "Travis CI"
     git config user.email "travis-ci@complexcurves.org"
     git commit -m "Deployment of Complex Curves ${name}"
-    git push git@github.com:kranich/ComplexCurves.git gh-pages:gh-pages
+    git push git@github.com:ComplexCurves/ComplexCurves.git gh-pages:gh-pages
 )
