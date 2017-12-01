@@ -5,7 +5,7 @@ deploy:
 - provider: script
   script: scripts/deploy.sh
   on:
-    repo: kranich/ComplexCurves
+    repo: ComplexCurves/ComplexCurves
     branch: master
   skip_cleanup: true
 before_install:
