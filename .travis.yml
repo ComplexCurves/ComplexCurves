@@ -9,6 +9,6 @@ deploy:
     branch: master
   skip_cleanup: true
 before_install:
-- openssl aes-256-cbc -K $encrypted_8bf83f689259_key -iv $encrypted_8bf83f689259_iv
+- openssl aes-256-cbc -K $encrypted_879c97e4b04e_key -iv $encrypted_879c97e4b04e_iv -in github_deploy_key.enc -out github_deploy_key -d
   -in .travis/github_deploy_key.enc -out .travis/github_deploy_key -d
 - npm install -g npm@^5.6.0
