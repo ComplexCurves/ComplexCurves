@@ -8,8 +8,8 @@ mkdir -p build/deploy
 git clone --depth 1 git@github.com:ComplexCurves/website.git build/deploy || exit 1
 (
     cd build/deploy
-    cp ../ComplexCurves.js build/ComplexCurves.js
-    cp ../ComplexCurves.js.map build/ComplexCurves.js.map
+    cp ../ComplexCurves.js lib/ComplexCurves/ComplexCurves.js
+    cp ../ComplexCurves.js.map lib/ComplexCurves/ComplexCurves.js.map
     git add -A
     git config user.name "Travis CI"
     git config user.email "travis-ci@complexcurves.org"
