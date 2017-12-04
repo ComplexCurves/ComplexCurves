@@ -2,10 +2,6 @@
   "name": "complexcurves",
   "version": "0.1.0",
   "description": "A JavaScript library for visualization of complex plane algebraic curves",
-  "dependencies": {
-    "jquery": "^3.0.0",
-    "semantic-ui-css": "^2.2.3"
-  },
   "devDependencies": {
     "del": "^3.0.0",
     "google-closure-compiler": "^20171112.0.0",
@@ -32,15 +28,7 @@
   "author": "Stefan Kranich <kranich@ma.tum.de>",
   "license": "Apache-2.0",
   "files": [
-    "build/js",
-    "examples.json",
-    "favicon.ico",
-    "images",
-    "index.css",
-    "index.html",
-    "index.js",
     "LICENSE",
-    "models",
     "README.md"
   ],
   "bugs": {
