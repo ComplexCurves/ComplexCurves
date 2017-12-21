@@ -77,6 +77,9 @@ gulp.task('js-compile', ['resources'], function() {
         }))
         .pipe(sourcemaps.write('/'))
         .pipe(gulp.dest('./build/'));
+}).on('error', function(err) {
+    console.error(err);
+    process.exit(1);
 });
 
 gulp.task('test', ['js-compile', 'beautified', 'lint']);
