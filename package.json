@@ -4,7 +4,7 @@
   "description": "A JavaScript library for visualization of complex plane algebraic curves",
   "devDependencies": {
     "del": "^3.0.0",
-    "google-closure-compiler": "^20171112.0.0",
+    "google-closure-compiler": "^20171203.0.0",
     "gulp": "^3.9.1",
     "gulp-append-prepend": "^1.0.3",
     "gulp-beautify": "^2.0.1",
