@@ -30,7 +30,7 @@ gulp.task('beautified', ['beautify'], function() {
     var files = gulp.src(['index.js', 'gulpfile.js', paths.js])
         .pipe(gitmodified('modified'));
     files.on('data', function(file) {
-        console.error('Error: JavaScript sources must be beautified!');
+        console.error('Error: Uncommitted changes or beautification needed!');
         process.exit(1);
     });
 });
