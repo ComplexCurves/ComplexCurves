@@ -12,11 +12,12 @@ const sourcemaps = require('gulp-sourcemaps');
 
 const paths = {
     js: 'src/js/*.js',
-    glsl: 'src/glsl/*'
+    glsl: 'src/glsl/*',
+    test: 'test/*.js'
 };
 
 gulp.task('beautify', function() {
-    return gulp.src(['index.js', 'gulpfile.js', paths.js], {
+    return gulp.src(['index.js', 'gulpfile.js', paths.js, paths.test], {
             base: './'
         })
         .pipe(beautify({
