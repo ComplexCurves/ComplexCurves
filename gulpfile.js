@@ -8,16 +8,17 @@ const gitmodified = require('gulp-gitmodified');
 const gulp = require('gulp');
 const jshint = require('gulp-jshint');
 const jsstring = require('gulp-js-string');
+const mocha = require('gulp-mocha');
 const sourcemaps = require('gulp-sourcemaps');
 
 const paths = {
     js: 'src/js/*.js',
     glsl: 'src/glsl/*',
-    test: 'test/*.js'
+    tests: 'test/**/*.js'
 };
 
 gulp.task('beautify', function() {
-    return gulp.src(['index.js', 'gulpfile.js', paths.js, paths.test], {
+    return gulp.src(['index.js', 'gulpfile.js', paths.js, paths.tests], {
             base: './'
         })
         .pipe(beautify({
@@ -28,7 +29,7 @@ gulp.task('beautify', function() {
 });
 
 gulp.task('beautified', ['beautify'], function() {
-    var files = gulp.src(['index.js', 'gulpfile.js', paths.js])
+    var files = gulp.src(['index.js', 'gulpfile.js', paths.js, paths.tests])
         .pipe(gitmodified('modified'));
     files.on('data', function(file) {
         console.error('Error: Uncommitted changes or beautification needed!');
@@ -45,6 +46,12 @@ gulp.task('lint', function() {
         .pipe(jshint())
         .pipe(jshint.reporter('default'))
         .pipe(jshint.reporter('fail'));
+});
+
+gulp.task('mocha', function() {
+    return gulp.src([paths.tests])
+        .pipe(mocha())
+        .on('error', console.error);
 });
 
 gulp.task('resources', function() {
@@ -107,6 +114,6 @@ gulp.task('js-compile-simple', [], function() {
     process.exit(1);
 });
 
-gulp.task('test', ['js-compile', 'beautified', 'lint']);
+gulp.task('test', ['js-compile', 'beautified', 'lint', 'mocha']);
 
 gulp.task('default', ['js-compile', 'js-compile-simple']);
