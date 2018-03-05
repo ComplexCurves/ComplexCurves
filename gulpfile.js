@@ -83,6 +83,30 @@ gulp.task('js-compile', ['resources'], function() {
     process.exit(1);
 });
 
+gulp.task('js-compile-simple', [], function() {
+    return gulp.src(['build/resources.js', paths.js, '!src/js/API.js'], {
+            base: './'
+        })
+        .pipe(sourcemaps.init())
+        .pipe(closureCompiler({
+            language_in: 'ECMASCRIPT6_STRICT',
+            language_out: 'ECMASCRIPT5_STRICT',
+            dependency_mode: 'LOOSE',
+            module_resolution: 'NODE',
+            compilation_level: 'SIMPLE',
+            warning_level: 'VERBOSE',
+            jscomp_warning: 'reportUnknownTypes',
+            rewrite_polyfills: false,
+            summary_detail_level: '3',
+            js_output_file: 'ComplexCurves.simple.js',
+        }))
+        .pipe(sourcemaps.write('/'))
+        .pipe(gulp.dest('./build/'));
+}).on('error', function(err) {
+    console.error(err);
+    process.exit(1);
+});
+
 gulp.task('test', ['js-compile', 'beautified', 'lint']);
 
-gulp.task('default', ['js-compile']);
+gulp.task('default', ['js-compile', 'js-compile-simple']);
