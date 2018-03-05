@@ -48,7 +48,7 @@ gulp.task('lint', function() {
         .pipe(jshint.reporter('fail'));
 });
 
-gulp.task('mocha', function() {
+gulp.task('mocha', ['js-compile-simple'], function() {
     return gulp.src([paths.tests])
         .pipe(mocha())
         .on('error', console.error);
@@ -114,6 +114,6 @@ gulp.task('js-compile-simple', [], function() {
     process.exit(1);
 });
 
-gulp.task('test', ['js-compile', 'beautified', 'lint', 'mocha']);
+gulp.task('test', ['js-compile', 'js-compile-simple', 'beautified', 'lint', 'mocha']);
 
 gulp.task('default', ['js-compile', 'js-compile-simple']);
