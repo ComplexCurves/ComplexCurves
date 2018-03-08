@@ -133,8 +133,7 @@ ComplexCurves.prototype.exportSurface = function(name = "surface", big = true) {
 
 ComplexCurves.prototype.registerEventHandlers = function() {
     var canvas = this.canvas,
-        state3d = this.state3d,
-        gl = this.stategl;
+        state3d = this.state3d;
     var complexCurves = this;
     /** @type {function(!Event) : undefined} */
     this.mousedownHandler = function(evt) {
