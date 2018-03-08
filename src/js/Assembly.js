@@ -2,7 +2,6 @@
  * @constructor
  * @param {StateGL} stategl
  * @param {Surface} surface
- * @implements {Stage}
  */
 function Assembly(stategl, surface) {
     this.mkProgram(stategl, surface);

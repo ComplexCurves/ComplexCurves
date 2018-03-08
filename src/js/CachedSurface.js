@@ -4,7 +4,6 @@
  * @param {string} file
  * @param {Polynomial=} p
  * @param {function()} onload
- * @implements {Stage}
  */
 function CachedSurface(stategl, file, p = null, onload = function() {}) {
     var cachedSurface = this;

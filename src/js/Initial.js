@@ -2,7 +2,6 @@
  * @constructor
  * @param {StateGL} stategl
  * @param {Surface} surface
- * @implements {Stage}
  */
 function Initial(stategl, surface) {
     this.mkBuffers(stategl, surface, Mesh.tetrakis(2));

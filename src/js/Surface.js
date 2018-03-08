@@ -3,7 +3,6 @@
  * @param {StateGL} stategl
  * @param {Polynomial} polynomial
  * @param {number} depth
- * @implements {Stage}
  */
 function Surface(stategl, polynomial, depth) {
     var surface = this;
