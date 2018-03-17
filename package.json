@@ -19,8 +19,7 @@
     "js-beautify": "^1.6.3",
     "jshint": "^2.9.5",
     "mocha": "^5.0.1",
-    "nyc": "^11.6.0",
-    "rewire": "^3.0.2"
+    "nyc": "^11.6.0"
   },
   "main": "build/ComplexCurves.js",
   "scripts": {
@@ -43,17 +42,17 @@
   "homepage": "https://github.com/ComplexCurves/ComplexCurves#readme",
   "dependencies": {},
   "nyc": {
-      "include": [
-          "src/js/*.js"
-      ],
-      "exclude": [
-          "src/js/API.js",
-          "src/js/ComplexCurves.js"
-      ],
-      "reporter": [
-          "html"
-      ],
-      "coverage": "./coverage",
-      "all": true
+    "include": [
+      "src/js/*.js"
+    ],
+    "exclude": [
+      "src/js/API.js",
+      "src/js/ComplexCurves.js"
+    ],
+    "reporter": [
+      "html"
+    ],
+    "coverage": "./coverage",
+    "all": true
   }
 }
