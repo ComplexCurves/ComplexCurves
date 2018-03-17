@@ -1,4 +1,4 @@
-const assert = require('chai').assert;
+const expect = require('chai').expect;
 const Complex = require('../src/js/Complex.js');
 const Matrix = require('../src/js/Matrix.js');
 const Monomial = require('../src/js/Monomial.js');
@@ -7,6 +7,14 @@ const Polynomial = require('../src/js/Polynomial.js');
 
 describe('Matrix', function() {
     describe('det', function() {
+        it('computes the determinant of a 2x2 matrix', function() {
+            let m = new Matrix([
+                [Complex.real(1), Complex.real(2)],
+                [Complex.real(3), Complex.real(4)]
+            ]);
+            let det = m.det();
+            expect(det).to.deep.equal(new Complex(-2, -0));
+        });
         it('computes the determinant of a 3x3 identity matrix', function() {
             let m = new Matrix([
                 [Complex.real(1), Complex.real(0), Complex.real(0)],
@@ -14,7 +22,7 @@ describe('Matrix', function() {
                 [Complex.real(0), Complex.real(0), Complex.real(1)]
             ]);
             let det = m.det();
-            assert.deepEqual(det, Complex.real(1));
+            expect(det).to.deep.equal(Complex.real(1));
         });
 
         it('computes the determinant of a 3x3 integer diagonal matrix', function() {
@@ -24,7 +32,7 @@ describe('Matrix', function() {
                 [Complex.real(0), Complex.real(0), Complex.real(4)]
             ]);
             let det = m.det();
-            assert.deepEqual(det, Complex.real(24));
+            expect(det).to.deep.equal(Complex.real(24));
         });
 
         it('computes the determinant of a 3x3 integer matrix', function() {
@@ -34,7 +42,7 @@ describe('Matrix', function() {
                 [Complex.real(7), Complex.real(8), Complex.real(9)]
             ]);
             let det = m.det();
-            assert.deepEqual(det, Complex.real(-17));
+            expect(det).to.deep.equal(Complex.real(-17));
         });
 
         it('computes the determinant of a 3x3 integer Polynomial matrix', function() {
@@ -55,7 +63,7 @@ describe('Matrix', function() {
                 [polyX(7), polyX(8), polyX(9)]
             ]);
             let det = m.det();
-            assert.deepEqual(det.coefficientList_(), polyX3(-17).coefficientList_());
+            expect(det.coefficientList_()).to.deep.equal(polyX3(-17).coefficientList_());
         });
     });
 });
