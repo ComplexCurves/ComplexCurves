@@ -1,5 +1,5 @@
 import './ComplexCurves.js';
-const PolynomialParser =  require('./PolynomialParser.js');
+const PolynomialParser = require('./PolynomialParser.js');
 
 import {
     ComplexCurves,

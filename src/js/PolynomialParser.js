@@ -14,8 +14,8 @@ module.exports = class PolynomialParser {
         const value = tree.value;
         let first, second;
         if (type === "infix") {
-            first = PolynomialParser.eval(/** @type {Parser.InfixLeaf} */ (tree).first);
-            second = PolynomialParser.eval(/** @type {Parser.InfixLeaf} */ (tree).second);
+            first = PolynomialParser.eval( /** @type {Parser.InfixLeaf} */ (tree).first);
+            second = PolynomialParser.eval( /** @type {Parser.InfixLeaf} */ (tree).second);
             if (value === "+")
                 return Polynomial.add(first, second);
             else if (value === "-")
@@ -32,7 +32,7 @@ module.exports = class PolynomialParser {
             } else
                 console.error("Infix operator '" + value + "' not implemented");
         } else if (type === "prefix") {
-            first = PolynomialParser.eval(/** @type {Parser.PrefixLeaf} */ (tree).first);
+            first = PolynomialParser.eval( /** @type {Parser.PrefixLeaf} */ (tree).first);
             if (value === "+")
                 return first;
             else if (value === "-")
