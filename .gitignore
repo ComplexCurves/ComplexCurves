@@ -1,3 +1,6 @@
+.idea
+.nyc_output
 build
+coverage
 compiler.jar
 node_modules

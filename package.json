@@ -19,12 +19,13 @@
     "js-beautify": "^1.6.3",
     "jshint": "^2.9.5",
     "mocha": "^5.0.1",
+    "nyc": "^11.6.0",
     "rewire": "^3.0.2"
   },
   "main": "build/ComplexCurves.js",
   "scripts": {
     "prepare": "gulp",
-    "test": "mocha"
+    "test": "nyc mocha"
   },
   "repository": {
     "type": "git",
@@ -40,5 +41,19 @@
     "url": "https://github.com/ComplexCurves/ComplexCurves/issues"
   },
   "homepage": "https://github.com/ComplexCurves/ComplexCurves#readme",
-  "dependencies": {}
+  "dependencies": {},
+  "nyc": {
+      "include": [
+          "src/js/*.js"
+      ],
+      "exclude": [
+          "src/js/API.js",
+          "src/js/ComplexCurves.js"
+      ],
+      "reporter": [
+          "html"
+      ],
+      "coverage": "./coverage",
+      "all": true
+  }
 }
