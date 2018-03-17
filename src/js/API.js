@@ -1,5 +1,5 @@
-import './ComplexCurves';
-import './PolynomialParser';
+import './ComplexCurves.js';
+const PolynomialParser =  require('./PolynomialParser.js');
 
 import {
     ComplexCurves,
@@ -7,12 +7,7 @@ import {
     ComplexCurvesFromFile,
     ComplexCurvesFromPolynomial
 }
-from './ComplexCurves';
-
-import {
-    PolynomialParser
-}
-from './PolynomialParser';
+from './ComplexCurves.js';
 
 window['ComplexCurves'] = ComplexCurves;
 ComplexCurves['fromEquation'] = ComplexCurvesFromEquation;

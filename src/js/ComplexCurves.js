@@ -1,12 +1,7 @@
-import './PolynomialParser';
+const PolynomialParser = require('./PolynomialParser.js');
 
-import {
-    PolynomialParser
-}
-from './PolynomialParser';
-
-var defaultLat = 5 / 12 * Math.PI;
-var defaultLon = Math.PI / 6;
+const defaultLat = 5 / 12 * Math.PI;
+const defaultLon = Math.PI / 6;
 
 /**
  * @param {HTMLCanvasElement} canvas
@@ -35,7 +30,7 @@ export function ComplexCurves(canvas, lat = defaultLat, lon = defaultLon,
  */
 export function ComplexCurvesFromEquation(canvas, equation, depth,
     lat = defaultLat, lon = defaultLon, ortho = false) {
-    var p = PolynomialParser.eval(PolynomialParser.parse(equation));
+    const p = PolynomialParser.eval(PolynomialParser.parse(equation));
     return ComplexCurvesFromPolynomial(canvas, p, depth, lat, lon, ortho);
 }
 
@@ -51,9 +46,9 @@ export function ComplexCurvesFromEquation(canvas, equation, depth,
  */
 export function ComplexCurvesFromFile(canvas, file, equation = "",
     lat = defaultLat, lon = defaultLon, ortho = false, onload = function() {}) {
-    var p = PolynomialParser.eval(PolynomialParser.parse(equation));
-    var complexCurves = new ComplexCurves(canvas, lat, lon, ortho, 'webgl');
-    var gl = complexCurves.stategl;
+    const p = PolynomialParser.eval(PolynomialParser.parse(equation));
+    const complexCurves = new ComplexCurves(canvas, lat, lon, ortho, 'webgl');
+    const gl = complexCurves.stategl;
     gl.renderer = new CachedSurface(gl, file, p, function() {
         complexCurves.renderSurface();
         onload();
@@ -72,8 +67,8 @@ export function ComplexCurvesFromFile(canvas, file, equation = "",
  */
 export function ComplexCurvesFromPolynomial(canvas, polynomial, depth,
     lat = defaultLat, lon = defaultLon, ortho = false) {
-    var complexCurves = new ComplexCurves(canvas, lat, lon, ortho);
-    var gl = complexCurves.stategl;
+    const complexCurves = new ComplexCurves(canvas, lat, lon, ortho);
+    const gl = complexCurves.stategl;
     gl.renderer = new Surface(gl, polynomial, depth);
     // equation must be bivariate and at least quadratic
     if (!polynomial.isBivariate() || gl.renderer.sheets < 2)
@@ -86,13 +81,13 @@ export function ComplexCurvesFromPolynomial(canvas, polynomial, depth,
  * @param {boolean=} big
  * @return {Array<string>} */
 ComplexCurves.prototype.domainColouring = function(big = false) {
-    var gl = this.stategl;
+    const gl = this.stategl;
     return gl.renderer.domainColouring(gl, big);
 };
 
 /** @param {string=} name */
 ComplexCurves.prototype.exportBinary = function(name = "surface.bin") {
-    var gl = this.stategl;
+    const gl = this.stategl;
     gl.renderer.exportBinary(gl, name);
 };
 
@@ -102,7 +97,7 @@ ComplexCurves.prototype.exportBinary = function(name = "surface.bin") {
  */
 ComplexCurves.prototype.exportDomainColouring = function(name = "sheet",
     big = true) {
-    var gl = this.stategl;
+    const gl = this.stategl;
     gl.renderer.exportDomainColouring(gl, name, big);
 };
 
@@ -112,12 +107,12 @@ ComplexCurves.prototype.exportDomainColouring = function(name = "sheet",
  */
 ComplexCurves.prototype.exportScreenshot = function(name = "surface.png",
     big = false) {
-    var complexCurves = this;
-    var stategl = this.stategl;
+    const complexCurves = this;
+    const stategl = this.stategl;
     stategl.withRenderToTexture(function() {
         complexCurves.renderSurface();
     }, big);
-    var pixels = /** @type {Uint8Array} */
+    const pixels = /** @type {Uint8Array} */
         (stategl.readTexture(big ? stategl.rttBigTexture : stategl.rttTexture));
     Export.download(name, Export.pixelsToImageDataURL(pixels));
 };
@@ -127,14 +122,14 @@ ComplexCurves.prototype.exportScreenshot = function(name = "surface.png",
  * @param {boolean=} big
  */
 ComplexCurves.prototype.exportSurface = function(name = "surface", big = true) {
-    var gl = this.stategl;
+    const gl = this.stategl;
     gl.renderer.exportSurface(gl, name, big);
 };
 
 ComplexCurves.prototype.registerEventHandlers = function() {
-    var canvas = this.canvas,
+    const canvas = this.canvas,
         state3d = this.state3d;
-    var complexCurves = this;
+    const complexCurves = this;
     /** @type {function(!Event) : undefined} */
     this.mousedownHandler = function(evt) {
         evt.preventDefault();
@@ -156,14 +151,14 @@ ComplexCurves.prototype.registerEventHandlers = function() {
     /** @type {function(!Event) : undefined} */
     this.touchstartHandler = function(evt) {
         evt.preventDefault();
-        var touch = /** @type {TouchEvent} */ (evt).touches[0];
+        const touch = /** @type {TouchEvent} */ (evt).touches[0];
         state3d.mouseDown([touch.clientX, touch.clientY]);
         complexCurves.renderSurface();
     };
     /** @type {function(!Event) : undefined} */
     this.touchmoveHandler = function(evt) {
         evt.preventDefault();
-        var touch = /** @type {TouchEvent} */ (evt).touches[0];
+        const touch = /** @type {TouchEvent} */ (evt).touches[0];
         state3d.mouseMove(touch.clientX, touch.clientY);
     };
     /** @type {function(!Event) : undefined} */
@@ -174,7 +169,7 @@ ComplexCurves.prototype.registerEventHandlers = function() {
     /** @type {function(!Event) : undefined} */
     this.wheelHandler = function(evt) {
         evt.preventDefault();
-        state3d.mouseWheel( /** @type {WheelEvent} */ (evt).deltaY);
+        state3d.mouseWheel((/** @type {WheelEvent} */ (evt)).deltaY);
         complexCurves.renderSurface();
     };
     canvas.addEventListener('mousedown', this.mousedownHandler);
@@ -187,9 +182,9 @@ ComplexCurves.prototype.registerEventHandlers = function() {
 };
 
 ComplexCurves.prototype.renderSurface = function() {
-    var state3d = this.state3d,
+    const state3d = this.state3d,
         gl = this.stategl;
-    var complexCurves = this;
+    const complexCurves = this;
     gl.renderSurface(state3d);
     if (state3d.isRotating()) {
         state3d.updateRotation();
@@ -272,7 +267,7 @@ ComplexCurves.prototype.setClipping = function(clipping) {
  * @param {number} lon
  */
 ComplexCurves.prototype.setLatLong = function(lat, lon) {
-    var q = Quaternion.fromLatLong(lat, lon);
+    const q = Quaternion.fromLatLong(lat, lon);
     this.state3d.autorotate = false;
     this.state3d.rotating = false;
     this.state3d.rotation = this.state3d.target1 = q;
@@ -323,7 +318,7 @@ ComplexCurves.prototype.toggleTransparency = function() {
 };
 
 ComplexCurves.prototype.unregisterEventHandlers = function() {
-    var canvas = this.canvas;
+    const canvas = this.canvas;
     canvas.removeEventListener('mousedown', this.mousedownHandler);
     canvas.removeEventListener('mousemove', this.mousemoveHandler);
     canvas.removeEventListener('mouseup', this.mouseupHandler);

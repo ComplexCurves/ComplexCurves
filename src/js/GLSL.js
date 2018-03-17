@@ -1,3 +1,7 @@
+const Complex = require('./Complex.js');
+const Polynomial = require('./Polynomial.js');
+const Term = require('./Term.js');
+
 var GLSL = {};
 
 /**

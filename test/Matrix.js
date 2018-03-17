@@ -1,11 +1,9 @@
-var assert = require('chai').assert;
-var rewire = require('rewire');
-var ComplexCurvesSrc = rewire('../build/ComplexCurves.simple.js');
-var Complex = ComplexCurvesSrc.__get__('Complex');
-var Matrix = ComplexCurvesSrc.__get__('Matrix');
-var Monomial = ComplexCurvesSrc.__get__('Monomial');
-var Term = ComplexCurvesSrc.__get__('Term');
-var Polynomial = ComplexCurvesSrc.__get__('Polynomial');
+const assert = require('chai').assert;
+const Complex = require('../src/js/Complex.js');
+const Matrix = require('../src/js/Matrix.js');
+const Monomial = require('../src/js/Monomial.js');
+const Term = require('../src/js/Term.js');
+const Polynomial = require('../src/js/Polynomial.js');
 
 describe('Matrix', function() {
     describe('det', function() {
