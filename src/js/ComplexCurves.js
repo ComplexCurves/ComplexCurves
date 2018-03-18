@@ -42,11 +42,11 @@ module.exports = class ComplexCurves {
      * @param {function()=} onload
      * @return {ComplexCurves}
      */
-    static fromFile(canvas, file, equation = "", lat = defaultLat, lon = defaultLon, ortho = false, onload = function () {}) {
+    static fromFile(canvas, file, equation = "", lat = defaultLat, lon = defaultLon, ortho = false, onload = function() {}) {
         const p = PolynomialParser.eval(PolynomialParser.parse(equation));
         const complexCurves = new ComplexCurves(canvas, lat, lon, ortho, 'webgl');
         const gl = complexCurves.stategl;
-        gl.renderer = new CachedSurface(gl, file, p, function () {
+        gl.renderer = new CachedSurface(gl, file, p, function() {
             complexCurves.renderSurface();
             onload();
         });
@@ -103,7 +103,7 @@ module.exports = class ComplexCurves {
     exportScreenshot(name = "surface.png", big = false) {
         const complexCurves = this;
         const stategl = this.stategl;
-        stategl.withRenderToTexture(function () {
+        stategl.withRenderToTexture(function() {
             complexCurves.renderSurface();
         }, big);
         const pixels = /** @type {Uint8Array} */
@@ -125,7 +125,7 @@ module.exports = class ComplexCurves {
             state3d = this.state3d;
         const complexCurves = this;
         /** @type {function(!Event) : undefined} */
-        this.mousedownHandler = function (evt) {
+        this.mousedownHandler = function(evt) {
             evt.preventDefault();
             if (state3d.autorotate)
                 return;
@@ -133,37 +133,37 @@ module.exports = class ComplexCurves {
             complexCurves.renderSurface();
         };
         /** @type {function(!Event) : undefined} */
-        this.mousemoveHandler = function (evt) {
+        this.mousemoveHandler = function(evt) {
             evt.preventDefault();
             state3d.mouseMove(evt.clientX, evt.clientY);
         };
         /** @type {function(!Event) : undefined} */
-        this.mouseupHandler = function (evt) {
+        this.mouseupHandler = function(evt) {
             evt.preventDefault();
             state3d.mouseUp();
         };
         /** @type {function(!Event) : undefined} */
-        this.touchstartHandler = function (evt) {
+        this.touchstartHandler = function(evt) {
             evt.preventDefault();
             const touch = /** @type {TouchEvent} */ (evt).touches[0];
             state3d.mouseDown([touch.clientX, touch.clientY]);
             complexCurves.renderSurface();
         };
         /** @type {function(!Event) : undefined} */
-        this.touchmoveHandler = function (evt) {
+        this.touchmoveHandler = function(evt) {
             evt.preventDefault();
             const touch = /** @type {TouchEvent} */ (evt).touches[0];
             state3d.mouseMove(touch.clientX, touch.clientY);
         };
         /** @type {function(!Event) : undefined} */
-        this.touchendHandler = function (evt) {
+        this.touchendHandler = function(evt) {
             evt.preventDefault();
             state3d.mouseUp();
         };
         /** @type {function(!Event) : undefined} */
-        this.wheelHandler = function (evt) {
+        this.wheelHandler = function(evt) {
             evt.preventDefault();
-            state3d.mouseWheel((/** @type {WheelEvent} */ (evt)).deltaY);
+            state3d.mouseWheel(( /** @type {WheelEvent} */ (evt)).deltaY);
             complexCurves.renderSurface();
         };
         canvas.addEventListener('mousedown', this.mousedownHandler);
@@ -182,7 +182,7 @@ module.exports = class ComplexCurves {
         gl.renderSurface(state3d);
         if (state3d.isRotating()) {
             state3d.updateRotation();
-            requestAnimationFrame(function () {
+            requestAnimationFrame(function() {
                 complexCurves.renderSurface();
             });
         }
