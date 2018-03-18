@@ -1,18 +1,10 @@
-import './ComplexCurves.js';
+const ComplexCurves = require('./ComplexCurves.js');
 const PolynomialParser = require('./PolynomialParser.js');
 
-import {
-    ComplexCurves,
-    ComplexCurvesFromEquation,
-    ComplexCurvesFromFile,
-    ComplexCurvesFromPolynomial
-}
-from './ComplexCurves.js';
-
 window['ComplexCurves'] = ComplexCurves;
-ComplexCurves['fromEquation'] = ComplexCurvesFromEquation;
-ComplexCurves['fromFile'] = ComplexCurvesFromFile;
-ComplexCurves['fromPolynomial'] = ComplexCurvesFromPolynomial;
+ComplexCurves['fromEquation'] = ComplexCurves.fromEquation;
+ComplexCurves['fromFile'] = ComplexCurves.fromFile;
+ComplexCurves['fromPolynomial'] = ComplexCurves.fromPolynomial;
 ComplexCurves.prototype['domainColouring'] = ComplexCurves.prototype.domainColouring;
 ComplexCurves.prototype['exportBinary'] = ComplexCurves.prototype.exportBinary;
 ComplexCurves.prototype['exportDomainColouring'] = ComplexCurves.prototype.exportDomainColouring;
