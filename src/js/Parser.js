@@ -1,4 +1,4 @@
-var Parser = {};
+const Parser = {};
 
 /** @typedef {{type : string, value : string}} */
 Parser.Token = null;
@@ -25,16 +25,20 @@ Parser.Combinator = null;
  * @param {...Parser.Combinator} var_args
  * @return {Parser.Combinator}
  */
-function and(var_args) {
-    var args = arguments;
+exports.and = function(var_args) {
+    const args = arguments;
+
     /**
      * @param {Parser.Tokens} input
      * @return {Array<Parser.Leaf>|null}
      */
     function f(input) {
-        var result, results = [];
-        for (var i = 0, l = args.length; i < l; i++) {
-            var /** Parser.Combinator */ parser = args[i];
+        let result;
+        const results = [];
+        let i = 0;
+        const l = args.length;
+        for (; i < l; i++) {
+            const /** Parser.Combinator */ parser = args[i];
             result = parser(input);
             if (result) {
                 results.push(result);
@@ -46,7 +50,7 @@ function and(var_args) {
         return results;
     }
     return f;
-}
+};
 
 /**
  * @param {Parser.Combinator} left
@@ -54,26 +58,26 @@ function and(var_args) {
  * @param {Parser.Combinator} right
  * @return {Parser.Combinator}
  */
-function between(left, middle, right) {
+exports.between = function(left, middle, right) {
     /**
      * @param {Parser.Tokens} input
      * @return {Parser.AST}
      */
     function f(input) {
-        var /** Parser.Combinator */ parser = and(left, middle, right);
-        var result = /** @type {Array<Parser.Leaf>|null} */ (parser(input));
+        const /** Parser.Combinator */ parser = exports.and(left, middle, right);
+        const result = /** @type {Array<Parser.Leaf>|null} */ (parser(input));
         return result ? result[1] : null;
     }
     return f;
-}
+};
 
 /**
  * @param {Parser.Tokens} input
  * @return {boolean|null}
  */
-function eoi(input) {
+exports.eoi = function(input) {
     return input.length === 0 ? true : null;
-}
+};
 
 /**
  * @param {Parser.Combinator} op1
@@ -81,14 +85,14 @@ function eoi(input) {
  * @param {Parser.Combinator} op2
  * @return {Parser.Combinator}
  */
-function infix(op1, op, op2) {
+exports.infix = function(op1, op, op2) {
     /**
      * @param {Parser.Tokens} input
      * @return {Parser.AST}
      */
     function f(input) {
-        var /** Parser.Combinator */ parser = and(op1, op, op2);
-        var result = parser(input);
+        const /** Parser.Combinator */ parser = exports.and(op1, op, op2);
+        const result = parser(input);
         if (result === null)
             return null;
         return {
@@ -99,13 +103,13 @@ function infix(op1, op, op2) {
         };
     }
     return f;
-}
+};
 
 /**
  * @param {string} type
  * @return {Parser.Combinator}
  */
-function literal(type) {
+exports.literal = function(type) {
     /**
      * @param {Parser.Tokens} input
      * @return {Parser.Token|null}
@@ -114,20 +118,20 @@ function literal(type) {
         return (input[0] || {}).type === type ? input.shift() : null;
     }
     return f;
-}
+};
 
 /**
  * @param {Parser.Combinator} parser
  * @return {Parser.Combinator}
  */
-function many(parser) {
+exports.many = function(parser) {
     /**
      * @param {Parser.Tokens} input
      * @return {Parser.AST}
      */
     function f(input) {
-        var result = parser(input),
-            results = [];
+        let result = parser(input);
+        const results = [];
         while (result !== null) {
             results.push(result);
             result = parser(input);
@@ -135,22 +139,24 @@ function many(parser) {
         return results;
     }
     return f;
-}
+};
 
 /**
  * @param {...Parser.Combinator} var_args
  * @return {Parser.Combinator}
  */
-function or(var_args) {
-    var args = arguments;
+exports.or = function(var_args) {
+    const args = arguments;
+
     /**
      * @param {Parser.Tokens} input
      * @return {Parser.AST}
      */
     function f(input) {
-        var result;
-        for (var i = 0, l = args.length; i < l; i++) {
-            var /** Parser.Combinator */ parser = args[i];
+        let result;
+        const l = args.length;
+        for (let i = 0; i < l; i++) {
+            const /** Parser.Combinator */ parser = args[i];
             result = parser(input);
             if (result)
                 return result;
@@ -158,28 +164,28 @@ function or(var_args) {
         return null;
     }
     return f;
-}
+};
 
 /**
  * @param {Parser.Combinator} op
  * @return {Parser.Combinator}
  */
-function parenthesized(op) {
-    return between(symb("("), op, symb(")"));
-}
+exports.parenthesized = function(op) {
+    return exports.between(exports.symb("("), op, exports.symb(")"));
+};
 
 /**
  * @param {Parser.Combinator} op
  * @param {Parser.Combinator} op1
  * @return {Parser.Combinator}
  */
-function prefix(op, op1) {
+exports.prefix = function(op, op1) {
     /**
      * @param {Parser.Tokens} input
      * @return {Parser.AST}
      */
     function f(input) {
-        var result = and(op, op1)(input);
+        const result = exports.and(op, op1)(input);
         if (result === null)
             return null;
         return {
@@ -189,13 +195,13 @@ function prefix(op, op1) {
         };
     }
     return f;
-}
+};
 
 /**
  * @param {string} value
  * @return {Parser.Combinator}
  */
-function symb(value) {
+exports.symb = function(value) {
     /**
      * @param {Parser.Tokens} input
      * @return {Parser.Token|null}
@@ -204,4 +210,6 @@ function symb(value) {
         return (input[0] || {}).value === value ? input.shift() : null;
     }
     return f;
-}
+};
+
+module.exports = Parser;

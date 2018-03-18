@@ -1,5 +1,7 @@
 const Complex = require('./Complex.js');
+const Parser = require('./Parser.js');
 const Polynomial = require('./Polynomial.js');
+const Tokenizer = require('./Tokenizer.js');
 
 module.exports = class PolynomialParser {
 
@@ -89,14 +91,14 @@ module.exports = class PolynomialParser {
 
         */
 
-        const number = literal("number");
-        const imaginary = literal("imaginary");
-        const variable = literal("variable");
-        const plus = symb("+");
-        const minus = symb("-");
-        const /** Parser.Combinator */ sign = or(plus, minus);
-        const times = symb("*");
-        const pow = symb("^");
+        const number = Parser.literal("number");
+        const imaginary = Parser.literal("imaginary");
+        const variable = Parser.literal("variable");
+        const plus = Parser.symb("+");
+        const minus = Parser.symb("-");
+        const /** Parser.Combinator */ sign = Parser.or(plus, minus);
+        const times = Parser.symb("*");
+        const pow = Parser.symb("^");
 
         /**
          * @param {Parser.Leaf} f
@@ -126,7 +128,7 @@ module.exports = class PolynomialParser {
          * @return {Parser.Leaf|null}
          */
         function polynomial(input) {
-            const p = /** @type {Array<Parser.Leaf>|null} */ (and(expr, eoi)(input));
+            const p = /** @type {Array<Parser.Leaf>|null} */ (Parser.and(expr, Parser.eoi)(input));
             return p === null ? null : p[0];
         }
 
@@ -135,7 +137,7 @@ module.exports = class PolynomialParser {
          * @return {Parser.AST}
          */
         function expr(input) {
-            const e = and(or(prefix(sign, term), term), many(and(sign, term)))(input);
+            const e = Parser.and(Parser.or(Parser.prefix(sign, term), term), Parser.many(Parser.and(sign, term)))(input);
             return e === null ? null : infixCombine(e[0], e[1]);
         }
 
@@ -144,7 +146,7 @@ module.exports = class PolynomialParser {
          * @return {Parser.AST}
          */
         function term(input) {
-            const t = and(factor, many(and(times, factor)))(input);
+            const t = Parser.and(factor, Parser.many(Parser.and(times, factor)))(input);
             return t === null ? null : infixCombine(t[0], t[1]);
         }
 
@@ -170,7 +172,7 @@ module.exports = class PolynomialParser {
          * @return {Parser.Token|Parser.InfixLeaf|null}
          */
         function power(input) {
-            const p = and(pow, number)(input);
+            const p = Parser.and(pow, number)(input);
             if (p === null)
                 return null;
             const q = /** @type {Parser.Token|Parser.InfixLeaf|null} */ (power(input));
@@ -187,7 +189,7 @@ module.exports = class PolynomialParser {
          * @return {Parser.AST}
          */
         function base(input) {
-            return or(parenthesized(expr), number, imaginary, variable)(input);
+            return Parser.or(Parser.parenthesized(expr), number, imaginary, variable)(input);
         }
 
         return polynomial(tokens);

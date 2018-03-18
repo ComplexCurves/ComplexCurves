@@ -1,32 +1,35 @@
-/**
- * @param {Array<Array<string>>} rules
- * @constructor
- */
-function Tokenizer(rules) {
-    this.rules = rules;
-}
-
-/**
- * @param {string} str
- * @return {!Array<{type : string, value : string}>}
- */
-Tokenizer.prototype.tokenize = function(str) {
-    var rules = this.rules;
-    var rule = "(?:";
-    for (var i = 0, l = rules.length; i < l; i++)
-        rule += (i > 0 ? "|(" : "(") + rules[i][0] + ")";
-    rule += ")";
-    var regexp = new RegExp(rule, "g");
-    var tokens = [];
-    var result;
-    while ((result = regexp.exec(str)) !== null) {
-        var value = result[0];
-        var type = rules[result.slice(1).indexOf(value)][1];
-        var token = {
-            "type": type,
-            "value": value
-        };
-        tokens.push(token);
+module.exports = class Tokenizer {
+    /**
+     * @param {Array<Array<string>>} rules
+     */
+    constructor(rules) {
+        this.rules = rules;
     }
-    return tokens;
+
+    /**
+     * @param {string} str
+     * @return {!Array<{type : string, value : string}>}
+     */
+    tokenize(str) {
+        const rules = this.rules;
+        let rule = "(?:";
+        let i = 0;
+        const l = rules.length;
+        for (; i < l; i++)
+            rule += (i > 0 ? "|(" : "(") + rules[i][0] + ")";
+        rule += ")";
+        const regexp = new RegExp(rule, "g");
+        const tokens = [];
+        let result;
+        while ((result = regexp.exec(str)) !== null) {
+            const value = result[0];
+            const type = rules[result.slice(1).indexOf(value)][1];
+            const token = {
+                "type": type,
+                "value": value
+            };
+            tokens.push(token);
+        }
+        return tokens;
+    }
 };

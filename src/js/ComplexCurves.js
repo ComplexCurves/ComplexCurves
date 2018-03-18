@@ -1,4 +1,11 @@
+const CachedSurface = require('./CachedSurface.js');
+const Export = require('./Export.js');
+const Polynomial = require('./Polynomial.js');
 const PolynomialParser = require('./PolynomialParser.js');
+const Quaternion = require('./Quaternion.js');
+const Surface = require('./Surface.js');
+const State3D = require('./State3D.js');
+const StateGL = require('./StateGL.js');
 
 const defaultLat = 5 / 12 * Math.PI;
 const defaultLon = Math.PI / 6;
