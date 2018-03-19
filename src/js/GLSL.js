@@ -2,7 +2,7 @@ const Complex = require('./Complex.js');
 const Polynomial = require('./Polynomial.js');
 const Term = require('./Term.js');
 
-module.exports = class GLSL {
+class GLSL {
     /**
      * @param {Polynomial} p
      * @return {Array<string>}
@@ -201,11 +201,6 @@ module.exports = class GLSL {
         return lines.join("\n");
     }
 
-    /** @return {number} */
-    static get N() {
-        return 8;
-    }
-
     /**
      * @param {Array<string>} cs
      * @return {Array<string>}
@@ -235,4 +230,8 @@ module.exports = class GLSL {
             GLSL.glslM(p, vx, vy)
         ].join("\n\n");
     }
-};
+}
+
+GLSL.N = /** number */ 8;
+
+module.exports = GLSL;

@@ -1,46 +1,47 @@
 const StateGL = require('./StateGL.js');
+const SurfaceDTO = require('./SurfaceDTO.js');
 const TransformFeedback = require('./TransformFeedback.js');
 
 module.exports = class Assembly {
     /**
      * @param {StateGL} stategl
-     * @param {./Surface} surface
+     * @param {SurfaceDTO} surfaceDTO
      */
-    constructor(stategl, surface) {
+    constructor(stategl, surfaceDTO) {
         this.program = /** WebGLProgram */ null;
-        this.mkProgram(stategl, surface);
+        this.mkProgram(stategl, surfaceDTO);
     }
 
     /**
      * @param {StateGL} stategl
-     * @param {./Surface} surface
+     * @param {SurfaceDTO} surfaceDTO
      */
-    mkProgram(stategl, surface) {
+    mkProgram(stategl, surfaceDTO) {
         const sources = [
             StateGL.getShaderSource('Assembly.vert'),
             StateGL.getShaderSource('Dummy.frag')
         ];
-        sources[0] = surface.withCustomAndCommon(sources[0]);
+        sources[0] = surfaceDTO.withCustomAndCommon(sources[0]);
         this.program = /** WebGLProgram */ stategl.mkProgram(sources, ["posValue"]);
     }
 
     /**
      * @param {StateGL} stategl
-     * @param {./Surface} surface
+     * @param {SurfaceDTO} surfaceDTO
      * @param {WebGLRenderingContext} gl
      */
-    render(stategl, surface, gl) {
-        const textures = surface.textures;
+    render(stategl, surfaceDTO, gl) {
+        const textures = surfaceDTO.textures;
         gl.useProgram(this.program);
 
         const numIndicesLoc = gl.getUniformLocation(this.program, 'numIndices');
-        const numIndices = surface.numIndices;
+        const numIndices = surfaceDTO.numIndices;
         gl.uniform1f(numIndicesLoc, numIndices);
 
-        surface.fillIndexBuffer(stategl);
+        surfaceDTO.fillIndexBuffer(stategl);
         gl.vertexAttribPointer(0, 1, gl.FLOAT, false, 0, 0);
 
-        const sheets = surface.sheets;
+        const sheets = surfaceDTO.sheets;
         const stride = 4;
         const size = stride * numIndices * sheets;
 
@@ -61,14 +62,14 @@ module.exports = class Assembly {
         gl.disable(gl.DEPTH_TEST);
 
         const sheetLoc = gl.getUniformLocation(this.program, 'sheet');
-        TransformFeedback.withTransformFeedback(gl, surface, size, function() {
+        TransformFeedback.withTransformFeedback(gl, surfaceDTO, size, function() {
             for (let sheet = 0; sheet < sheets; sheet++) {
                 gl.uniform1f(sheetLoc, sheet);
                 gl.drawArrays(gl.TRIANGLES, 0, numIndices);
             }
         });
 
-        surface.numIndices *= sheets;
+        surfaceDTO.numIndices *= sheets;
         gl.enable(gl.DEPTH_TEST);
     }
 };

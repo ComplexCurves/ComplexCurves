@@ -6,23 +6,23 @@ const TransformFeedback = require('./TransformFeedback.js');
 module.exports = class Initial {
     /**
      * @param {StateGL} stategl
-     * @param {./Surface} surface
+     * @param {./SurfaceDTO} surfaceDTO
      */
-    constructor(stategl, surface) {
+    constructor(stategl, surfaceDTO) {
         this.positionBuffer = /** WebGLBuffer */ null;
         this.program = /** WebGLProgram */ null;
-        this.mkBuffers(stategl, surface, Mesh.tetrakis(2));
-        this.mkProgram(stategl, surface);
+        this.mkBuffers(stategl, surfaceDTO, Mesh.tetrakis(2));
+        this.mkProgram(stategl, surfaceDTO);
     }
 
     /**
      * @param {StateGL} stategl
-     * @param {./Surface} surface
+     * @param {./SurfaceDTO} surfaceDTO
      * @param {Array<number>} positions
      */
-    mkBuffers(stategl, surface, positions) {
+    mkBuffers(stategl, surfaceDTO, positions) {
         const gl = stategl.gl;
-        surface.numIndices = positions.length / 2;
+        surfaceDTO.numIndices = positions.length / 2;
         gl.enableVertexAttribArray(0);
         this.positionBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
@@ -31,14 +31,14 @@ module.exports = class Initial {
 
     /**
      * @param {StateGL} stategl
-     * @param {./Surface} surface
+     * @param {./SurfaceDTO} surfaceDTO
      */
-    mkProgram(stategl, surface) {
+    mkProgram(stategl, surfaceDTO) {
         const sources = [
             StateGL.getShaderSource('Initial.vert'),
             StateGL.getShaderSource('Dummy.frag')
         ];
-        sources[0] = surface.withCustomAndCommon(sources[0]);
+        sources[0] = surfaceDTO.withCustomAndCommon(sources[0]);
         this.program = /** WebGLProgram */ stategl.mkProgram(sources, ["position", "delta",
             "subdivisionFlag", "values"
         ]);
@@ -46,23 +46,23 @@ module.exports = class Initial {
 
     /**
      * @param {StateGL} stategl
-     * @param {./Surface} surface
+     * @param {./SurfaceDTO} surfaceDTO
      * @param {WebGLRenderingContext} gl
      */
-    render(stategl, surface, gl) {
+    render(stategl, surfaceDTO, gl) {
         gl.useProgram(this.program);
         const stride = 4 + 2 * GLSL.N;
-        const size = stride * surface.numIndices;
+        const size = stride * surfaceDTO.numIndices;
         gl.enableVertexAttribArray(0);
         gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
         gl.vertexAttribPointer(0, 2, gl.FLOAT, false, 0, 0);
 
-        TransformFeedback.withTransformFeedback(gl, surface, size, function() {
-            gl.drawArrays(gl.TRIANGLES, 0, surface.numIndices);
+        TransformFeedback.withTransformFeedback(gl, surfaceDTO, size, function() {
+            gl.drawArrays(gl.TRIANGLES, 0, surfaceDTO.numIndices);
         });
 
         // store feedback values in textures
-        TransformFeedback.toTextures(gl, surface);
+        TransformFeedback.toTextures(gl, surfaceDTO);
 
         gl.bindBuffer(gl.ARRAY_BUFFER, null);
     }

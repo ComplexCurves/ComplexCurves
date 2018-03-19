@@ -5,43 +5,43 @@ const TransformFeedback = require('./TransformFeedback.js');
 module.exports = class Subdivision {
     /**
      * @param {StateGL} stategl
-     * @param {./Surface} surface
+     * @param {./SurfaceDTO} surfaceDTO
      */
-    constructor(stategl, surface) {
+    constructor(stategl, surfaceDTO) {
         this.program = /** WebGLProgram */ null;
         this.textures = /** Array<WebGLTexture> */ null;
-        this.mkProgram(stategl, surface);
+        this.mkProgram(stategl, surfaceDTO);
     }
 
     /**
      * @param {StateGL} stategl
-     * @param {./Surface} surface
+     * @param {./SurfaceDTO} surfaceDTO
      */
-    mkProgram(stategl, surface) {
+    mkProgram(stategl, surfaceDTO) {
         const sources = [
             StateGL.getShaderSource('Subdivision.vert'),
             StateGL.getShaderSource('Dummy.frag')
         ];
-        sources[0] = surface.withCustomAndCommon(sources[0]);
+        sources[0] = surfaceDTO.withCustomAndCommon(sources[0]);
         this.program = stategl.mkProgram(sources, ["position", "delta", "subdivisionFlag", "values"]);
     }
 
     /**
      * @param {StateGL} stategl
-     * @param {./Surface} surface
+     * @param {./SurfaceDTO} surfaceDTO
      * @param {WebGLRenderingContext} gl
      */
-    render(stategl, surface, gl) {
+    render(stategl, surfaceDTO, gl) {
         let i, l;
-        const textures = surface.textures;
+        const textures = surfaceDTO.textures;
         const program = this.program;
         gl.useProgram(program);
 
         // read subdivision flags from transform feedback buffer
-        const subdivisionFlags = new Float32Array(surface.numIndices);
-        const buf = TransformFeedback.toFloat32Array(gl, surface);
+        const subdivisionFlags = new Float32Array(surfaceDTO.numIndices);
+        const buf = TransformFeedback.toFloat32Array(gl, surfaceDTO);
         const stride = 4 + 2 * GLSL.N;
-        let size = stride * surface.numIndices;
+        let size = stride * surfaceDTO.numIndices;
         for (i = 3, l = 0; i < size; i += stride, l++)
             subdivisionFlags[l] = buf[i];
 
@@ -110,7 +110,7 @@ module.exports = class Subdivision {
         let patterns = [];
         let /** number */ primitivesWritten = 0;
         // identify and prepare subdivision patterns
-        for (i = 0, l = surface.numIndices / 3; i < l; i++) {
+        for (i = 0, l = surfaceDTO.numIndices / 3; i < l; i++) {
             const /** number */ patternIndex = subdivisionFlags[3 * i];
             const /** number */ first = subdivisionPatternFirst[patternIndex];
             const /** number */ numIndices = subdivisionPatternCount[patternIndex];
@@ -137,14 +137,14 @@ module.exports = class Subdivision {
         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(offsetsIn), gl.STATIC_DRAW);
         gl.vertexAttribPointer(1, 1, gl.FLOAT, false, 0, 0);
 
-        TransformFeedback.withTransformFeedback(gl, surface, size, function() {
+        TransformFeedback.withTransformFeedback(gl, surfaceDTO, size, function() {
             gl.drawArrays(gl.TRIANGLES, 0, primitivesWritten);
         });
 
-        surface.numIndices = primitivesWritten;
+        surfaceDTO.numIndices = primitivesWritten;
 
         // store feedback values in textures
-        TransformFeedback.toTextures(gl, surface);
+        TransformFeedback.toTextures(gl, surfaceDTO);
 
         for (i = 0, l = textures.length + 1; i < l; i++) {
             gl.activeTexture(gl.TEXTURE0 + i);

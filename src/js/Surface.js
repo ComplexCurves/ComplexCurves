@@ -1,10 +1,10 @@
 const Assembly = require('./Assembly.js');
-const GLSL = require('./GLSL.js');
 const Export = require('./Export.js');
 const Initial = require('./Initial.js');
 const StateGL = require('./StateGL.js');
 const Subdivision = require('./Subdivision.js');
 const SubdivisionPre = require('./SubdivisionPre.js');
+const SurfaceDTO = require('./SurfaceDTO.js');
 const TransformFeedback = require('./TransformFeedback.js');
 
 module.exports = class Surface {
@@ -14,45 +14,33 @@ module.exports = class Surface {
      * @param {number} depth
      */
     constructor(stategl, polynomial, depth) {
-        this.commonShaderSrc = "";
-        this.customShaderSrc = "";
-        this.depth = depth;
-        this.numIndices = 0; // THIS
-        this.polynomial = polynomial; // THIS
-        this.program = /** WebGLProgram */ null;
-        this.sheets = polynomial.sheets(); // THIS
-        this.textures = /** Array<WebGLTexture> */ null; // THIS
-        this.transformFeedback = /** WebGLTransformFeedback */ null; // THIS
-        this.transformFeedbackBuffer = /** WebGLBuffer */ null; // THIS
+
+        this.surfaceDTO = new SurfaceDTO(stategl, polynomial, depth);
+        const surfaceDTO = this.surfaceDTO;
 
         // surface must be bivariate and at least quadratic
         if (!polynomial.isBivariate()) {
             console.log("Equation must be bivariate!");
             return;
         }
-        if (this.sheets < 2) {
+        if (surfaceDTO.sheets < 2) {
             console.log("There must be at least two sheets!");
             return;
         }
 
         const gl = stategl.gl;
 
-        this.indexBuffer = gl.createBuffer();
-        this.mkTextures(stategl);
-        this.mkTransformFeedback(stategl);
-
-        this.commonShaderSrc = /** @type {string} */ (resources["Common.glsl"]).trim(); // THIS
-        this.customShaderSrc = GLSL.polynomialShaderSource(polynomial); // THIS
-        this.initial = new Initial(stategl, this);
-        this.initial.render(stategl, this, gl);
-        this.subdivisionPre = new SubdivisionPre(stategl, this);
-        this.subdivision = new Subdivision(stategl, this);
-        for (let i = 0; i < this.depth; i++) {
-            this.subdivisionPre.render(stategl, this, gl);
-            this.subdivision.render(stategl, this, gl);
+        this.initial = new Initial(stategl, surfaceDTO);
+        this.initial.render(stategl, surfaceDTO, gl);
+        this.subdivisionPre = new SubdivisionPre(stategl, surfaceDTO);
+        this.subdivision = new Subdivision(stategl, surfaceDTO);
+        for (let i = 0; i < surfaceDTO.depth; i++) {
+            this.subdivisionPre.render(stategl, surfaceDTO, gl);
+            this.subdivision.render(stategl, surfaceDTO, gl);
         }
-        this.assembly = new Assembly(stategl, this);
-        this.assembly.render(stategl, this, gl);
+        this.assembly = new Assembly(stategl, surfaceDTO);
+        this.assembly.render(stategl, surfaceDTO, gl);
+        this.program = /** WebGLProgram */ null;
         this.mkProgram(stategl);
         const canvas = gl.canvas;
         gl.viewport(0, 0, canvas.width, canvas.height);
@@ -64,7 +52,7 @@ module.exports = class Surface {
      * @return {Array<string>}
      */
     domainColouring(stategl, big = false) {
-        return Export.domainColouring(this.polynomial, stategl, big);
+        return Export.domainColouring(this.surfaceDTO.polynomial, stategl, big);
     }
 
     /**
@@ -72,7 +60,7 @@ module.exports = class Surface {
      * @param {string=} name
      */
     exportBinary(stategl, name = "surface.bin") {
-        const url = TransformFeedback.toURL(stategl.gl, this, 4);
+        const url = TransformFeedback.toURL(stategl.gl, this.surfaceDTO, 4);
         Export.download(name, url);
     }
 
@@ -82,7 +70,7 @@ module.exports = class Surface {
      * @param {boolean=} big
      */
     exportDomainColouring(stategl, name = "sheet", big = true) {
-        Export.exportDomainColouring(this.polynomial, stategl, name, big);
+        Export.exportDomainColouring(this.surfaceDTO.polynomial, stategl, name, big);
     }
 
     /**
@@ -91,51 +79,15 @@ module.exports = class Surface {
      * @param {boolean=} big
      */
     exportSurface(stategl, name = "surface", big = true) {
-        const pixels = TransformFeedback.toFloat32Array(stategl.gl, this, 4);
+        const pixels = TransformFeedback.toFloat32Array(stategl.gl, this.surfaceDTO, 4);
         Export.exportSurface(stategl, pixels, name, big);
-    }
-
-    /** @param {StateGL} stategl */
-    fillIndexBuffer(stategl) {
-        const gl = stategl.gl;
-        const indices = [];
-        for (let i = 0; i < this.numIndices; i++)
-            indices[i] = i;
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.indexBuffer);
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(indices), gl.STATIC_DRAW);
     }
 
     /** @param {StateGL} stategl */
     mkProgram(stategl) {
         const sources = StateGL.getShaderSources("Surface");
-        sources[1] = this.withCustomAndCommon(sources[1]);
+        sources[1] = this.surfaceDTO.withCustomAndCommon(sources[1]);
         this.program = stategl.mkProgram(sources);
-    }
-
-    /** @param {StateGL} stategl */
-    mkTextures(stategl) {
-        const gl = stategl.gl,
-            textures = [];
-        for (let i = 0; i < 5; i++) {
-            textures[i] = gl.createTexture();
-            gl.bindTexture(gl.TEXTURE_2D, textures[i]);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl["RGBA16F"], 2048, 2048, 0, gl.RGBA,
-                gl.FLOAT, null);
-        }
-        gl.bindTexture(gl.TEXTURE_2D, null);
-        this.textures = textures;
-    }
-
-    /**
-     * @param {StateGL} stategl
-     * @suppress {reportUnknownTypes}
-     */
-    mkTransformFeedback(stategl) {
-        const gl = stategl.gl;
-        this.transformFeedback = gl["createTransformFeedback"]();
-        this.transformFeedbackBuffer = gl.createBuffer();
     }
 
     /**
@@ -151,18 +103,10 @@ module.exports = class Surface {
         stategl.updateModelViewProjectionMatrices(state3d);
         stategl.updateTransparency();
 
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.transformFeedbackBuffer);
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.surfaceDTO.transformFeedbackBuffer);
         gl.vertexAttribPointer(0, 4, gl.FLOAT, false, 0, 0);
         gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-        gl.drawArrays(gl.TRIANGLES, 0, this.numIndices);
+        gl.drawArrays(gl.TRIANGLES, 0, this.surfaceDTO.numIndices);
         stategl.updateTransparency(false);
-    }
-
-    /**
-     * @param {string} src
-     * @return {string}
-     */
-    withCustomAndCommon(src) { // THIS
-        return ["#version 300 es", this.customShaderSrc, this.commonShaderSrc, src].join("\n");
     }
 };

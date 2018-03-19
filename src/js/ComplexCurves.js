@@ -74,7 +74,7 @@ module.exports = class ComplexCurves {
         const gl = complexCurves.stategl;
         gl.renderer = new Surface(gl, polynomial, depth);
         // equation must be bivariate and at least quadratic
-        if (!polynomial.isBivariate() || gl.renderer.sheets < 2)
+        if (!polynomial.isBivariate() || gl.renderer.surfaceDTO.sheets < 2)
             return null;
         complexCurves.renderSurface();
         return complexCurves;

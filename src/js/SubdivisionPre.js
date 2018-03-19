@@ -5,25 +5,25 @@ const TransformFeedback = require('./TransformFeedback.js');
 module.exports = class SubdivisionPre {
     /**
      * @param {StateGL} stategl
-     * @param {./Surface} surface
+     * @param {./SurfaceDTO} surfaceDTO
      */
-    constructor(stategl, surface) {
+    constructor(stategl, surfaceDTO) {
         this.program = /** WebGLProgram */ null;
         this.size = 0;
         this.textures = /** Array<WebGLTexture> */ null;
-        this.mkProgram(stategl, surface);
+        this.mkProgram(stategl, surfaceDTO);
     }
 
     /**
      * @param {StateGL} stategl
-     * @param {./Surface} surface
+     * @param {./SurfaceDTO} surfaceDTO
      */
-    mkProgram(stategl, surface) {
+    mkProgram(stategl, surfaceDTO) {
         const sources = [
             StateGL.getShaderSource('SubdivisionPre.vert'),
             StateGL.getShaderSource('Dummy.frag')
         ];
-        sources[0] = surface.withCustomAndCommon(sources[0]);
+        sources[0] = surfaceDTO.withCustomAndCommon(sources[0]);
         this.program = stategl.mkProgram(sources, ["position", "delta",
             "subdivisionFlag", "values"
         ]);
@@ -31,23 +31,22 @@ module.exports = class SubdivisionPre {
 
     /**
      * @param {StateGL} stategl
-     * @param {./Surface} surface
+     * @param {./SurfaceDTO} surfaceDTO
      * @param {WebGLRenderingContext} gl
      */
-    render(stategl, surface, gl) {
-        const textures = surface.textures;
+    render(stategl, surfaceDTO, gl) {
+        const textures = surfaceDTO.textures;
         const program = this.program;
         gl.useProgram(program);
-        surface.fillIndexBuffer(stategl);
+        surfaceDTO.fillIndexBuffer(stategl);
         gl.vertexAttribPointer(0, 1, gl.FLOAT, false, 0, 0);
         const stride = 4 + 2 * GLSL.N;
-        const size = stride * surface.numIndices;
+        const size = stride * surfaceDTO.numIndices;
 
         // prepare input textures
         const texIs = [];
-        let i = 0;
         const l = textures.length;
-        for (; i < l; i++) {
+        for (let i = 0; i < l; i++) {
             gl.activeTexture(gl.TEXTURE0 + i);
             gl.bindTexture(gl.TEXTURE_2D, textures[i]);
             gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
@@ -59,12 +58,12 @@ module.exports = class SubdivisionPre {
         const samplersLocation = gl.getUniformLocation(program, 'samplers');
         gl.uniform1iv(samplersLocation, texIs);
 
-        TransformFeedback.withTransformFeedback(gl, surface, size, function() {
-            gl.drawArrays(gl.TRIANGLES, 0, surface.numIndices);
+        TransformFeedback.withTransformFeedback(gl, surfaceDTO, size, function() {
+            gl.drawArrays(gl.TRIANGLES, 0, surfaceDTO.numIndices);
         });
 
         // store feedback values in textures
-        TransformFeedback.toTextures(gl, surface);
+        TransformFeedback.toTextures(gl, surfaceDTO);
 
         gl.bindBuffer(gl.ARRAY_BUFFER, null);
     }
