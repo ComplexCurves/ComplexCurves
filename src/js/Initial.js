@@ -1,13 +1,12 @@
 const GLSL = require('./GLSL.js');
 const Mesh = require('./Mesh.js');
 const StateGL = require('./StateGL.js');
-const Surface = require('./Surface.js');
 const TransformFeedback = require('./TransformFeedback.js');
 
 module.exports = class Initial {
     /**
      * @param {StateGL} stategl
-     * @param {Surface} surface
+     * @param {./Surface} surface
      */
     constructor(stategl, surface) {
         this.positionBuffer = /** WebGLBuffer */ null;
@@ -18,7 +17,7 @@ module.exports = class Initial {
 
     /**
      * @param {StateGL} stategl
-     * @param {Surface} surface
+     * @param {./Surface} surface
      * @param {Array<number>} positions
      */
     mkBuffers(stategl, surface, positions) {
@@ -32,7 +31,7 @@ module.exports = class Initial {
 
     /**
      * @param {StateGL} stategl
-     * @param {Surface} surface
+     * @param {./Surface} surface
      */
     mkProgram(stategl, surface) {
         const sources = [
@@ -47,7 +46,7 @@ module.exports = class Initial {
 
     /**
      * @param {StateGL} stategl
-     * @param {Surface} surface
+     * @param {./Surface} surface
      * @param {WebGLRenderingContext} gl
      */
     render(stategl, surface, gl) {

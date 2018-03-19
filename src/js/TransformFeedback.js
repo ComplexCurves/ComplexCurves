@@ -1,11 +1,10 @@
-const Export = require('./Export.js');
 const GLSL = require('./GLSL.js');
-const Surface = require('./Surface.js');
+const URLFactory = require('./URLFactory.js');
 
 module.exports = class TransformFeedback {
     /**
      * @param {WebGLRenderingContext} gl
-     * @param {Surface} surface
+     * @param {./Surface} surface
      * @param {number=} stride
      * @suppress {reportUnknownTypes}
      * @return {Float32Array}
@@ -23,7 +22,7 @@ module.exports = class TransformFeedback {
 
     /**
      * @param {WebGLRenderingContext} gl
-     * @param {Surface} surface
+     * @param {./Surface} surface
      * @param {number=} stride
      */
     static toTextures(gl, surface, stride = 4 + 2 * GLSL.N) {
@@ -47,18 +46,18 @@ module.exports = class TransformFeedback {
 
     /**
      * @param {WebGLRenderingContext} gl
-     * @param {Surface} surface
+     * @param {./Surface} surface
      * @param {number=} stride
      * @return {string}
      */
     static toURL(gl, surface, stride = 4 + 2 * GLSL.N) {
         const pixels = TransformFeedback.toFloat32Array(gl, surface, stride);
-        return Export.pixelsToObjectURL(pixels);
+        return URLFactory.pixelsToObjectURL(pixels);
     }
 
     /**
      * @param {WebGLRenderingContext} gl
-     * @param {Surface} surface
+     * @param {./Surface} surface
      * @param {number} size
      * @param {function()} action
      * @suppress {reportUnknownTypes}

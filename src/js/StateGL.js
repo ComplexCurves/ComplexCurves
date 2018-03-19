@@ -1,7 +1,4 @@
-const CachedSurface = require('./CachedSurface.js');
-const Export = require('./Export.js');
-const Surface = require('./Surface.js');
-const State3D = require('./State3D.js');
+const URLFactory = require('./URLFactory.js');
 
 module.exports = class StateGL {
     /**
@@ -13,10 +10,11 @@ module.exports = class StateGL {
         this.bigTextureSize = 8192;
         this.clipping = false;
         this.contextType = contextType;
+        this.extensions = {};
         this.fxaa = true;
         this.fxaaProgram = /** WebGLProgram */ null;
         this.polynomial = /** Polynomial */ null;
-        this.renderer = ( /** @type {CachedSurface|Surface} */ (null));
+        this.renderer = ( /** @type {./CachedSurface|./Surface} */ (null));
         this.rttArrayBuffer = /** WebGLBuffer */ null;
         this.rttBigFramebuffer = /** WebGLFramebuffer */ null;
         this.rttBigRenderbuffer = /** WebGLRenderbuffer */ null;
@@ -50,17 +48,6 @@ module.exports = class StateGL {
         gl.enable(gl.DEPTH_TEST);
         this.mkFXAAProgram();
         this.mkRenderToTextureObjects();
-    }
-
-    /** @param {string} name */
-    getExtension(name) {
-        if (this[name] === undefined) {
-            this[name] = this.gl.getExtension(name);
-            if (!this[name]) {
-                alert('Required extension ' + name + ' not supported.' +
-                    ' Please try another browser or platform.');
-            }
-        }
     }
 
     /**
@@ -249,7 +236,7 @@ module.exports = class StateGL {
         }
     }
 
-    /** @param {State3D} st */
+    /** @param {./State3D} st */
     renderSurface(st) {
         const gl = this.gl;
         const stategl = this;
@@ -280,7 +267,7 @@ module.exports = class StateGL {
      */
     textureToURL(texture, length) {
         const pixels = this.readTexture(texture, length);
-        return Export.pixelsToObjectURL(pixels);
+        return URLFactory.pixelsToObjectURL(pixels);
     }
 
     toggleAntialiasing() {
@@ -302,19 +289,19 @@ module.exports = class StateGL {
         gl.uniform1f(loc, this.clipping ? 1 : 0);
     }
 
-    /** @param {State3D} st */
+    /** @param {./State3D} st */
     updateModelMatrix(st) {
         this.updateUniformMatrix("m", st.modelMatrix());
     }
 
-    /** @param {State3D} st */
+    /** @param {./State3D} st */
     updateModelViewProjectionMatrices(st) {
         this.updateModelMatrix(st);
         this.updateViewMatrix(st);
         this.updateProjectionMatrix(st);
     }
 
-    /** @param {State3D} st */
+    /** @param {./State3D} st */
     updateProjectionMatrix(st) {
         const gl = this.gl;
         const vp = gl.getParameter(gl.VIEWPORT);
@@ -348,7 +335,7 @@ module.exports = class StateGL {
         gl.uniformMatrix4fv(loc, false, ms);
     }
 
-    /** @param {State3D} st */
+    /** @param {./State3D} st */
     updateViewMatrix(st) {
         this.updateUniformMatrix("v", st.viewMatrix());
     }

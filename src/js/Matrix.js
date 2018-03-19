@@ -1,6 +1,6 @@
 module.exports = class Matrix {
     /**
-     * @param {Array<Array<Polynomial>>} m
+     * @param {Array<Array<./Polynomial>>} m
      */
     constructor(m) {
         this.values = m;
@@ -9,7 +9,7 @@ module.exports = class Matrix {
     /**
      * Richard S. Bird
      * A simple division-free algorithm for computing determinants
-     * @return {Polynomial}
+     * @return {./Polynomial}
      */
     det() {
         const as = this.values;

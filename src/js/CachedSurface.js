@@ -1,14 +1,12 @@
 const Export = require('./Export.js');
-const Polynomial = require('./Polynomial.js');
 const StateGL = require('./StateGL.js');
-const State3D = require('./State3D.js');
 
 module.exports = class CachedSurface {
 
     /**
      * @param {StateGL} stategl
      * @param {string} file
-     * @param {Polynomial=} p
+     * @param {./Polynomial=} p
      * @param {function()} onload
      */
     constructor(stategl, file, p = null, onload = function() {}) {
@@ -105,7 +103,7 @@ module.exports = class CachedSurface {
     /**
      * @param {StateGL} stategl
      * @param {WebGLRenderingContext} gl
-     * @param {State3D} state3d
+     * @param {./State3D} state3d
      */
     render(stategl, gl, state3d) {
         if (!this.program)

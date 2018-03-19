@@ -1,12 +1,11 @@
 const GLSL = require('./GLSL.js');
 const StateGL = require('./StateGL.js');
-const Surface = require('./Surface.js');
 const TransformFeedback = require('./TransformFeedback.js');
 
 module.exports = class Subdivision {
     /**
      * @param {StateGL} stategl
-     * @param {Surface} surface
+     * @param {./Surface} surface
      */
     constructor(stategl, surface) {
         this.program = /** WebGLProgram */ null;
@@ -16,7 +15,7 @@ module.exports = class Subdivision {
 
     /**
      * @param {StateGL} stategl
-     * @param {Surface} surface
+     * @param {./Surface} surface
      */
     mkProgram(stategl, surface) {
         const sources = [
@@ -29,7 +28,7 @@ module.exports = class Subdivision {
 
     /**
      * @param {StateGL} stategl
-     * @param {Surface} surface
+     * @param {./Surface} surface
      * @param {WebGLRenderingContext} gl
      */
     render(stategl, surface, gl) {

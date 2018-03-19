@@ -1,10 +1,10 @@
 const GLSL = require('./GLSL.js');
-const Polynomial = require('./Polynomial.js');
 const StateGL = require('./StateGL.js');
+const URLFactory = require('./URLFactory.js');
 
 module.exports = class Export {
     /**
-     * @param {Polynomial} p
+     * @param {./Polynomial} p
      * @param {StateGL} stategl
      * @param {boolean=} big
      * @return {Array<string>}
@@ -38,7 +38,7 @@ module.exports = class Export {
             const texture = big ? stategl.rttBigTexture : stategl.rttTexture;
             pixels = /** @type {Uint8Array} */
                 (stategl.readTexture(texture));
-            sheets[sheet - 1] = Export.pixelsToImageDataURL(pixels);
+            sheets[sheet - 1] = URLFactory.pixelsToImageDataURL(pixels);
         }
         return sheets;
     }
@@ -58,7 +58,7 @@ module.exports = class Export {
     }
 
     /**
-     * @param {Polynomial} p
+     * @param {./Polynomial} p
      * @param {StateGL} stategl
      * @param {string=} name
      * @param {boolean=} big
@@ -165,51 +165,10 @@ module.exports = class Export {
         }, big);
         const texels = /** @type {Uint8Array} */
             (stategl.readTexture(big ? stategl.rttBigTexture : stategl.rttTexture));
-        Export.download(name + ".png", Export.pixelsToImageDataURL(texels));
+        Export.download(name + ".png", URLFactory.pixelsToImageDataURL(texels));
 
         let mtl = ["newmtl surface", "map_Kd " + name + ".png", "illum 0"];
         mtl = "data:text/plain," + encodeURIComponent(mtl.join("\n"));
         Export.download(name + ".mtl", mtl);
-    }
-
-    /**
-     * @param {Uint8Array} pixels
-     * @return {string}
-     */
-    static pixelsToImageDataURL(pixels) {
-        const size = Math.sqrt(pixels.length / 4);
-        const canvas =
-            /** @type {HTMLCanvasElement} */
-            (document.createElement("canvas"));
-        canvas.width = size;
-        canvas.height = size;
-        const context =
-            /** @type {CanvasRenderingContext2D} */
-            (canvas.getContext("2d"));
-        const imageData = context.createImageData(canvas.width, canvas.height);
-        imageData.data.set(pixels);
-        context.putImageData(imageData, 0, 0);
-        const canvasFlip =
-            /** @type {HTMLCanvasElement} */
-            (document.createElement("canvas"));
-        canvasFlip.width = size;
-        canvasFlip.height = size;
-        const contextFlip =
-            /** @type {CanvasRenderingContext2D} */
-            (canvasFlip.getContext("2d"));
-        contextFlip.translate(0, canvasFlip.height - 1);
-        contextFlip.scale(1, -1);
-        contextFlip.drawImage(canvas, 0, 0);
-        return canvasFlip.toDataURL();
-    }
-
-    /**
-     * @param {Uint8Array|Float32Array} pixels
-     * @return {string}
-     */
-    static pixelsToObjectURL(pixels) {
-        return URL.createObjectURL(new Blob([pixels], {
-            type: "application/octet-binary"
-        }));
     }
 };

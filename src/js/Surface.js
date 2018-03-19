@@ -2,8 +2,6 @@ const Assembly = require('./Assembly.js');
 const GLSL = require('./GLSL.js');
 const Export = require('./Export.js');
 const Initial = require('./Initial.js');
-const Polynomial = require('./Polynomial.js');
-const State3D = require('./State3D.js');
 const StateGL = require('./StateGL.js');
 const Subdivision = require('./Subdivision.js');
 const SubdivisionPre = require('./SubdivisionPre.js');
@@ -12,20 +10,20 @@ const TransformFeedback = require('./TransformFeedback.js');
 module.exports = class Surface {
     /**
      * @param {StateGL} stategl
-     * @param {Polynomial} polynomial
+     * @param {./Polynomial} polynomial
      * @param {number} depth
      */
     constructor(stategl, polynomial, depth) {
         this.commonShaderSrc = "";
         this.customShaderSrc = "";
         this.depth = depth;
-        this.numIndices = 0;
-        this.polynomial = polynomial;
+        this.numIndices = 0; // THIS
+        this.polynomial = polynomial; // THIS
         this.program = /** WebGLProgram */ null;
-        this.sheets = polynomial.sheets();
-        this.textures = /** Array<WebGLTexture> */ null;
-        this.transformFeedback = /** WebGLTransformFeedback */ null;
-        this.transformFeedbackBuffer = /** WebGLBuffer */ null;
+        this.sheets = polynomial.sheets(); // THIS
+        this.textures = /** Array<WebGLTexture> */ null; // THIS
+        this.transformFeedback = /** WebGLTransformFeedback */ null; // THIS
+        this.transformFeedbackBuffer = /** WebGLBuffer */ null; // THIS
 
         // surface must be bivariate and at least quadratic
         if (!polynomial.isBivariate()) {
@@ -43,8 +41,8 @@ module.exports = class Surface {
         this.mkTextures(stategl);
         this.mkTransformFeedback(stategl);
 
-        this.commonShaderSrc = /** @type {string} */ (resources["Common.glsl"]).trim();
-        this.customShaderSrc = GLSL.polynomialShaderSource(polynomial);
+        this.commonShaderSrc = /** @type {string} */ (resources["Common.glsl"]).trim(); // THIS
+        this.customShaderSrc = GLSL.polynomialShaderSource(polynomial); // THIS
         this.initial = new Initial(stategl, this);
         this.initial.render(stategl, this, gl);
         this.subdivisionPre = new SubdivisionPre(stategl, this);
@@ -143,7 +141,7 @@ module.exports = class Surface {
     /**
      * @param {StateGL} stategl
      * @param {WebGLRenderingContext} gl
-     * @param {State3D} state3d
+     * @param {./State3D} state3d
      */
     render(stategl, gl, state3d) {
         if (!this.program)
@@ -164,7 +162,7 @@ module.exports = class Surface {
      * @param {string} src
      * @return {string}
      */
-    withCustomAndCommon(src) {
+    withCustomAndCommon(src) { // THIS
         return ["#version 300 es", this.customShaderSrc, this.commonShaderSrc, src].join("\n");
     }
 };

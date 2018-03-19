@@ -1,11 +1,11 @@
 const CachedSurface = require('./CachedSurface.js');
 const Export = require('./Export.js');
-const Polynomial = require('./Polynomial.js');
 const PolynomialParser = require('./PolynomialParser.js');
 const Quaternion = require('./Quaternion.js');
 const Surface = require('./Surface.js');
 const State3D = require('./State3D.js');
 const StateGL = require('./StateGL.js');
+const URLFactory = require('./URLFactory.js');
 
 const defaultLat = 5 / 12 * Math.PI;
 const defaultLon = Math.PI / 6;
@@ -62,7 +62,7 @@ module.exports = class ComplexCurves {
 
     /**
      * @param {HTMLCanvasElement} canvas
-     * @param {Polynomial} polynomial
+     * @param {./Polynomial} polynomial
      * @param {number} depth
      * @param {number=} lat
      * @param {number=} lon
@@ -115,7 +115,7 @@ module.exports = class ComplexCurves {
         }, big);
         const pixels = /** @type {Uint8Array} */
             (stategl.readTexture(big ? stategl.rttBigTexture : stategl.rttTexture));
-        Export.download(name, Export.pixelsToImageDataURL(pixels));
+        Export.download(name, URLFactory.pixelsToImageDataURL(pixels));
     }
 
     /**
