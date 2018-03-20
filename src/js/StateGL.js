@@ -166,17 +166,6 @@ module.exports = class StateGL {
         gl.bindBuffer(gl.ARRAY_BUFFER, null);
     }
 
-
-    /**
-     * @param {WebGLTexture} texture
-     * @param {number} length
-     * @param {number=} offset
-     * @suppress {checkTypes}
-     */
-    printTexture(texture, length, offset = 0) {
-        console.log(JSON.stringify(Array.from(this.readTexture(texture, length, offset))));
-    }
-
     /**
      * @param {WebGLTexture} texture
      * @param {number=} length
