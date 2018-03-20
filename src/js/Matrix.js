@@ -1,3 +1,5 @@
+const ArgumentError = require('./ArgumentError.js');
+
 module.exports = class Matrix {
     /**
      * @param {Array<Array<./Polynomial>>} m
@@ -12,13 +14,13 @@ module.exports = class Matrix {
      * @return {./Polynomial}
      */
     det() {
+        if (this.values === null || this.values.length === 0 || this.values[0].length === 0)
+            throw new ArgumentError('matrix must be non-empty');
         const as = this.values;
         const n = as.length;
-        if (n === 0)
-            console.error('matrix must be non-empty');
         for (let i = 0; i < n; i++)
             if (as[i].length !== n)
-                console.error('matrix must be square');
+                throw new ArgumentError('matrix must be square');
         let a = this;
         for (let j = 1; j < n; j++)
             a = Matrix.mul(Matrix.mu(a), this);
@@ -62,7 +64,7 @@ module.exports = class Matrix {
         const as = a.values,
             bs = b.values;
         if (as[0].length !== bs.length)
-            console.error('matrix dimensions must match');
+            throw new ArgumentError('matrix dimensions must match');
         const cs = [];
         const rows = as.length,
             cols = bs[0].length,
