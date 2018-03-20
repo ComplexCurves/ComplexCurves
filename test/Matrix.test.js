@@ -14,7 +14,7 @@ describe('Matrix', function() {
                 [Complex.real(3), Complex.real(4)]
             ]);
             let det = m.det();
-            expect(det).to.deep.equal(new Complex(-2, -0));
+            expect(det).to.deep.equal(new Complex(1 * 4 - 2 * 3, -0));
         });
         it('computes the determinant of a 3x3 identity matrix', function() {
             let m = new Matrix([
@@ -33,7 +33,7 @@ describe('Matrix', function() {
                 [Complex.real(0), Complex.real(0), Complex.real(4)]
             ]);
             let det = m.det();
-            expect(det).to.deep.equal(Complex.real(24));
+            expect(det).to.deep.equal(Complex.real(2 * 3 * 4));
         });
 
         it('computes the determinant of a 3x3 integer matrix', function() {
@@ -43,7 +43,7 @@ describe('Matrix', function() {
                 [Complex.real(7), Complex.real(8), Complex.real(9)]
             ]);
             let det = m.det();
-            expect(det).to.deep.equal(Complex.real(-17));
+            expect(det).to.deep.equal(Complex.real(1 * (5 * 9 - 6 * 8) - 3 * (2 * 9 - 4 * 8) + 7 * (2 * 6 - 4 * 5)));
         });
 
         it('computes the determinant of a 3x3 integer Polynomial matrix', function() {
@@ -84,26 +84,27 @@ describe('Matrix', function() {
             }).to.throw(ArgumentError, 'square');
         });
     });
-    describe('Matrix.mul', function() {
+    describe('mul', function() {
         it('computes the product of two matrices', function() {
             let m1 = new Matrix([
-                [Complex.real(1), Complex.real(2)],
-                [Complex.real(3), Complex.real(4)]
+                [Complex.real(1), Complex.real(2), Complex.real(3)],
+                [Complex.real(4), Complex.real(5), Complex.real(6)]
             ]);
             let m2 = new Matrix([
-                [Complex.real(5), Complex.real(6)],
-                [Complex.real(7), Complex.real(8)]
+                [Complex.real(7), Complex.real(8)],
+                [Complex.real(9), Complex.real(10)],
+                [Complex.real(11), Complex.real(12)]
             ]);
             let product = new Matrix([
-                [Complex.real(19), Complex.real(22)],
-                [Complex.real(43), Complex.real(50)]
+                [Complex.real(1 * 7 + 2 * 9 + 3 * 11), Complex.real(1 * 8 + 2 * 10 + 3 * 12)],
+                [Complex.real(4 * 7 + 5 * 9 + 6 * 11), Complex.real(4 * 8 + 5 * 10 + 6 * 12)]
             ]);
             expect(Matrix.mul(m1, m2)).to.deep.equal(product);
         });
         it('throws an ArgumentError if Matrix dimensions do not match', function() {
             let m = new Matrix([
-                [1, 2, 3],
-                [4, 5, 6]
+                [Complex.real(1), Complex.real(2), Complex.real(3)],
+                [Complex.real(4), Complex.real(5), Complex.real(6)]
             ]);
             expect(function() {
                 Matrix.mul(m, m);
