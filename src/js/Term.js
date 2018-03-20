@@ -1,3 +1,4 @@
+const ArgumentError = require('./ArgumentError.js');
 const Complex = require('./Complex.js');
 const Monomial = require('./Monomial.js');
 
@@ -18,7 +19,7 @@ module.exports = class Term {
      */
     static add(a, b) {
         if (!Monomial.is(a.monomial, b.monomial))
-            console.error('Monomials do not match');
+            throw new ArgumentError('Monomials do not match');
         return new Term(Complex.add(a.coefficient, b.coefficient), a.monomial);
     }
 

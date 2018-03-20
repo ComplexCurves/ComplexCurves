@@ -1,4 +1,5 @@
 const Complex = require('./Complex.js');
+const ParseError = require('./ParseError.js');
 const Parser = require('./Parser.js');
 const Polynomial = require('./Polynomial.js');
 const Tokenizer = require('./Tokenizer.js');
@@ -30,9 +31,9 @@ module.exports = class PolynomialParser {
                     if (s.re >= 0 && s.im === 0)
                         return Polynomial.pow(first, s.re);
                 }
-                console.error("Illegal exponent");
+                throw new ParseError("Illegal exponent");
             } else
-                console.error("Infix operator '" + value + "' not implemented");
+                throw new ParseError("Infix operator '" + value + "' not implemented");
         } else if (type === "prefix") {
             first = PolynomialParser.eval( /** @type {Parser.PrefixLeaf} */ (tree).first);
             if (value === "+")
@@ -40,7 +41,7 @@ module.exports = class PolynomialParser {
             else if (value === "-")
                 return first.neg();
             else
-                console.error("Prefix operator '" + value + "' not implemented");
+                throw new ParseError("Prefix operator '" + value + "' not implemented");
         } else if (type === "number") {
             return Polynomial.real(parseFloat(value));
         } else if (type === "variable")

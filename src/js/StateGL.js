@@ -1,3 +1,4 @@
+const ShaderError = require('./ShaderError.js');
 const URLFactory = require('./URLFactory.js');
 
 module.exports = class StateGL {
@@ -87,7 +88,7 @@ module.exports = class StateGL {
         gl.shaderSource(vertexShader, vertexShaderSource);
         gl.compileShader(vertexShader);
         if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS))
-            console.log(gl.getShaderInfoLog(vertexShader));
+            throw new ShaderError(gl.getShaderInfoLog(vertexShader));
         const shaderProgram = gl.createProgram();
         gl.attachShader(shaderProgram, vertexShader);
         if (sources[1]) {
@@ -95,7 +96,7 @@ module.exports = class StateGL {
             gl.shaderSource(fragmentShader, fragmentShaderSource);
             gl.compileShader(fragmentShader);
             if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS))
-                console.log(gl.getShaderInfoLog(fragmentShader));
+                throw new ShaderError(gl.getShaderInfoLog(fragmentShader));
             gl.attachShader(shaderProgram, fragmentShader);
         }
         if (transformFeedbackVaryings) {
@@ -107,7 +108,7 @@ module.exports = class StateGL {
         }
         gl.linkProgram(shaderProgram);
         if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS))
-            console.log(gl.getProgramInfoLog(shaderProgram));
+            throw new ShaderError(gl.getProgramInfoLog(shaderProgram));
         gl.useProgram(shaderProgram);
         return shaderProgram;
     }

@@ -1,4 +1,5 @@
 module.exports = class CustomError extends Error {
+    /** @suppress {reportUnknownTypes} */
     constructor(...args) {
         super(...args);
         this.name = 'CustomError';

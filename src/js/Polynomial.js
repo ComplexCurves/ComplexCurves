@@ -1,3 +1,4 @@
+const ArgumentError = require('./ArgumentError.js');
 const Complex = require('./Complex.js');
 const Matrix = require('./Matrix.js');
 const Monomial = require('./Monomial.js');
@@ -83,7 +84,7 @@ module.exports = class Polynomial {
         const vars = this.variableList();
         const l = vars.length;
         if (l > 1)
-            console.error("Polynomial is not univariate");
+            throw new ArgumentError("Polynomial is not univariate");
         const v = l > 0 ? vars[0] : "x";
         const cs = this.coefficientList(v);
         const cs_ = [];
@@ -290,7 +291,7 @@ module.exports = class Polynomial {
     static pow(p, e) {
         let res = Polynomial.real(1);
         if (!Number.isInteger(e))
-            console.error("Non-integer power of Polynomial!");
+            throw new ArgumentError("Non-integer power of Polynomial!");
         // TODO use fast exponentiation
         for (let i = e; i > 0; i--)
             res = Polynomial.mul(res, p);

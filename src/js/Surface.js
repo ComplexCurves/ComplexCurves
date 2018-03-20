@@ -1,3 +1,4 @@
+const ArgumentError = require('./ArgumentError.js');
 const Assembly = require('./Assembly.js');
 const Export = require('./Export.js');
 const Initial = require('./Initial.js');
@@ -20,12 +21,10 @@ module.exports = class Surface {
 
         // surface must be bivariate and at least quadratic
         if (!polynomial.isBivariate()) {
-            console.log("Equation must be bivariate!");
-            return;
+            throw new ArgumentError("Equation must be bivariate!");
         }
         if (surfaceDTO.sheets < 2) {
-            console.log("There must be at least two sheets!");
-            return;
+            throw new ArgumentError("There must be at least two sheets!");
         }
 
         const gl = stategl.gl;
