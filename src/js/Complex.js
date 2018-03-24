@@ -47,16 +47,6 @@ module.exports = class Complex {
         return new Complex(re / abs2, im / abs2);
     }
 
-    /** @return {number} */
-    getImaginaryPart() {
-        return this.im;
-    }
-
-    /** @return {number} */
-    getRealPart() {
-        return this.re;
-    }
-
     /** @return {Complex} */
     static infinity() {
         return new Complex(Infinity, Infinity);
@@ -76,7 +66,7 @@ module.exports = class Complex {
      *  @return {boolean}
      */
     static isZero(z) {
-        return z.re === 0 && z.im === 0;
+        return Math.abs(z.re) === 0 && Math.abs(z.im) === 0;
     }
 
     /**
