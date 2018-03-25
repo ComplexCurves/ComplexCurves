@@ -380,6 +380,8 @@ module.exports = class Polynomial {
      * @return {number}
      */
     sheets() {
+        if (this.isConstant() || this.isUnivariate())
+            throw new ArgumentError('Polynomial is not multivariate');
         const vars = this.variableList();
         const vy = vars.length === 0 ? "y" : vars[vars.length - 1];
         return this.degree(vy);
