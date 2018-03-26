@@ -291,7 +291,7 @@ module.exports = class Polynomial {
     static pow(p, e) {
         let res = Polynomial.real(1);
         if (!Number.isInteger(e))
-            throw new ArgumentError("Non-integer power of Polynomial!");
+            throw new ArgumentError("exponent is not an integer");
         // TODO use fast exponentiation
         for (let i = e; i > 0; i--)
             res = Polynomial.mul(res, p);
@@ -314,7 +314,7 @@ module.exports = class Polynomial {
         const a = cs[0],
             b = cs[1],
             c = cs[2];
-        if (c.re === 0 && c.im === 0)
+        if (Math.abs(c.re) === 0 && Math.abs(c.im) === 0)
             return [Complex.zero(), Complex.div(b, a).neg()];
         let r = Complex.sqrt(Complex.sub(Complex.mul(b, b),
             Complex.mul(Complex.real(4), Complex.mul(a, c))));

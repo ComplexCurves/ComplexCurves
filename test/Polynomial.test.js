@@ -5,6 +5,17 @@ const Monomial = require('../src/js/Monomial.js');
 const Polynomial = require('../src/js/Polynomial.js');
 const Term = require('../src/js/Term.js');
 
+const cissoidOfDiocles = new Polynomial([new Term(Complex.real(1), new Monomial({
+    'x': 1,
+    'y': 2
+})), new Term(Complex.real(2), new Monomial({
+    'x': 3
+})), new Term(Complex.real(-3), new Monomial({
+    'x': 2
+})), new Term(Complex.real(3), new Monomial({
+    'x': 1
+})), new Term(Complex.real(-1), new Monomial({}))]);
+
 function roundToPrecision(x, precision) {
     return precision * Math.round(x / precision);
 }
@@ -66,6 +77,66 @@ describe('Polynomial', function() {
             expect(cs).to.deep.equal([Polynomial.variable('y'), Polynomial.real(6), Polynomial.real(2)]);
         });
     });
+    describe('isBivariate', function() {
+        it('determines if a Polynomial is bivariate', function() {
+            expect(new Polynomial([]).isBivariate()).to.equal(false);
+            expect(Polynomial.real(1).isBivariate()).to.equal(false);
+            expect(Polynomial.variable('x').isBivariate()).to.equal(false);
+            expect(new Polynomial([new Term(Complex.real(1), new Monomial({
+                'x': 1,
+                'y': 1
+            }))]).isBivariate()).to.equal(true);
+            expect(new Polynomial([new Term(Complex.real(1), new Monomial({
+                'x': 1,
+                'y': 1,
+                'z': 1
+            }))]).isBivariate()).to.equal(false);
+        });
+    });
+    describe('discriminant', function() {
+        it('computes the discriminant of a Polynomial', function() {
+            let p = new Polynomial([new Term(Complex.real(1), new Monomial({
+                    'y': 5
+                })),
+                new Term(Complex.real(-1), new Monomial({
+                    'y': 1
+                })), new Term(Complex.real(1), new Monomial({
+                    'x': 1
+                }))
+            ]);
+            expect(p.discriminant('y').coefficientList_()).to.deep.equal([3125, 0, 0, 0, -256].map(Complex.real));
+        });
+        it('computes the discriminant of x*(x^2+y^2)-(1-x)^3', function() {
+            let p = cissoidOfDiocles;
+            expect(p.discriminant('y').coefficientList_()).to.deep.equal([8, -12, 12, -4, 0, 0].map(Complex.real));
+            // the discriminant as we compute it has the origin as a zero of order 2
+            // others reduce the discriminant such that there are no multiple zeros
+        });
+
+    });
+    describe('leading', function() {
+        it('determines the leading coefficient of a Polynomial in a given variable', function() {
+            expect(cissoidOfDiocles.leading('x')).to.deep.equal(Polynomial.real(2));
+            expect(cissoidOfDiocles.leading('y')).to.deep.equal(Polynomial.variable('x'));
+        });
+    });
+    describe('pow', function() {
+        it('computes an integer power of a Polynomial', function() {
+            const p = new Polynomial([new Term(Complex.real(1), new Monomial({
+                'x': 1
+            })), new Term(Complex.real(2), new Monomial({}))]);
+            expect(Polynomial.pow(p, 2)).to.deep.equal(Polynomial.mul(p, p));
+            const q = new Polynomial([new Term(Complex.real(1), new Monomial({
+                'x': 1
+            })), new Term(Complex.real(-2), new Monomial({}))]);
+            expect(Polynomial.pow(q, 2)).to.deep.equal(Polynomial.mul(q, q));
+        });
+        it('throws an ArgumentError if the exponent is not an integer', function() {
+            expect(function() {
+                Polynomial.variable('x').pow(0.5);
+            }).to.throw(ArgumentError, 'integer');
+        });
+    });
     describe('roots', function() {
         it('returns an empty list for a constant Polynomial', function() {
             expect(Polynomial.roots([])).to.deep.equal([]);
@@ -77,6 +148,8 @@ describe('Polynomial', function() {
         });
         it('computes the roots of a quadratic Polynomial', function() {
             expect(Polynomial.roots([Complex.real(1), Complex.real(-3), Complex.real(2)])).to.deep.equal([Complex.real(2), Complex.real(1)]);
+            expect(Polynomial.roots([Complex.real(1), Complex.real(-2), Complex.zero()])).to.deep.equal([Complex.zero(), new Complex(2, -0)]);
+            expect(Polynomial.roots([Complex.real(-1), Complex.real(3), Complex.real(-2)])).to.deep.equal([Complex.real(2), new Complex(1, -0)]);
         });
         it('approximates the roots of 2 x^3 - 3 x^2 + 3 x - 1', function() {
             const cs = [Complex.real(2), Complex.real(-3), Complex.real(3), Complex.real(-1)];
@@ -120,6 +193,30 @@ describe('Polynomial', function() {
                     'x': 2
                 }))]).sheets();
             }).to.throw(ArgumentError, 'multivariate');
+        });
+    });
+    describe('sub', function() {
+        it('computes the difference of two Polynomials', function() {
+            let p = new Polynomial([new Term(Complex.real(1), new Monomial({
+                'x': 2
+            })), new Term(Complex.real(3), new Monomial({
+                'x': 4
+            }))]);
+            let q = new Polynomial([new Term(Complex.real(5), new Monomial({
+                'y': 6
+            })), new Term(Complex.real(7), new Monomial({
+                'y': 8
+            }))]);
+            let difference = new Polynomial([new Term(new Complex(-7, -0), new Monomial({
+                'y': 8
+            })), new Term(new Complex(-5, -0), new Monomial({
+                'y': 6
+            })), new Term(Complex.real(1), new Monomial({
+                'x': 2
+            })), new Term(Complex.real(3), new Monomial({
+                'x': 4
+            }))]);
+            expect(p.sub(q)).to.deep.equal(difference);
         });
     });
 });
