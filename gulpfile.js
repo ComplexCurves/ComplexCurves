@@ -28,14 +28,14 @@ gulp.task('beautify', function() {
         .pipe(gulp.dest('./'));
 });
 
-gulp.task('beautified', ['beautify'], function() {
+gulp.task('beautified', gulp.series('beautify', function() {
     var files = gulp.src(['index.js', 'gulpfile.js', paths.js, paths.tests])
         .pipe(gitmodified('modified'));
     files.on('data', function(file) {
         console.error('Error: Uncommitted changes or beautification needed!');
         process.exit(1);
     });
-});
+}));
 
 gulp.task('clean:build', function() {
     return del(['build']);
@@ -65,7 +65,7 @@ gulp.task('resources', function() {
         .pipe(gulp.dest('build/'));
 });
 
-gulp.task('js-compile', ['resources'], function() {
+gulp.task('js-compile', gulp.series('resources', function compile() {
     return gulp.src(['build/resources.js', paths.js], {
             base: './'
         })
@@ -88,11 +88,8 @@ gulp.task('js-compile', ['resources'], function() {
         }))
         .pipe(sourcemaps.write('/'))
         .pipe(gulp.dest('./build/'));
-}).on('error', function(err) {
-    console.error(err);
-    process.exit(1);
-});
+}));
 
-gulp.task('test', ['js-compile', 'beautified', 'lint', 'mocha']);
+gulp.task('test', gulp.series('js-compile', 'beautified', 'lint', 'mocha'));
 
-gulp.task('default', ['js-compile']);
+gulp.task('default', gulp.task('js-compile'));
