@@ -18,7 +18,7 @@ const paths = {
 };
 
 gulp.task('beautify', function() {
-    return gulp.src(['index.js', 'gulpfile.js', paths.js, paths.tests], {
+    return gulp.src(['gulpfile.js', paths.js, paths.tests], {
             base: './'
         })
         .pipe(beautify({
@@ -29,7 +29,7 @@ gulp.task('beautify', function() {
 });
 
 gulp.task('beautified', gulp.series('beautify', function() {
-    var files = gulp.src(['index.js', 'gulpfile.js', paths.js, paths.tests])
+    var files = gulp.src(['gulpfile.js', paths.js, paths.tests])
         .pipe(gitmodified('modified'));
     files.on('data', function(file) {
         console.error('Error: Uncommitted changes or beautification needed!');
@@ -42,7 +42,7 @@ gulp.task('clean:build', function() {
 });
 
 gulp.task('lint', function() {
-    return gulp.src(['index.js', 'gulpfile.js', paths.js])
+    return gulp.src(['gulpfile.js', paths.js])
         .pipe(jshint())
         .pipe(jshint.reporter('default'))
         .pipe(jshint.reporter('fail'));
