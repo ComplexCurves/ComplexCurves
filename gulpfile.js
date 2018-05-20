@@ -28,13 +28,14 @@ gulp.task('beautify', function() {
         .pipe(gulp.dest('./'));
 });
 
-gulp.task('beautified', gulp.series('beautify', function() {
+gulp.task('beautified', gulp.series('beautify', function(done) {
     var files = gulp.src(['gulpfile.js', paths.js, paths.tests])
         .pipe(gitmodified('modified'));
     files.on('data', function(file) {
         console.error('Error: Uncommitted changes or beautification needed!');
         process.exit(1);
     });
+    done();
 }));
 
 gulp.task('clean:build', function() {
@@ -90,6 +91,6 @@ gulp.task('js-compile', gulp.series('resources', function compile() {
         .pipe(gulp.dest('./build/'));
 }));
 
-gulp.task('test', gulp.series('js-compile', 'beautified', 'lint', 'mocha'));
+gulp.task('test', gulp.parallel('beautified', 'lint', 'mocha'));
 
 gulp.task('default', gulp.task('js-compile'));
