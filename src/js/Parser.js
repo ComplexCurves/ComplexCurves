@@ -1,25 +1,25 @@
 const Parser = {};
 
 /** @typedef {{type : string, value : string}} */
-Parser.Token = null;
+Parser.Token;
 
 /** @typedef {!Array<Parser.Token>} */
-Parser.Tokens = null;
+Parser.Tokens;
 
 /** @typedef {{type : string, value : string, first: Parser.AST}} */
-Parser.PrefixLeaf = null;
+Parser.PrefixLeaf;
 
 /** @typedef {{type : string, value : string, first: Parser.AST, second: Parser.AST}} */
-Parser.InfixLeaf = null;
+Parser.InfixLeaf;
 
 /** @typedef {Parser.Token|Parser.PrefixLeaf|Parser.InfixLeaf} */
-Parser.Leaf = null;
+Parser.Leaf;
 
 /** @typedef {Parser.Leaf|Array<Parser.Leaf>|boolean|null} */
-Parser.AST = null;
+Parser.AST;
 
 /** @typedef {function(Parser.Tokens) : Parser.AST} */
-Parser.Combinator = null;
+Parser.Combinator;
 
 /**
  * @param {...Parser.Combinator} var_args
