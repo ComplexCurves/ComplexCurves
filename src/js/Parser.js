@@ -1,5 +1,7 @@
 const Parser = {};
 
+/* jshint ignore:start */
+
 /** @typedef {{type : string, value : string}} */
 Parser.Token;
 
@@ -20,6 +22,8 @@ Parser.AST;
 
 /** @typedef {function(Parser.Tokens) : Parser.AST} */
 Parser.Combinator;
+
+/* jshint ignore:end */
 
 /**
  * @param {...Parser.Combinator} var_args
